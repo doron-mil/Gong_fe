@@ -1,0 +1,41 @@
+<nav class="navbar navbar-light " style="background-color: #e3f2fd;">
+
+  <button type="button" class="btn btn-primary" routerLink="/pageNo1">Test P1</button>
+  <button type="button" class="btn btn-info mr-auto ml-4 mt-lg-0" routerLink="/pageNo2">Test P2</button>
+
+
+  <div class="row">
+    <div class="col">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Toggle dropdown 1</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button class="dropdown-item" (click)="clickTest1()">Action - 1</button>
+          <button class="dropdown-item" (click)="clickTest2()">Action - 2</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col text-right">
+    <div ngbDropdown placement="bottom-left" class="d-inline-block">
+      <button class="btn btn-outline-primary" id="dropdownBasic2" ngbDropdownToggle>Toggle dropup 2</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+        <button class="dropdown-item" (click)="clickTest1()">Action - 1</button>
+        <button class="dropdown-item" (click)="clickTest2()">Action - 2</button>
+      </div>
+    </div>
+  </div>
+
+</nav>
+
+<div style="text-align:center">
+    <h1>
+      Welcome to {{ title }}!
+    </h1>
+    <img width="300" alt="Custo, Logo" src="assets/icons/gong.png">
+  </div>
+
+<h2>{{ 'general.header.details' | translate }}: </h2>
+
+<router-outlet></router-outlet>
+

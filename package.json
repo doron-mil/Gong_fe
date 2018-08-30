@@ -1,0 +1,95 @@
+{
+  "name": "gong",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "jest ",
+    "test:update": "jest -u",
+    "test:silent": "jest --silent",
+    "test:nowatch": "jest --watch=false --maxWorkers=4 --silent",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular-redux/store": "^9.0.0",
+    "@angular/animations": "^6.0.3",
+    "@angular/common": "^6.0.3",
+    "@angular/compiler": "^6.0.3",
+    "@angular/core": "^6.0.3",
+    "@angular/forms": "^6.0.3",
+    "@angular/http": "^6.0.3",
+    "@angular/platform-browser": "^6.0.3",
+    "@angular/platform-browser-dynamic": "^6.0.3",
+    "@angular/pwa": "^0.7.5",
+    "@angular/router": "^6.0.3",
+    "@angular/service-worker": "^6.0.3",
+    "@ng-bootstrap/ng-bootstrap": "^3.1.0",
+    "@ngx-translate/core": "^10.0.2",
+    "@ngx-translate/http-loader": "^3.0.1",
+    "axios": "^0.18.0",
+    "bootstrap": "^4.1.3",
+    "core-js": "^2.5.4",
+    "lodash": "^4.17.10",
+    "redux": "^4.0.0",
+    "rxjs": "^6.0.0",
+    "zone.js": "^0.8.26"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.6.5",
+    "@angular/cli": "~6.0.5",
+    "@angular/compiler-cli": "^6.0.3",
+    "@angular/language-service": "^6.0.3",
+    "@types/jasmine": "~2.8.6",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/jest": "^23.3.1",
+    "@types/node": "~8.9.4",
+    "babel-jest": "^23.4.2",
+    "babel-preset-env": "^1.7.0",
+    "codelyzer": "~4.2.1",
+    "jest": "^23.5.0",
+    "jest-preset-angular": "^6.0.0",
+    "protractor": "~5.3.0",
+    "redux-devtools-extension": "^2.13.5",
+    "redux-mock-store": "^1.5.3",
+    "ts-jest": "^23.1.4",
+    "ts-node": "~5.0.1",
+    "tslint": "~5.9.1",
+    "typescript": "~2.7.2"
+  },
+  "jest": {
+    "preset": "jest-preset-angular",
+    "setupTestFrameworkScriptFile": "<rootDir>/src/setup-jest.ts",
+    "testURL": "http://localhost/",
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "src/tsconfig.spec.json"
+      },
+      "__TRANSFORM_HTML__": true
+    },
+    "transform": {
+      "^.+\\.(ts|html)$": "<rootDir>/node_modules/jest-preset-angular/preprocessor.js",
+      "^.+\\.js$": "babel-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|js)?(x)",
+      "**/+(*.)+(spec|test|jest).+(ts|js)?(x)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "html"
+    ],
+    "moduleNameMapper": {
+      "app/(.*)": "<rootDir>/src/app/$1",
+      "assets/(.*)": "<rootDir>/src/assets/$1",
+      "environments/(.*)": "<rootDir>/src/environments/$1"
+    },
+    "modulePathIgnorePatterns": [],
+    "transformIgnorePatterns": [
+      "node_modules/(?!ngx-drag-scroll)"
+    ]
+  }
+}
