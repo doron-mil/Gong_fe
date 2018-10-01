@@ -8,6 +8,8 @@ import axios from 'axios';
 })
 export class TestPage1Component implements OnInit {
 
+  isAllOn = false;
+
   constructor() {
   }
 
@@ -15,8 +17,24 @@ export class TestPage1Component implements OnInit {
   }
 
   postToServer() {
-    axios.post('http://localhost:8081/toggleSwitch', {
+    axios.post('http://localhost:8081/relay/toggleSwitch', {
       switch: 3,
+    })
+      .then(function (response) {
+        console.log('***************', response);
+      })
+      .catch(function (error) {
+        console.error('***************', error);
+      });
+
+    console.log('~~~~~~~~~~~~~~~~~~~~~~~ Post to server');
+  }
+
+  postToServerAll() {
+    this.isAllOn = !this.isAllOn;
+
+    axios.post('http://localhost:8081/relay/setAll', {
+      value: this.isAllOn,
     })
       .then(function (response) {
         console.log('***************', response);
