@@ -1,7 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {ServiceWorkerModule} from '@angular/service-worker';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -18,7 +17,10 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RoutingModule} from './routing/routing.module';
 import { TestPage1Component } from './pages/test-page1/test-page1.component';
 import { TestPage2Component } from './pages/test-page2/test-page2.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ManualActivationComponent } from './pages/manual-activation/manual-activation.component';
+import {MaterialModule} from './material/material.module';
+import { AutomaticActivationComponent } from './pages/automatic-activation/automatic-activation.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -36,13 +38,16 @@ export const translationRoot = {
   declarations: [
     AppComponent,
     TestPage1Component,
-    TestPage2Component
+    TestPage2Component,
+    ManualActivationComponent,
+    AutomaticActivationComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
+    MaterialModule,
     ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production}),
-    NgbModule,
     NgReduxModule,
     HttpClientModule,
     TranslateModule.forRoot(translationRoot),

@@ -1,0 +1,18 @@
+.main-toolbar{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between ;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.btn-group {
+  padding: 0px 5px;
+}
+
+.toggle-container{
+  width: 20%;
+}

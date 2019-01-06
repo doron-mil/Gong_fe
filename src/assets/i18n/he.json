@@ -3,7 +3,57 @@
   "general": {
     "header": {
       "information": "כותרת מתורגמת",
-      "details" : "כותרת שניה"
+      "details": "כותרת שניה"
     }
+  },
+  "main": {
+    "toolbar": {
+      "buttons": {
+        "manualActivation": "ידני"
+      },
+      "manualSlider" :{
+        "true" : "ידני",
+        "false" : "אוטומטי"
+      }
+    }
+  },
+  "manualActivation": {
+    "dropdowns": {
+      "gongType": {
+        "label": "סוג",
+          "values": {
+          "LONG_GONG": "צלצול ארוך",
+          "SHORT_GONG": "צלצול קצר",
+          "SINGLE_GONG": "צלצול יחיד",
+          "CHANTING": "שיר"
+        }
+      },
+      "areas": {
+        "label": "איזורים",
+          "values": {
+          "all": "כל האיזורים",
+          "workers": "עובדים",
+          "hall": "אולם",
+          "dining": "חדר אוכל",
+          "outside": "בחוץ"
+        }
+      }
+    },
+    "labels" :{
+      "volume" : "עוצמה"
+    },
+    "buttons" :{
+      "play" : "נגן"
+    }
+  },
+  "automaticActivation": {
+    "scheduleTable" :{
+      "headers":{
+        "name" : "שם",
+        "date" : "תאריך תחילה",
+        "daysCount" : "מס ימים"
+      }
+    }
+
   }
 }

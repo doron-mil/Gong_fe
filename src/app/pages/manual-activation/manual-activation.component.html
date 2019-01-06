@@ -1,0 +1,59 @@
+<div>
+  {{ 'manualActivation.dropdowns.gongType.label' | translate }} :
+
+  <div class="dropdown">
+    <mat-form-field>
+      <mat-select [(value)]="gongToPlay.type">
+        <mat-option *ngFor="let gongType of gongTypes" [value]="gongType.id">
+          {{'manualActivation.dropdowns.gongType.values.' + gongType.name | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+
+<div>
+  {{ 'manualActivation.dropdowns.areas.label' | translate }} :
+
+  <div class="dropdown" [formGroup]="areaSelectGroup">
+    <mat-form-field>
+      <mat-select multiple formControlName="areaSelect"
+                  (selectionChange)="onAreaChange($event)"
+                  disableOptionCentering="true">
+        <mat-select-trigger>
+
+          <span *ngIf="areaSelectGroup.get('areaSelect').value?.length === 5">
+             {{'manualActivation.dropdowns.areas.values.all' | translate }}
+          </span>
+          <span *ngIf="areaSelectGroup.get('areaSelect').value?.length < 5">
+            <ng-container *ngFor="let item of areaSelectGroup.get('areaSelect').value; let i = index">
+               {{ i > 0 ? ',' : ''}}
+               {{'manualActivation.dropdowns.areas.values.'+ areasMap[item].name | translate }}
+            </ng-container>
+          </span>
+        </mat-select-trigger>
+        <mat-option #allSelected [value]="0"
+                    (click)="onAllAreaChange($event)" >
+          {{'manualActivation.dropdowns.areas.values.all' | translate }}
+        </mat-option>
+        <mat-option *ngFor="let area of areas" [value]="area.id"
+                    (click)="onAreaOptionChange($event)">
+          {{'manualActivation.dropdowns.areas.values.' +
+          area.name | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div>
+  {{ 'manualActivation.labels.volume' | translate }} :
+  <mat-slider thumbLabel min="1" tickInterval="1"
+              [(value)]="gongToPlay.volume"></mat-slider>
+</div>
+<div class="btn-group">
+  <button mat-raised-button color="accent" (click)="playGong()">
+    {{ 'manualActivation.buttons.play' | translate }}
+  </button>
+</div>

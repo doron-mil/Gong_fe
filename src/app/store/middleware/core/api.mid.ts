@@ -12,6 +12,8 @@ export const apiMiddleware = ({dispatch}) => (next) => (action) => {
         const apiSuccess1 = apiSuccess(response, feature, action.data);
         dispatch(apiSuccess1);
       })
-      .catch(error => dispatch(apiError(error, feature, action.data)));
+      .catch(error => {
+        return dispatch(apiError(error, feature, action.data));
+      });
   }
 };
