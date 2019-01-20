@@ -5,7 +5,7 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
 import {DevToolsExtension, NgRedux, NgReduxModule} from '@angular-redux/store';
-import {generalMiddleware} from './store/middleware/feature/general.mid';
+import {GeneralMiddlewareService} from './store/middleware/feature/general.mid';
 import {apiMiddleware} from './store/middleware/core/api.mid';
 import {applyMiddleware, combineReducers, createStore, Store} from 'redux';
 import {StoreDataTypeEnum} from './store/storeDataTypeEnum';
@@ -15,12 +15,14 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RoutingModule} from './routing/routing.module';
-import { TestPage1Component } from './pages/test-page1/test-page1.component';
-import { TestPage2Component } from './pages/test-page2/test-page2.component';
+import {TestPage1Component} from './pages/test-page1/test-page1.component';
+import {TestPage2Component} from './pages/test-page2/test-page2.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { ManualActivationComponent } from './pages/manual-activation/manual-activation.component';
+import {ManualActivationComponent} from './pages/manual-activation/manual-activation.component';
 import {MaterialModule} from './material/material.module';
-import { AutomaticActivationComponent } from './pages/automatic-activation/automatic-activation.component';
+import {AutomaticActivationComponent} from './pages/automatic-activation/automatic-activation.component';
+import {JsonConverterService} from './Utils/json-converter/json-converter.service';
+import {JsonConverterModule} from './Utils/json-converter/json-converter.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -52,8 +54,9 @@ export const translationRoot = {
     HttpClientModule,
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
+    JsonConverterModule.forRoot('assets/json-converter/gong-conversion-schema.json')
   ],
-  providers: [],
+  providers: [GeneralMiddlewareService],
   bootstrap: [AppComponent]
 })
 
@@ -61,6 +64,7 @@ export class AppModule {
 
   constructor(private ngRedux: NgRedux<any>,
               private devTools: DevToolsExtension,
+              generalMiddlewareService: GeneralMiddlewareService,
               translate: TranslateService) {
 
     // ************* Translator Init *****************
@@ -75,7 +79,7 @@ export class AppModule {
     // ************* Middleware **********************
     // ***********************************************
     const featureMiddleware = [
-      generalMiddleware,
+      generalMiddlewareService.generalMiddleware,
     ];
 
     const coreMiddleware = [

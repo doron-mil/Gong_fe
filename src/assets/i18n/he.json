@@ -11,9 +11,9 @@
       "buttons": {
         "manualActivation": "ידני"
       },
-      "manualSlider" :{
-        "true" : "ידני",
-        "false" : "אוטומטי"
+      "manualSlider": {
+        "true": "ידני",
+        "false": "אוטומטי"
       }
     }
   },
@@ -21,7 +21,7 @@
     "dropdowns": {
       "gongType": {
         "label": "סוג",
-          "values": {
+        "values": {
           "LONG_GONG": "צלצול ארוך",
           "SHORT_GONG": "צלצול קצר",
           "SINGLE_GONG": "צלצול יחיד",
@@ -30,7 +30,7 @@
       },
       "areas": {
         "label": "איזורים",
-          "values": {
+        "values": {
           "all": "כל האיזורים",
           "workers": "עובדים",
           "hall": "אולם",
@@ -39,21 +39,27 @@
         }
       }
     },
-    "labels" :{
-      "volume" : "עוצמה"
+    "labels": {
+      "volume": "עוצמה"
     },
-    "buttons" :{
-      "play" : "נגן"
+    "buttons": {
+      "play": "נגן"
     }
   },
   "automaticActivation": {
-    "scheduleTable" :{
-      "headers":{
-        "name" : "שם",
-        "date" : "תאריך תחילה",
-        "daysCount" : "מס ימים"
+    "scheduleTable": {
+      "headers": {
+        "name": "שם קורס",
+        "date": "תאריך תחילה",
+        "daysCount": "מס ימים"
+      },
+      "courseName": {
+        "10_day_course": "10 ימים",
+        "satipattana": "סאטיפטהאנה"
       }
+    },
+    "buttons": {
+      "add": "הוסף קורס"
     }
-
   }
 }

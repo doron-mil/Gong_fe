@@ -17,6 +17,7 @@ export class AutomaticActivationComponent implements OnInit {
   coursesDataSource: MatTableDataSource<CourseSchedule>;
   coursesData: CourseSchedule[] = [];
   coursesMap: Course[] = [];
+  selectedRowIndex: number = -1;
 
   constructor(private ngRedux: NgRedux<any>) {
   }
@@ -34,16 +35,20 @@ export class AutomaticActivationComponent implements OnInit {
 
       if (coursesSchedule && courses) {
         coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
-          courseSchedule.daysCount = this.coursesMap[courseSchedule.name].days_count;
-          console.log('bbbbb', courseSchedule,courseSchedule.name ,this.coursesMap, this.coursesMap[courseSchedule.name]);
+          courseSchedule.daysCount = this.coursesMap[courseSchedule.name].days;
           this.coursesData.push(courseSchedule);
         });
         this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
       }
-
-      console.log('aaaaa', this.coursesDataSource);
     });
 
   }
 
+  addCourse() {
+
+  }
+
+  onRowClick(row): void {
+    this.selectedRowIndex = row.id;
+  }
 }

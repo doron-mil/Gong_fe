@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import axios from 'axios';
+import {JsonConverterService} from '../../Utils/json-converter/json-converter.service';
 
 @Component({
   selector: 'app-test-page1',
@@ -10,7 +11,7 @@ export class TestPage1Component implements OnInit {
 
   isAllOn = false;
 
-  constructor() {
+  constructor(private jsonConverterService: JsonConverterService) {
   }
 
   ngOnInit() {
@@ -46,4 +47,7 @@ export class TestPage1Component implements OnInit {
     console.log('~~~~~~~~~~~~~~~~~~~~~~~ Post to server');
   }
 
+  testJsonConverter() {
+    this.jsonConverterService.convertTest();
+  }
 }

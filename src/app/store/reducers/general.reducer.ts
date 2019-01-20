@@ -8,13 +8,13 @@ export function generalReducer(state: MainState = INITIAL_GENERAL_STATE, action:
       state.gongTypes = action.payload.data;
       return state;
     case SET_AREAS:
-      state.areas = action.payload.data;
+      state.areas = action.payload;
       return state;
     case SET_COURSES:
-      state.courses = action.payload.data;
+      state.courses = action.payload;
       return state;
     case SET_COURSES_SCHEDULE:
-      state.coursesSchedule = action.payload.data;
+      state.coursesSchedule = action.payload;
       return state;
     default:
       return state;

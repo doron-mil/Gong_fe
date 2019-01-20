@@ -1,0 +1,53 @@
+[
+  {
+    "className": "Area",
+    "propertyConversionArray": [
+      {
+        "propertyName": "id",
+        "propertyNameInJson": "id"
+      },
+      {
+        "propertyName": "name"
+      }
+    ]
+  },
+  {
+    "className": "Course",
+    "propertyConversionArray": [
+      {
+        "propertyName": "name",
+        "propertyNameInJson": "course_name"
+      },
+      {
+        "propertyName": "days",
+        "propertyNameInJson": "days_count"
+      }
+    ]
+  },
+  {
+    "className": "CourseSchedule",
+    "propertyConversionArray": [
+      {
+        "propertyName": "id"
+      },
+      {
+        "propertyName": "name",
+        "propertyNameInJson": "course_name"
+      },
+      {
+        "propertyName": "date"
+      }
+    ]
+  },
+  {
+    "className": "GongType",
+    "propertyConversionArray": [
+      {
+        "propertyName": "id"
+      },
+      {
+        "propertyName": "name"
+      }
+    ]
+  }
+]
