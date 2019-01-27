@@ -5,6 +5,7 @@ import {MainState} from '../../store/states/main.state';
 import {Area} from '../../model/area';
 import {Course} from '../../model/course';
 import {MatTableDataSource} from '@angular/material';
+import {ScheduledCourseDay} from '../../model/ScheduledCourseDay';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -13,11 +14,14 @@ import {MatTableDataSource} from '@angular/material';
 })
 export class AutomaticActivationComponent implements OnInit {
 
-  displayedColumns = ['course_name', 'daysCount', 'date'];
+  coursesDisplayedColumns = ['course_name', 'daysCount', 'date'];
   coursesDataSource: MatTableDataSource<CourseSchedule>;
   coursesData: CourseSchedule[] = [];
   coursesMap: Course[] = [];
   selectedRowIndex: number = -1;
+
+  selectedCourseDisplayedColumns = ['isOn', 'day', 'time', 'gongType'];
+  selectedCourseDataSource: MatTableDataSource<ScheduledCourseDay>;
 
   constructor(private ngRedux: NgRedux<any>) {
   }

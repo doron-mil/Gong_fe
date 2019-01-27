@@ -57,6 +57,13 @@
         "10_day_course": "10 ימים",
         "satipattana": "סאטיפטהאנה"
       }
+    },"selectedCourseTable": {
+      "headers": {
+        "isOn": "פעיל",
+        "day": "יום/תאריך",
+        "time": "זמן הצלצול",
+        "gongType": "סוג הצלצול"
+      }
     },
     "buttons": {
       "add": "הוסף קורס"

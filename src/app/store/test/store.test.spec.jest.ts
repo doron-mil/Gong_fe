@@ -3,9 +3,10 @@ import 'jest';
 import 'jest-preset-angular';
 import configureStore from 'redux-mock-store';
 
-import {generalMiddleware} from '../middleware/feature/general.mid';
+import {GeneralMiddlewareService} from '../middleware/feature/general.mid';
 import {apiMiddleware} from '../middleware/core/api.mid';
 import {generalReducer} from '../reducers/general.reducer';
+import {JsonConverterService} from '../../Utils/json-converter/json-converter.service';
 
 
 // Middleware simulator
@@ -15,8 +16,11 @@ const mockedMiddlewareCreate = () => {
     getState: jest.fn(() => ({})),
     dispatch: jest.fn(),
   };
-​
-      const invoke = (action) => generalMiddleware(store)(next)(action);
+
+  const jsonConverterService = new JsonConverterService('', null);
+  const generalMiddlewareService = new GeneralMiddlewareService(jsonConverterService);
+
+  const invoke = (action) => generalMiddlewareService.generalMiddleware(store)(next)(action);
   return {store, next, invoke};
 };
 
@@ -28,7 +32,9 @@ fdescribe('store.test.spec.jest', () => {
 
   const testSeries003 = '003';
   fdescribe(`#${testSeries003} - REDUCERS TEST WITH MIDDLEWARE - allDataSetAction`, () => {
-    const middleWares = [generalMiddleware, apiMiddleware];
+    const jsonConverterService = new JsonConverterService('', null);
+    const generalMiddlewareService = new GeneralMiddlewareService(jsonConverterService);
+    const middleWares = [generalMiddlewareService.generalMiddleware, apiMiddleware];
     const mockStore = configureStore(middleWares);
 
     const store = mockStore({});

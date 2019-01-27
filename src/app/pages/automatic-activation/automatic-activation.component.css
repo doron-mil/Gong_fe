@@ -1,3 +1,19 @@
 .highlight {
   background: red;
 }
+
+.courses-display-container{
+  display: flex;
+  flex-direction: row;
+  /*justify-content: space-evenly;*/
+}
+
+
+.main-table-container{
+  width: 40%;
+}
+
+.selected-course-display-container{
+  width: 60%;
+
+}

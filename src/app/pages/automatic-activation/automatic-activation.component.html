@@ -4,43 +4,96 @@
   </button>
 </div>
 
+<div class="courses-display-container">
 
-<div class="main_table-container mat-elevation-z8">
-  <table mat-table [dataSource]="coursesDataSource" width="100%">
+  <div class="main-table-container mat-elevation-z8">
+    <mat-table [dataSource]="coursesDataSource" width="100%">
 
-    <!-- course Name -->
-    <ng-container matColumnDef="course_name">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'automaticActivation.scheduleTable.headers.name' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">
-        {{ 'automaticActivation.scheduleTable.courseName.' +
-        element.name | translate }}
-      </td>
-    </ng-container>
-
-
-    <!-- no. Of Days -->
-    <ng-container matColumnDef="daysCount">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'automaticActivation.scheduleTable.headers.daysCount' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element"> {{element.daysCount}}</td>
-    </ng-container>
-
-    <!-- date -->
-    <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'automaticActivation.scheduleTable.headers.date' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element"> {{element.date}}</td>
-    </ng-container>
+      <!-- course Name -->
+      <ng-container matColumnDef="course_name">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.scheduleTable.headers.name' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ 'automaticActivation.scheduleTable.courseName.' +
+          element.name | translate }}
+        </mat-cell>
+      </ng-container>
 
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                      [ngClass]="{'highlight': selectedRowIndex == row.id}"
-        (click)="onRowClick(row)">
-    </tr>
-  </table>
+      <!-- no. Of Days -->
+      <ng-container matColumnDef="daysCount">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.scheduleTable.headers.daysCount' | translate }}
+        </mat-header-cell>
+        <mat-cell  *matCellDef="let element"> {{element.daysCount}}</mat-cell>
+      </ng-container>
+
+      <!-- date -->
+      <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.scheduleTable.headers.date' | translate }}
+        </mat-header-cell>
+        <mat-cell  *matCellDef="let element"> {{element.date}}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="coursesDisplayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: coursesDisplayedColumns;"
+          [ngClass]="{'highlight': selectedRowIndex == row.id}"
+          (click)="onRowClick(row)">
+      </mat-row>
+    </mat-table>
+  </div>
+
+  <div class="selected-course-display-container mat-elevation-z8" *ngIf="true">
+    <mat-table [dataSource]="selectedCourseDataSource" width="100%">
+
+      <!-- Is ON -->
+      <ng-container matColumnDef="isOn">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.selectedCourseTable.headers.isOn' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.day }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Day -->
+      <ng-container matColumnDef="day">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.selectedCourseTable.headers.day' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.day }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Time -->
+      <ng-container matColumnDef="time">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.selectedCourseTable.headers.time' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.time }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Gong Type -->
+      <ng-container matColumnDef="gongType">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'automaticActivation.selectedCourseTable.headers.gongType' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.gongType }}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="selectedCourseDisplayedColumns; sticky: true">
+      </mat-header-row>
+      <mat-row *matRowDef="let row; columns: selectedCourseDisplayedColumns;">
+      </mat-row>
+    </mat-table>
+   </div>
+
+
 </div>
