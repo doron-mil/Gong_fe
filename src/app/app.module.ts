@@ -23,6 +23,7 @@ import {MaterialModule} from './material/material.module';
 import {AutomaticActivationComponent} from './pages/automatic-activation/automatic-activation.component';
 import {JsonConverterService} from './Utils/json-converter/json-converter.service';
 import {JsonConverterModule} from './Utils/json-converter/json-converter.module';
+import {JsonConversionFunctions} from './Utils/jsonConversionFunctions';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -54,7 +55,7 @@ export const translationRoot = {
     HttpClientModule,
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
-    JsonConverterModule.forRoot('assets/json-converter/gong-conversion-schema.json')
+    JsonConverterModule.forRoot(JsonConversionFunctions.getInstance())
   ],
   providers: [GeneralMiddlewareService],
   bootstrap: [AppComponent]

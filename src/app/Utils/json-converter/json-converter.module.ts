@@ -1,6 +1,10 @@
-import {InjectionToken, ModuleWithProviders, NgModule} from '@angular/core';
+import {ModuleWithProviders, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {JsonConverterConfig, JsonConverterService} from './json-converter.service';
+import {
+  JsonConverterConfig,
+  JsonConverterConfigurationInterface,
+  JsonConverterService
+} from './json-converter.service';
 
 @NgModule({
   imports: [
@@ -9,14 +13,14 @@ import {JsonConverterConfig, JsonConverterService} from './json-converter.servic
   declarations: []
 })
 export class JsonConverterModule {
-  static forRoot(conversionSchemaFileName: string): ModuleWithProviders {
+  static forRoot(converterConfiguration: JsonConverterConfigurationInterface): ModuleWithProviders {
     return {
       ngModule: JsonConverterModule,
       providers: [
         JsonConverterService,
         {
           provide: JsonConverterConfig,
-          useValue: conversionSchemaFileName
+          useValue: converterConfiguration
         }
       ]
     };

@@ -1,8 +1,7 @@
 import {Inject, Injectable, InjectionToken} from '@angular/core';
-import {JsonConverter} from './json-converter';
 import {HttpClient} from '@angular/common/http';
 
-export const JsonConverterConfig = new InjectionToken<string>('JsonConverterConfig');
+export const JsonConverterConfig = new InjectionToken<JsonConverterConfigurationInterface>('JsonConverterConfig');
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +10,7 @@ export class JsonConverterService {
 
   conversionSchemaFileName: string;
   conversionMap: { [key: string]: ConversionSchema; } = {};
+  conversionFunctions: ConversionFunctionsType;
 
   static isArray(object) {
     if (object === Array) {
@@ -22,15 +22,21 @@ export class JsonConverterService {
     }
   }
 
-  constructor(@Inject(JsonConverterConfig) private aConversionSchemaFileName,
-              private http: HttpClient) {
-    this.conversionSchemaFileName = aConversionSchemaFileName;
+  constructor(
+    @Inject(JsonConverterConfig) private aConversionSchemaFileName: JsonConverterConfigurationInterface,
+    private http: HttpClient) {
 
-    this.http.get(aConversionSchemaFileName)
+    this.conversionSchemaFileName = aConversionSchemaFileName.getConfigurationFilePath();
+    this.conversionFunctions = aConversionSchemaFileName.conversionFunctions;
+
+    if (!aConversionSchemaFileName.converterMainMethodOverride) {
+      aConversionSchemaFileName.converterMainMethodOverride = this.convert;
+    }
+
+    this.http.get(this.conversionSchemaFileName)
       .subscribe(schema => {
         this.buildConversionsArray(schema);
-        console.log('bbbbb', this.conversionMap);
-        // console.log(data);
+        // console.log('bbbbb', this.conversionMap);
       });
   }
 
@@ -41,7 +47,7 @@ export class JsonConverterService {
   convert<T>(simpleObj: any, clazz: { new(): T }): Array<T> {
     const retObjectClassArray = new Array<T>();
 
-    if (JsonConverter.isArray(simpleObj)) {
+    if (JsonConverterService.isArray(simpleObj)) {
       (simpleObj as Array<any>).forEach(schemaRecord => {
         const schemaItem = this.convertOneObject(schemaRecord, clazz);
         retObjectClassArray.push(schemaItem);
@@ -84,10 +90,17 @@ export class JsonConverterService {
           }
           const jsonPropertyValue = simpleObj[jsonPropertyName];
           if (jsonPropertyValue != null && jsonPropertyValue !== null &&
-          typeof jsonPropertyValue !== 'undefined') {
-            if (propertyConversion.conversionFunction) {
-              retObjectClass[propertyName] =
-                propertyConversion.conversionFunction(jsonPropertyValue);
+            typeof jsonPropertyValue !== 'undefined') {
+            if (propertyConversion.conversionFunctionName && this.conversionFunctions) {
+              const conversionFunction =
+                this.conversionFunctions[propertyConversion.conversionFunctionName];
+              if (conversionFunction) {
+                retObjectClass[propertyName] = conversionFunction(jsonPropertyValue);
+              } else {
+                console.error('Couldn\'t find conversion function named : ' +
+                  propertyConversion.conversionFunctionName);
+              }
+
             } else {
               retObjectClass[propertyName] = jsonPropertyValue;
             }
@@ -115,7 +128,7 @@ export class JsonConverterService {
 class PropertyConversion {
   propertyName: string;
   propertyNameInJson?: string;
-  conversionFunction?: (source: any) => any;
+  conversionFunctionName?: string;
 }
 
 class ConversionSchema {
@@ -131,4 +144,13 @@ class ConversionSchema {
   hasSpecificConversions(): boolean {
     return this.propertyConversionArray && this.propertyConversionArray.length > 0;
   }
+}
+
+// noinspection TsLint
+export type ConversionFunctionsType = { [key: string]: (source: any) => any } ;
+
+export interface JsonConverterConfigurationInterface {
+  getConfigurationFilePath: () => string;
+  conversionFunctions: ConversionFunctionsType;
+  converterMainMethodOverride: <T>(simpleObj: any, clazz: { new(): T }) => Array<T>;
 }

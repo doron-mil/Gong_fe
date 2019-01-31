@@ -21,6 +21,11 @@
       {
         "propertyName": "days",
         "propertyNameInJson": "days_count"
+      },
+      {
+        "propertyName": "routine",
+        "propertyNameInJson": "course_agenda",
+        "conversionFunctionName": "agendaConversion"
       }
     ]
   },
@@ -35,7 +40,8 @@
         "propertyNameInJson": "course_name"
       },
       {
-        "propertyName": "date"
+        "propertyName": "date",
+        "conversionFunctionName": "dateConversion"
       }
     ]
   },

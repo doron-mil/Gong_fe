@@ -1,6 +1,17 @@
 {
   "none": "ללא",
   "general": {
+    "dropdowns": {
+      "gongType": {
+        "label": "סוג",
+        "values": {
+          "long": "צלצול ארוך",
+          "short": "צלצול קצר",
+          "single": "צלצול יחיד",
+          "chanting": "שיר"
+        }
+      }
+    },
     "header": {
       "information": "כותרת מתורגמת",
       "details": "כותרת שניה"
@@ -55,14 +66,18 @@
       },
       "courseName": {
         "10_day_course": "10 ימים",
+        "test": "זהו תרגיל",
         "satipattana": "סאטיפטהאנה"
       }
-    },"selectedCourseTable": {
+    },
+    "selectedCourseTable": {
       "headers": {
+        "day": "יום",
+        "date": "תאריך",
         "isOn": "פעיל",
-        "day": "יום/תאריך",
         "time": "זמן הצלצול",
-        "gongType": "סוג הצלצול"
+        "gongType": "סוג הצלצול",
+        "area": "מקום"
       }
     },
     "buttons": {

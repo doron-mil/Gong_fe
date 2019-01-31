@@ -1,9 +1,6 @@
-import {ScheduledCourseDay} from './ScheduledCourseDay';
-
 export class CourseSchedule {
   id: number;
   name: string;
-  date: string;
+  date: Date;
   daysCount: number;
-  daysArray: ScheduledCourseDay[];
 }
