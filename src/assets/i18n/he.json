@@ -1,14 +1,22 @@
 {
   "none": "ללא",
   "general": {
-    "dropdowns": {
+    "typesValues": {
       "gongType": {
-        "label": "סוג",
         "values": {
           "long": "צלצול ארוך",
           "short": "צלצול קצר",
           "single": "צלצול יחיד",
           "chanting": "שיר"
+        }
+      },
+      "areas": {
+        "values": {
+          "all": "כל האיזורים",
+          "workers": "עובדים",
+          "hall": "אולם",
+          "dining": "חדר אוכל",
+          "outside": "בחוץ"
         }
       }
     },

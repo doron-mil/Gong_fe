@@ -5,19 +5,20 @@ export function generalReducer(state: MainState = INITIAL_GENERAL_STATE, action:
 
   switch (action.type) {
     case SET_GONG_TYPES:
-      state.gongTypes = action.payload.data;
-      return state;
+      // state.gongTypes = action.payload.data;
+      return Object.assign({}, state, {gongTypes: action.payload.data});
     case SET_AREAS:
-      state.areas = action.payload;
-      return state;
+      // state.areas = action.payload;
+      return Object.assign({}, state, {areas: action.payload});
     case SET_COURSES:
-      state.courses = action.payload;
-      return state;
+      // state.courses = action.payload;
+      return Object.assign({}, state, {courses: action.payload});
     case SET_COURSES_SCHEDULE:
-      state.coursesSchedule = action.payload;
-      return state;
+      // state.coursesSchedule = action.payload;
+      return Object.assign({}, state, {coursesSchedule: action.payload});
     default:
-      return state;
+      return Object.assign({}, state);
+      ;
   }
 }
 

@@ -33,8 +33,8 @@ export class ManualActivationComponent implements OnInit {
       areaSelect: new FormControl('')
     });
 
-    this.ngRedux.subscribe(() => {
-      const state = this.ngRedux.getState().general;
+    this.ngRedux.select(StoreDataTypeEnum.GENERAL).subscribe((state:MainState) => {
+      // const state = this.ngRedux.getState().general;
       const areasFromStore = (state as MainState).areas;
       if (areasFromStore) {
         this.areas = areasFromStore.filter((value: Area) => value.id !== 0);

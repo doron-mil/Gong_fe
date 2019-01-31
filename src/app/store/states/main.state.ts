@@ -4,11 +4,16 @@ import {CourseSchedule} from '../../model/courseSchedule';
 import {GongType} from '../../model/gongType';
 
 
-export class MainState {
+export interface MainState {
   gongTypes: GongType[];
   areas: Area[];
   courses: Course[];
   coursesSchedule: CourseSchedule[];
 }
 
-export const INITIAL_GENERAL_STATE = new MainState();
+export const INITIAL_GENERAL_STATE :MainState = {
+  gongTypes: [],
+  areas: [],
+  courses: [],
+  coursesSchedule: []
+};

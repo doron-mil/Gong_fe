@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {NgRedux} from '@angular-redux/store';
 import {MainState} from '../../store/states/main.state';
@@ -6,13 +6,16 @@ import {Area} from '../../model/area';
 import {Course} from '../../model/course';
 import {MatTableDataSource} from '@angular/material';
 import {ScheduledGong} from '../../model/ScheduledGong';
+import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
+import {Subscription} from 'rxjs';
+import {Unsubscribe} from 'redux';
 
 @Component({
   selector: 'app-automatic-activation',
   templateUrl: './automatic-activation.component.html',
   styleUrls: ['./automatic-activation.component.css']
 })
-export class AutomaticActivationComponent implements OnInit {
+export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   conversionGongTypesMap: { [key: number]: string; } = {};
 
@@ -26,13 +29,13 @@ export class AutomaticActivationComponent implements OnInit {
   selectedCourseDataSource: MatTableDataSource<ScheduledGong>;
   selectedCourseRoutineArray: ScheduledGong[] = [];
 
+  subscription: Subscription;
+
   constructor(private ngRedux: NgRedux<any>) {
   }
 
   ngOnInit() {
-    this.ngRedux.subscribe(() => {
-      const state = this.ngRedux.getState().general;
-      const mainState = state as MainState;
+    this.subscription = this.ngRedux.select(StoreDataTypeEnum.GENERAL).subscribe((mainState: MainState) => {
       const courses = mainState.courses;
       const coursesSchedule = mainState.coursesSchedule;
 
@@ -102,5 +105,9 @@ export class AutomaticActivationComponent implements OnInit {
       console.error('couldn\'t find course name : ' + selectedCourseName);
     }
 
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }

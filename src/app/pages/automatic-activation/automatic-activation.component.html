@@ -100,7 +100,7 @@
           {{ 'automaticActivation.selectedCourseTable.headers.gongType' | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
-          {{'general.dropdowns.gongType.values.' + element.gongTypeName | translate }}
+          {{'general.typesValues.gongType.values.' + element.gongTypeName | translate }}
         </td>
       </ng-container>
 
@@ -110,7 +110,7 @@
           {{ 'automaticActivation.selectedCourseTable.headers.area' | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
-          {{ element.areas }}
+          <app-selected-areas [selectedAreas]="element.areas" ></app-selected-areas>
         </td>
       </ng-container>
 

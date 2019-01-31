@@ -24,6 +24,7 @@ import {AutomaticActivationComponent} from './pages/automatic-activation/automat
 import {JsonConverterService} from './Utils/json-converter/json-converter.service';
 import {JsonConverterModule} from './Utils/json-converter/json-converter.module';
 import {JsonConversionFunctions} from './Utils/jsonConversionFunctions';
+import { SelectedAreasComponent } from './components/selected-areas/selected-areas.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -43,7 +44,8 @@ export const translationRoot = {
     TestPage1Component,
     TestPage2Component,
     ManualActivationComponent,
-    AutomaticActivationComponent
+    AutomaticActivationComponent,
+    SelectedAreasComponent
   ],
   imports: [
     BrowserModule,

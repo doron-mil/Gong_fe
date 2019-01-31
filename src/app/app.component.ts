@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import axios from 'axios';
 import {NgRedux} from '@angular-redux/store';
 import {readToStoreData} from './store/actions/action';
 import {MatSlideToggleChange} from '@angular/material';
@@ -17,6 +16,7 @@ export class AppComponent implements OnInit {
   isManual = true;
 
   constructor(private ngRedux: NgRedux<any>,
+              // private storeService: StoreService,
               private router: Router,
               translate: TranslateService) {
     translate.get('general.header.information', {}).subscribe((res: string) => {
@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
 
   private readToStore() {
     this.ngRedux.dispatch(readToStoreData());
+    // this.storeService.getAreasMap();
   }
 
   clickTest1() {
