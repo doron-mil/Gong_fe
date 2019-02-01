@@ -1,3 +1,6 @@
-<span [title]="areasDisplayResult">
+<span [title]="areasDisplayResult" [class]="className" *ngIf="className">
+  {{areasDisplayResult}}
+</span>
+<span [title]="areasDisplayResult" *ngIf="!className">
   {{areasDisplayResult}}
 </span>

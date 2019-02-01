@@ -12,6 +12,7 @@ import {StoreService} from '../../services/store.service';
 export class SelectedAreasComponent implements OnInit, OnChanges {
 
   @Input() selectedAreas: number[];
+  @Input() className: string;
   areasDisplayResult: string;
 
   constructor(private storeService: StoreService) {

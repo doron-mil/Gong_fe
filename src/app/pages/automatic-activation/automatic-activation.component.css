@@ -1,26 +1,54 @@
+body {
+  /*position: relative;*/
+  /*height: auto;*/
+  /*max-height: 100% !important;*/
+}
+
 .highlight {
   background: red;
 }
 
-.courses-display-container{
+.btn-group {
+  margin: 10px;
+}
+
+.courses-display-container {
   display: flex;
   flex-direction: row;
-  /*justify-content: space-evenly;*/
+  justify-content: space-evenly;
+  height: 90%;
 }
 
-
-.main-table-container{
-  width: 40%;
+.main-table-container {
+  width: 38%;
+  overflow: auto;
 }
 
-.selected-course-display-container{
-  width: 60%;
-
+.selected-course-display-container {
+  width: 58%;
+  overflow: auto;
 }
 
 th, td {
   vertical-align: top;
-  border-right: 1px solid rgba(0,0,0,.12);
-  padding-left: 16px !important;
+  border-right: 1px solid rgba(0, 0, 0, .12);
+  /*padding-left: 16px !important;*/
   padding-top: 14px !important;
+  text-align: center !important;
+}
+
+th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
+  padding-left: 0px;
+}
+
+.areaTd {
+  width: 20% !important;
+}
+
+.gongTypeTd {
+  width: 20%;
+}
+
+.dayTd{
+  border-right: none;
 }

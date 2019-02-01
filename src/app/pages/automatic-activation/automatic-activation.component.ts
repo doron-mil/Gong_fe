@@ -41,7 +41,6 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     this.subscription = mergedObservable.subscribe(mergedResult => {
       const coursesSchedule: CourseSchedule[] = mergedResult[0];
       const coursesMap: { [key: string]: Course } = mergedResult[1];
-      console.log( 'aaa')
       if (coursesSchedule && coursesMap) {
         coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
           courseSchedule.daysCount = coursesMap[courseSchedule.name].days;
@@ -107,5 +106,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  gongToggle() {
+    return undefined;
   }
 }
