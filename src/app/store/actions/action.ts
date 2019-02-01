@@ -19,8 +19,6 @@ export interface AppAction extends Action {
   payload: any;
 }
 
-
-
 // action creators
 export const readToStoreData = () => ({
   type: `READ_TO_STORE_DATA`

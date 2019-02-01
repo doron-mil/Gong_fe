@@ -22,29 +22,26 @@ export class SelectedAreasComponent implements OnInit, OnChanges {
   }
 
   computeDisplay() {
-    const areasMap = this.storeService.getAreasMap();
+    this.storeService.getAreasMap().subscribe((areasMap: Area[]) => {
+      this.areasDisplayResult = '';
 
-    this.areasDisplayResult = '';
-        // console.log('cccc', areasMap);
-
-    if (areasMap && areasMap.length > 0 && this.selectedAreas && this.selectedAreas.length > 0) {
-      const areasCount = areasMap.length;
-      if (this.selectedAreas.includes(0) ||
-        this.selectedAreas.length >= areasMap.length - 1) {
-        this.areasDisplayResult = areasMap[0].translation;
-      } else {
-        this.selectedAreas.forEach((value, index) => {
-          this.areasDisplayResult += ((index > 0) ? ',' : '') + areasMap[value].translation;
-        });
+      if (areasMap && areasMap.length > 0 && this.selectedAreas && this.selectedAreas.length > 0) {
+        const areasCount = areasMap.length;
+        if (this.selectedAreas.includes(0) ||
+          this.selectedAreas.length >= areasMap.length - 1) {
+          this.areasDisplayResult = areasMap[0].translation;
+        } else {
+          this.selectedAreas.forEach((value, index) => {
+            this.areasDisplayResult += ((index > 0) ? ',' : '') + areasMap[value].translation;
+          });
+        }
       }
-    }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log('aaaa', changes);
     this.selectedAreas = changes.selectedAreas.currentValue;
     this.computeDisplay();
-    // console.log('bbbbb', this.areasDisplayResult);
   }
 
 }

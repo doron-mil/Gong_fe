@@ -2,11 +2,11 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Gong} from '../../model/gong';
 import {GongType} from '../../model/gongType';
 import {Area} from '../../model/area';
-import {NgRedux} from '@angular-redux/store';
 import {MainState} from '../../store/states/main.state';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {MatOption, MatOptionSelectionChange} from '@angular/material';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {StoreService} from '../../services/store.service';
 
 @Component({
   selector: 'app-manual-activation',
@@ -24,7 +24,7 @@ export class ManualActivationComponent implements OnInit {
   areas: Area[];
   areasMap: Area[] = [];
 
-  constructor(private ngRedux: NgRedux<any>,
+  constructor(private storeService: StoreService,
               private fb: FormBuilder) {
   }
 
@@ -33,11 +33,9 @@ export class ManualActivationComponent implements OnInit {
       areaSelect: new FormControl('')
     });
 
-    this.ngRedux.select(StoreDataTypeEnum.GENERAL).subscribe((state:MainState) => {
-      // const state = this.ngRedux.getState().general;
-      const areasFromStore = (state as MainState).areas;
-      if (areasFromStore) {
-        this.areas = areasFromStore.filter((value: Area) => value.id !== 0);
+    this.storeService.getAreasMap().subscribe(areasMap => {
+      if (areasMap && areasMap.length > 0) {
+        this.areas = areasMap.filter((value: Area) => value.id !== 0);
         this.areas.forEach((area: Area) => this.areasMap[area.id] = area);
       }
     });

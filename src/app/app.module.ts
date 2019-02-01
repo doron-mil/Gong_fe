@@ -25,6 +25,8 @@ import {JsonConverterService} from './Utils/json-converter/json-converter.servic
 import {JsonConverterModule} from './Utils/json-converter/json-converter.module';
 import {JsonConversionFunctions} from './Utils/jsonConversionFunctions';
 import { SelectedAreasComponent } from './components/selected-areas/selected-areas.component';
+import {dynamicDataReducer} from './store/reducers/dynamic.data.reducer';
+import {staticDataReducer} from './store/reducers/static.data.reducer';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -93,6 +95,8 @@ export class AppModule {
     // ***********************************************
     const rootReducer = combineReducers({
       [StoreDataTypeEnum.GENERAL]: generalReducer,
+      [StoreDataTypeEnum.STATIC_DATA]: staticDataReducer,
+      [StoreDataTypeEnum.DYNAMIC_DATA]: dynamicDataReducer,
     });
 
     // ************* Store Creation ******************

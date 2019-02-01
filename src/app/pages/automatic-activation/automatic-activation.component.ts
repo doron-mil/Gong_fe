@@ -1,14 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {NgRedux} from '@angular-redux/store';
-import {MainState} from '../../store/states/main.state';
-import {Area} from '../../model/area';
 import {Course} from '../../model/course';
 import {MatTableDataSource} from '@angular/material';
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
-import {Subscription} from 'rxjs';
-import {Unsubscribe} from 'redux';
+import {combineLatest, Subscription} from 'rxjs';
+import {StoreService} from '../../services/store.service';
+import {GongType} from '../../model/gongType';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -17,12 +16,9 @@ import {Unsubscribe} from 'redux';
 })
 export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
-  conversionGongTypesMap: { [key: number]: string; } = {};
-
   coursesDisplayedColumns = ['course_name', 'daysCount', 'date'];
   coursesDataSource: MatTableDataSource<CourseSchedule>;
   coursesData: CourseSchedule[] = [];
-  coursesMap: Course[] = [];
   selectedRowIndex: number = -1;
 
   selectedCourseDisplayedColumns = ['day', 'date', 'isOn', 'time', 'gongType', 'area'];
@@ -31,40 +27,29 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
 
-  constructor(private ngRedux: NgRedux<any>) {
+  constructor(private ngRedux: NgRedux<any>,
+              private storeService: StoreService) {
   }
 
   ngOnInit() {
-    this.subscription = this.ngRedux.select(StoreDataTypeEnum.GENERAL).subscribe((mainState: MainState) => {
-      const courses = mainState.courses;
-      const coursesSchedule = mainState.coursesSchedule;
+    const mergedObservable =
+      combineLatest(
+        this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule']),
+        this.storeService.getCoursesMap()
+      );
 
-      this.coursesMap = [];
-      this.coursesData = [];
-      if (courses) {
-        courses.forEach(course => this.coursesMap[course.name] = course);
-      }
-      if (coursesSchedule && courses) {
-
+    this.subscription = mergedObservable.subscribe(mergedResult => {
+      const coursesSchedule: CourseSchedule[] = mergedResult[0];
+      const coursesMap: { [key: string]: Course } = mergedResult[1];
+      console.log( 'aaa')
+      if (coursesSchedule && coursesMap) {
         coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
-          courseSchedule.daysCount = this.coursesMap[courseSchedule.name].days;
+          courseSchedule.daysCount = coursesMap[courseSchedule.name].days;
           this.coursesData.push(courseSchedule);
         });
         this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
       }
-
-      this.conversionGongTypesMap = {};
-      if (mainState.gongTypes) {
-        mainState.gongTypes.forEach(gong => {
-          this.conversionGongTypesMap[gong.id] = gong.name;
-        });
-      }
     });
-
-  }
-
-  addCourse() {
-
   }
 
   onRowClick(row): void {
@@ -76,38 +61,51 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     const selectedCourseStartDate = selectedCourseScheduled.date;
     const selectedCourseName = selectedCourseScheduled.name;
 
-    const mainState = this.ngRedux.getState().general as MainState;
-    const courses = mainState.courses;
+    const mergedObservable =
+      combineLatest(
+        this.storeService.getCoursesMap(),
+        this.storeService.getGongTypesMap()
+      );
 
-    const foundCourse = courses.find(course => course.name === selectedCourseName);
+    this.subscription = mergedObservable.subscribe(mergedResult => {
+      const courseMap: { [key: string]: Course } = mergedResult[0];
+      const gongTypesMap: GongType[] = mergedResult[1];
 
-    this.selectedCourseRoutineArray = [];
-    if (foundCourse) {
-      let lastScheduledGongReord: ScheduledGong = new ScheduledGong();
-      foundCourse.routine.forEach(course => {
-        const copiedCourse = course.cloneForUi(selectedCourseStartDate);
+      const foundCourse = courseMap[selectedCourseName];
 
-        copiedCourse.gongTypeName = this.conversionGongTypesMap[copiedCourse.gongTypeId];
+      this.selectedCourseRoutineArray = [];
+      if (foundCourse) {
+        let lastScheduledGongReord: ScheduledGong = new ScheduledGong();
+        foundCourse.routine.forEach(course => {
+          const copiedCourse = course.cloneForUi(selectedCourseStartDate);
 
-        if (copiedCourse.dayNumber !== lastScheduledGongReord.dayNumber) {
-          lastScheduledGongReord = copiedCourse;
-          lastScheduledGongReord.span = 1;
-        } else {
-          copiedCourse.span = 0;
-          lastScheduledGongReord.span++;
-        }
+          copiedCourse.gongTypeName = gongTypesMap[copiedCourse.gongTypeId].name;
 
-        this.selectedCourseRoutineArray.push(copiedCourse);
-      });
-      this.selectedCourseDataSource = new MatTableDataSource<ScheduledGong>(this.selectedCourseRoutineArray);
+          if (copiedCourse.dayNumber !== lastScheduledGongReord.dayNumber) {
+            lastScheduledGongReord = copiedCourse;
+            lastScheduledGongReord.span = 1;
+          } else {
+            copiedCourse.span = 0;
+            lastScheduledGongReord.span++;
+          }
 
-    } else {
-      console.error('couldn\'t find course name : ' + selectedCourseName);
-    }
+          this.selectedCourseRoutineArray.push(copiedCourse);
+        });
+        this.selectedCourseDataSource = new MatTableDataSource<ScheduledGong>(this.selectedCourseRoutineArray);
+
+      } else {
+        console.error('couldn\'t find course name : ' + selectedCourseName);
+      }
+    });
+  }
+
+  addCourse() {
 
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }
