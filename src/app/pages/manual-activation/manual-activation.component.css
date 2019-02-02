@@ -1,0 +1,79 @@
+.manualMainContainer {
+  height: 100%;
+}
+
+.manualMainContainer, .manualControlsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.manualControlsContainer {
+  width: 40%;
+}
+
+.manualScheduleContainer {
+  width: 60%;
+
+}
+
+.manualFirstColumnContainer {
+  flex-grow: 4;
+}
+
+.manualSecondColumnContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /*justify-content: space-evenly;*/
+
+}
+
+.volumeSelectionContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3vh;
+  height: 70%;
+  width: 10vw;
+}
+
+.volumeSliderContainer {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.sliderClass {
+  height: 90%;
+}
+
+.gongTypeSelectionContainer, .areaSelectionContainer {
+  width: 25vw;
+  padding-left: 3vw;
+  padding-top: 3vh;
+}
+
+.selectedGongTypeClass {
+  color: white;
+  background-color: dodgerblue;
+}
+
+.containerHeader {
+  text-align: center;
+  padding-bottom: 1vh;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+.manualButton{
+  margin: 1vw 1vh;
+}
+
+::ng-deep .mat-list .mat-list-item.center .mat-list-item-content{
+      justify-content: center;
+}

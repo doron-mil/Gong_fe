@@ -51,30 +51,32 @@ export class StoreService implements OnInit, OnDestroy {
 
   private populateGongTypesMap() {
     const gongTypeSubscription =
-      this.ngRedux.select<GongType[]>([StoreDataTypeEnum.STATIC_DATA, 'gongTypes']).subscribe((gongTypes: GongType[]) => {
-        if (gongTypes && gongTypes.length > 0) {
-          this.gongTypesMap = [];
-          gongTypes.forEach((gongType: GongType) => {
-            this.gongTypesMap[gongType.id] = gongType;
-          });
-        }
-        this.gongTypesMapObservable.next(this.gongTypesMap);
-      });
+      this.ngRedux.select<GongType[]>([StoreDataTypeEnum.STATIC_DATA, 'gongTypes'])
+        .subscribe((gongTypes: GongType[]) => {
+          if (gongTypes && gongTypes.length > 0) {
+            this.gongTypesMap = new Array();
+            gongTypes.forEach((gongType: GongType) => {
+              this.gongTypesMap[gongType.id] = gongType;
+            });
+          }
+          this.gongTypesMapObservable.next(this.gongTypesMap);
+        });
 
     this.subscriptionsArray.push(gongTypeSubscription);
   }
 
   private populateGongTypeCoursesMap() {
     const coursesSubscription =
-      this.ngRedux.select<Course[]>([StoreDataTypeEnum.STATIC_DATA, 'courses']).subscribe((courses: Course[]) => {
-        if (courses && courses.length > 0) {
-          this.coursesMap = {};
-          courses.forEach((course: Course) => {
-            this.coursesMap[course.name] = course;
-          });
-        }
-        this.coursesMapObservable.next(this.coursesMap);
-      });
+      this.ngRedux.select<Course[]>([StoreDataTypeEnum.STATIC_DATA, 'courses'])
+        .subscribe((courses: Course[]) => {
+          if (courses && courses.length > 0) {
+            this.coursesMap = {};
+            courses.forEach((course: Course) => {
+              this.coursesMap[course.name] = course;
+            });
+          }
+          this.coursesMapObservable.next(this.coursesMap);
+        });
 
     this.subscriptionsArray.push(coursesSubscription);
   }

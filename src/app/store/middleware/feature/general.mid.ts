@@ -14,6 +14,7 @@ import {Injectable} from '@angular/core';
 import {Area} from '../../../model/area';
 import {CourseSchedule} from '../../../model/courseSchedule';
 import {Course} from '../../../model/course';
+import {GongType} from '../../../model/gongType';
 
 export const BASIC_URL = 'http://localhost:8081/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -46,8 +47,9 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${GONG_TYPES_FEATURE} ${API_SUCCESS}`:
+        const gongsTypesArray = this.jsonConverterService.convert(action.payload.data, GongType);
         next(
-          setGongTypes(action.payload)
+          setGongTypes(gongsTypesArray)
         );
         break;
       case `${AREA_FEATURE} ${API_SUCCESS}`:

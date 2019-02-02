@@ -14,10 +14,18 @@
   flex-direction: row;
 }
 
+.matTabGroupClass{
+  height: 100%;
+}
+
 .btn-group {
   padding: 0px 5px;
 }
 
 .toggle-container{
   width: 20%;
+}
+
+::ng-deep .mat-tab-body-wrapper{
+  height: 100%;
 }

@@ -1,50 +1,74 @@
-<div>
-  {{ 'manualActivation.dropdowns.gongType.label' | translate }} :
+<div class="manualMainContainer">
 
-  <div class="dropdown">
-    <mat-form-field>
-      <mat-select [(value)]="gongToPlay.type">
-        <mat-option *ngFor="let gongType of gongTypes" [value]="gongType.id">
-          {{'general.dropdowns.gongType.values.' + gongType.name | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div class="manualControlsContainer">
+
+    <div class="manualFirstColumnContainer">
+
+      <div class="gongTypeSelectionContainer">
+        <div class="containerHeader">
+          {{ 'manualActivation.dropdowns.gongType.label' | translate }}
+        </div>
+
+        <div class="mat-elevation-z8">
+          <mat-list>
+            <mat-list-item *ngFor="let gongType of gongTypes" class="center"
+                           [ngClass]="{selectedGongTypeClass: gongType === gongToPlay.type}"
+                           (click)="gongToPlay.type = gongType" style="cursor: pointer">
+              <span style="text-align: center">
+                {{'general.typesValues.gongType.values.' + gongType?.name | translate }}
+              </span>
+            </mat-list-item>
+          </mat-list>
+        </div>
+      </div><!--End of gongTypeSelectionContainer-->
+
+      <div class="areaSelectionContainer">
+        <div class="containerHeader">
+          {{ 'manualActivation.dropdowns.areas.label' | translate }}
+        </div>
+
+        <div class="mat-elevation-z8">
+          <mat-selection-list #areasSelectionCtrl [(ngModel)]="selectedAreaOptions">
+            <mat-list-option [value]="0" #allAreasSelectionCtrl>
+              {{'manualActivation.dropdowns.areas.values.all' | translate }}
+            </mat-list-option>
+            <mat-divider></mat-divider>
+            <mat-list-option *ngFor="let area of areas" [value]="area.id">
+              {{'manualActivation.dropdowns.areas.values.' + area.name | translate }}
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+      </div><!--End of areaSelectionContainer-->
+
+
+    </div><!--End of manualFirstColumnContainer-->
+
+    <div class="manualSecondColumnContainer">
+      <div class="volumeSelectionContainer">
+        <div class="containerHeader">
+          {{ 'manualActivation.labels.volume' | translate }}
+        </div>
+
+        <div class="mat-elevation-z8 volumeSliderContainer">
+          <mat-slider thumbLabel vertical min="1" tickInterval="1"
+                      [(value)]="gongToPlay.volume" class="sliderClass">
+
+          </mat-slider>
+        </div>
+      </div><!--End of volumeSelectionContainer-->
+
+      <div class="btn-group">
+        <button mat-fab color="accent" (click)="playGong()" class="manualButton">
+          {{ 'manualActivation.buttons.play' | translate }}
+        </button>
+         <button mat-fab color="primary" (click)="playGong()" class="manualButton">
+          {{ 'manualActivation.buttons.schedulePlay' | translate }}
+        </button>
+      </div>
+
+
+    </div><!--End of manualSecondColumnContainer-->
   </div>
-</div>
-
-
-<div>
-  {{ 'manualActivation.dropdowns.areas.label' | translate }} :
-
-  <div class="dropdown" [formGroup]="areaSelectGroup">
-    <mat-form-field>
-      <mat-select multiple formControlName="areaSelect"
-                  (selectionChange)="onAreaChange($event)"
-                  disableOptionCentering="true">
-        <mat-select-trigger>
-          <app-selected-areas [selectedAreas]="areaSelectGroup.get('areaSelect').value" ></app-selected-areas>
-        </mat-select-trigger>
-        <mat-option #allSelected [value]="0"
-                    (click)="onAllAreaChange($event)" >
-          {{'manualActivation.dropdowns.areas.values.all' | translate }}
-        </mat-option>
-        <mat-option *ngFor="let area of areas" [value]="area.id"
-                    (click)="onAreaOptionChange($event)">
-          {{'manualActivation.dropdowns.areas.values.' +
-          area.name | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div class="manualScheduleContainer">
   </div>
-</div>
-
-<div>
-  {{ 'manualActivation.labels.volume' | translate }} :
-  <mat-slider thumbLabel min="1" tickInterval="1"
-              [(value)]="gongToPlay.volume"></mat-slider>
-</div>
-<div class="btn-group">
-  <button mat-raised-button color="accent" (click)="playGong()">
-    {{ 'manualActivation.buttons.play' | translate }}
-  </button>
 </div>

@@ -3,6 +3,9 @@ body {
   /*height: auto;*/
   /*max-height: 100% !important;*/
 }
+.automaticActivationContainer{
+  height: 98%;
+}
 
 .highlight {
   background: red;

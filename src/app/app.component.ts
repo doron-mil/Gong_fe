@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   title = 'app';
 
   isManual = true;
+  activeLink = 1;
 
   constructor(private ngRedux: NgRedux<any>,
               // private storeService: StoreService,

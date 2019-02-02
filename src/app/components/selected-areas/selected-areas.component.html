@@ -1,6 +1,7 @@
-<span [title]="areasDisplayResult" [class]="className" *ngIf="className">
+<span matTooltip="areasDisplayResult" [class]="className" *ngIf="className">
   {{areasDisplayResult}}
 </span>
-<span [title]="areasDisplayResult" *ngIf="!className">
+<span matTooltip="{{areasDisplayResult}}" matTooltipClass="tooltipClass"
+      *ngIf="!className">
   {{areasDisplayResult}}
 </span>

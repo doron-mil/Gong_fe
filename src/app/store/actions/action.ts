@@ -2,6 +2,7 @@ import {Action} from 'redux';
 import {Area} from '../../model/area';
 import {Course} from '../../model/course';
 import {CourseSchedule} from '../../model/courseSchedule';
+import {GongType} from '../../model/gongType';
 
 export const GONG_TYPES_FEATURE = '[GONG_TYPES]';
 export const AREA_FEATURE = '[AREA]';
@@ -24,9 +25,9 @@ export const readToStoreData = () => ({
   type: `READ_TO_STORE_DATA`
 });
 
-export const setGongTypes = (GongTypes: Area[]) => ({
+export const setGongTypes = (gongTypes: GongType[]) => ({
   type: SET_GONG_TYPES,
-  payload: GongTypes,
+  payload: gongTypes,
   meta: {feature: GONG_TYPES_FEATURE}
 });
 
