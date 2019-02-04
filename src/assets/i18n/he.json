@@ -23,6 +23,16 @@
     "header": {
       "information": "כותרת מתורגמת",
       "details": "כותרת שניה"
+    },
+    "tableHeaders": {
+      "gongsTimeTable": {
+        "day": "יום",
+        "date": "תאריך",
+        "isOn": "פעיל",
+        "time": "זמן הצלצול",
+        "gongType": "סוג הצלצול",
+        "area": "מקום"
+      }
     }
   },
   "main": {
@@ -68,6 +78,9 @@
     "buttons": {
       "play": "נגן",
       "schedulePlay": "תזמן"
+    },
+    "messages":{
+      "areaIsEmpty" : "יש לבחור לפחות איזור אחד"
     }
   },
   "automaticActivation": {
@@ -94,7 +107,9 @@
       }
     },
     "buttons": {
-      "add": "הוסף קורס"
+      "addCourse": "הוסף קורס",
+      "removeCourse": "מחק קורס",
+      "updateCourse": "עדכן קורס"
     }
   }
 }

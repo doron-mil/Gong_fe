@@ -21,12 +21,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ManualActivationComponent} from './pages/manual-activation/manual-activation.component';
 import {MaterialModule} from './material/material.module';
 import {AutomaticActivationComponent} from './pages/automatic-activation/automatic-activation.component';
-import {JsonConverterService} from './Utils/json-converter/json-converter.service';
 import {JsonConverterModule} from './Utils/json-converter/json-converter.module';
 import {JsonConversionFunctions} from './Utils/jsonConversionFunctions';
-import { SelectedAreasComponent } from './components/selected-areas/selected-areas.component';
+import {SelectedAreasComponent} from './components/selected-areas/selected-areas.component';
 import {dynamicDataReducer} from './store/reducers/dynamic.data.reducer';
 import {staticDataReducer} from './store/reducers/static.data.reducer';
+import {GongsTimeTableComponent} from './components/gongs-time-table/gongs-time-table.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -47,7 +47,8 @@ export const translationRoot = {
     TestPage2Component,
     ManualActivationComponent,
     AutomaticActivationComponent,
-    SelectedAreasComponent
+    SelectedAreasComponent,
+    GongsTimeTableComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +60,7 @@ export const translationRoot = {
     HttpClientModule,
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
-    JsonConverterModule.forRoot(JsonConversionFunctions.getInstance())
+    JsonConverterModule.forRoot(JsonConversionFunctions.getInstance()),
   ],
   providers: [GeneralMiddlewareService],
   bootstrap: [AppComponent]

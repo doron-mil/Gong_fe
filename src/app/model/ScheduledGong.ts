@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import {UpdateStatusEnum} from './updateStatusEnum';
 
 export class ScheduledGong {
   dayNumber: number;
@@ -7,7 +8,10 @@ export class ScheduledGong {
   gongTypeId: number;
   gongTypeName: string;
   areas: number[];
+  volume: number;
+  isActive: boolean;
   span: number;
+  updateStatus: UpdateStatusEnum;
 
   cloneForUi(courseStartDate: Date) {
     const clonedObject = new ScheduledGong();

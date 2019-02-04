@@ -1,7 +1,13 @@
 <div class="automaticActivationContainer">
   <div class="btn-group">
+    <button mat-raised-button color="primary" (click)="addCourse()">
+      {{ 'automaticActivation.buttons.addCourse' | translate }}
+    </button>
     <button mat-raised-button color="accent" (click)="addCourse()">
-      {{ 'automaticActivation.buttons.add' | translate }}
+      {{ 'automaticActivation.buttons.removeCourse' | translate }}
+    </button>
+    <button mat-raised-button color="basic" (click)="addCourse()">
+      {{ 'automaticActivation.buttons.updateCourse' | translate }}
     </button>
   </div>
 

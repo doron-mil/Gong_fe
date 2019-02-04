@@ -12,7 +12,7 @@
   width: 40%;
 }
 
-.manualScheduleContainer {
+.manualScheduledTableContainer {
   width: 60%;
 
 }
@@ -70,10 +70,28 @@
   margin: 10px;
 }
 
-.manualButton{
+.manualButton {
   margin: 1vw 1vh;
 }
 
-::ng-deep .mat-list .mat-list-item.center .mat-list-item-content{
-      justify-content: center;
+.datePickerContainer {
+  display: none;
+}
+
+::ng-deep .snackBarClass {
+  width: 50vw!important;
+}
+::ng-deep .snackBarClass .mat-simple-snackbar {
+  justify-content: center;
+}
+
+::ng-deep .mat-snack-bar-handset{
+  display: flex;
+  flex-direction: row;
+  align-content:center;
+  justify-content: center;
+}
+
+::ng-deep .mat-list .mat-list-item.center .mat-list-item-content {
+  justify-content: center;
 }

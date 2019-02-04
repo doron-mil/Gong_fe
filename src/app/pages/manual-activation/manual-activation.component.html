@@ -12,8 +12,8 @@
         <div class="mat-elevation-z8">
           <mat-list>
             <mat-list-item *ngFor="let gongType of gongTypes" class="center"
-                           [ngClass]="{selectedGongTypeClass: gongType === gongToPlay.type}"
-                           (click)="gongToPlay.type = gongType" style="cursor: pointer">
+                           [ngClass]="{selectedGongTypeClass: gongType.id === gongToPlay?.gongTypeId}"
+                           (click)="gongToPlay.gongTypeId = gongType.id" style="cursor: pointer">
               <span style="text-align: center">
                 {{'general.typesValues.gongType.values.' + gongType?.name | translate }}
               </span>
@@ -28,12 +28,12 @@
         </div>
 
         <div class="mat-elevation-z8">
-          <mat-selection-list #areasSelectionCtrl [(ngModel)]="selectedAreaOptions">
-            <mat-list-option [value]="0" #allAreasSelectionCtrl>
+          <mat-selection-list #areasSelectionCtrl [(ngModel)]="gongToPlay.areas">
+            <mat-list-option [value]="0" #allAreasSelectionCtrl >
               {{'manualActivation.dropdowns.areas.values.all' | translate }}
             </mat-list-option>
             <mat-divider></mat-divider>
-            <mat-list-option *ngFor="let area of areas" [value]="area.id">
+            <mat-list-option *ngFor="let area of areas" [value]="area.id" >
               {{'manualActivation.dropdowns.areas.values.' + area.name | translate }}
             </mat-list-option>
           </mat-selection-list>
@@ -58,17 +58,37 @@
       </div><!--End of volumeSelectionContainer-->
 
       <div class="btn-group">
+        <div class="datePickerContainer">
+
+          <md2-datepicker [(ngModel)]="chosenTime"
+                          [isOpen]="isScheduledDatePickerOpen"
+                          (onClose)="scheduledDateOnClose()"
+                          touchUi="true"
+                          type="datetime"
+                          [min]="scheduleGongStartDate"
+                          [startAt]="scheduleGongStartDate"
+                          style="top: 80px; height: 9vh; margin-top: 2vh;">
+
+          </md2-datepicker>
+        </div>
+
         <button mat-fab color="accent" (click)="playGong()" class="manualButton">
           {{ 'manualActivation.buttons.play' | translate }}
         </button>
-         <button mat-fab color="primary" (click)="playGong()" class="manualButton">
+        <button mat-fab color="primary" (click)="scheduleGong()" class="manualButton"
+                [disabled]="">
           {{ 'manualActivation.buttons.schedulePlay' | translate }}
         </button>
       </div>
 
 
     </div><!--End of manualSecondColumnContainer-->
-  </div>
-  <div class="manualScheduleContainer">
-  </div>
+
+  </div><!--End of manualControlsContainer-->
+
+  <div class="manualScheduledTableContainer">
+    <app-gongs-time-table [scheduledGongs]="scheduledGongsArray" [displayDay]="false">
+    </app-gongs-time-table>
+  </div><!--End of manualScheduledTableContainer-->
+
 </div>

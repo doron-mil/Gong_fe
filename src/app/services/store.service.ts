@@ -1,12 +1,13 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
 import {Area} from '../model/area';
-import {MainState} from '../store/states/main.state';
 import {TranslateService} from '@ngx-translate/core';
 import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
+import {addManualGong} from '../store/actions/action';
+import {ScheduledGong} from '../model/ScheduledGong';
 
 @Injectable({
   providedIn: 'root'
@@ -104,4 +105,7 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
 
+  addManualGong(gongToPlay: ScheduledGong) {
+    this.ngRedux.dispatch(addManualGong(gongToPlay));
+  }
 }

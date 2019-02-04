@@ -15,6 +15,10 @@ body {
   margin: 10px;
 }
 
+.btn-group button {
+  margin-right: 2vw;
+}
+
 .courses-display-container {
   display: flex;
   flex-direction: row;

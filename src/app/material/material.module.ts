@@ -6,9 +6,10 @@ import {
   MatFormFieldModule,
   MatInputModule, MatListModule,
   MatSelectModule,
-  MatSliderModule, MatSlideToggleModule, MatTableModule, MatTabsModule,
+  MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule,
   MatToolbarModule, MatTooltipModule
 } from '@angular/material';
+import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
 
 @NgModule({
   imports: [
@@ -25,6 +26,9 @@ import {
     MatTooltipModule,
     MatTabsModule,
     MatListModule,
+    Md2DatepickerModule,
+    MdNativeDateModule,
+    MatSnackBarModule,
   ],
   exports: [
     MatToolbarModule,
@@ -39,6 +43,8 @@ import {
     MatTooltipModule,
     MatTabsModule,
     MatListModule,
+    Md2DatepickerModule,
+    MatSnackBarModule,
   ],
 })
 export class MaterialModule {

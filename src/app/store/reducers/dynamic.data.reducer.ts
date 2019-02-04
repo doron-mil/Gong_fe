@@ -1,12 +1,29 @@
-import {AppAction, SET_COURSES_SCHEDULE} from '../actions/action';
+import {ADD_MANUAL_GONG, AppAction, SET_COURSES_SCHEDULE, UPDATE_MANUAL_GONG} from '../actions/action';
 import {DynamicDataState, INITIAL_DYNAMIC_DATA_STATE} from '../states/dynamic.data.state';
+import {Gong} from '../../model/gong';
+import {ScheduledGong} from '../../model/ScheduledGong';
 
 export function dynamicDataReducer(state: DynamicDataState = INITIAL_DYNAMIC_DATA_STATE,
-                               action: AppAction): any {
+                                   action: AppAction): any {
 
   switch (action.type) {
     case SET_COURSES_SCHEDULE:
       return Object.assign({}, state, {coursesSchedule: action.payload});
+    case ADD_MANUAL_GONG:
+      const newState = Object.assign({}, state);
+      newState.manualGongs = [...state.manualGongs];
+      newState.manualGongs.push(Object.assign({}, action.payload));
+      return newState;
+    case UPDATE_MANUAL_GONG:
+      const updatedGong = action.payload as ScheduledGong;
+      if (state.manualGongs) {
+        const foundGong = state.manualGongs.find(gong => gong.date === updatedGong.date);
+        if (foundGong) {
+          foundGong.isActive = updatedGong.isActive;
+          foundGong.updateStatus = updatedGong.updateStatus;
+        }
+      }
+      return Object.assign({}, state);
     default:
       return Object.assign({}, state);
   }

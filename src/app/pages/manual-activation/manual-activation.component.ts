@@ -1,63 +1,82 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Gong} from '../../model/gong';
 import {GongType} from '../../model/gongType';
 import {Area} from '../../model/area';
-import {MainState} from '../../store/states/main.state';
-import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
-import {MatListOption, MatOption, MatOptionSelectionChange, MatSelectionList, MatSelectionListChange} from '@angular/material';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar, MatTableDataSource} from '@angular/material';
 import {StoreService} from '../../services/store.service';
+import {ScheduledGong} from '../../model/ScheduledGong';
+import {TranslateService} from '@ngx-translate/core';
+import {UpdateStatusEnum} from '../../model/updateStatusEnum';
+import {NgRedux} from '@angular-redux/store';
+import {BehaviorSubject, combineLatest, Subscription} from 'rxjs';
+import {CourseSchedule} from '../../model/courseSchedule';
+import {Course} from '../../model/course';
+import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 
 @Component({
   selector: 'app-manual-activation',
   templateUrl: './manual-activation.component.html',
   styleUrls: ['./manual-activation.component.css']
 })
-export class ManualActivationComponent implements OnInit {
+export class ManualActivationComponent implements OnInit, OnDestroy {
 
   @ViewChild('allAreasSelectionCtrl') allSelectedOptionCtrl: MatListOption;
   @ViewChild('areasSelectionCtrl') areasSelectionCtrl: MatSelectionList;
 
-  gongToPlay: Gong = new Gong();
+  gongToPlay: ScheduledGong = new ScheduledGong();
   gongTypes: GongType[];
   areas: Area[];
   areasMap: Area[] = [];
 
-  selectedAreaOptions: number[] = [];
+  isScheduledDatePickerOpen: boolean;
+  chosenTime: Date;
+  scheduleGongStartDate: Date;
 
-  constructor(private storeService: StoreService,
-              private fb: FormBuilder) {
+  subscription: Subscription;
+  scheduledGongsArray: ScheduledGong[];
+
+  private isGongTypesArrayReady: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  constructor(private ngRedux: NgRedux<any>,
+              private changeDetectorRef: ChangeDetectorRef,
+              private storeService: StoreService,
+              private snackBar: MatSnackBar,
+              private translateService: TranslateService) {
   }
 
   ngOnInit() {
+    this.setOnScheduledGongsArrayChange();
+
+    this.setOnAreasSelectionChange();
+
+    this.constructGongTypesArray();
+    this.constructAreasArray();
+
+    this.gongToPlay.areas = [];
+    this.gongToPlay.volume = 100;
+    this.gongToPlay.isActive = true;
+    this.gongToPlay.updateStatus = UpdateStatusEnum.PENDING;
+  }
+
+  private setOnAreasSelectionChange() {
     this.areasSelectionCtrl.selectionChange.subscribe((s: MatSelectionListChange) => {
         if (s.option.value === 0) {
-          if (this.selectedAreaOptions.includes(0)) {
+          if (this.gongToPlay.areas.includes(0)) {
             this.areasSelectionCtrl.selectAll();
           } else {
             this.areasSelectionCtrl.deselectAll();
           }
         } else {
-          if (this.selectedAreaOptions.includes(s.option.value)) {
-            if (this.selectedAreaOptions.filter(value => value > 0).length >= this.areas.length) {
+          if (this.gongToPlay.areas.includes(s.option.value)) {
+            if (this.gongToPlay.areas.filter(value => value > 0).length >= this.areas.length) {
               this.areasSelectionCtrl.selectAll();
             }
-          } else if (this.selectedAreaOptions.includes(0)) {
+          } else if (this.gongToPlay.areas.includes(0)) {
             this.allSelectedOptionCtrl.toggle();
           }
         }
       }
     );
-
-    this.constructGongTypesArray();
-    this.constructAreasArray();
-
-    this.gongToPlay.type = new GongType();
-    this.gongToPlay.type.id = 1;
-    this.gongToPlay.areaIds = ['0'];
-    this.gongToPlay.volume = 100;
-
-    this.gongToPlay.isActive = true;
   }
 
   private constructGongTypesArray() {
@@ -65,6 +84,10 @@ export class ManualActivationComponent implements OnInit {
 
     this.storeService.getGongTypesMap().subscribe((gongTypesMap: GongType[]) => {
       this.gongTypes = gongTypesMap;
+      this.isGongTypesArrayReady.next(true);
+      if (this.gongTypes && this.gongTypes[0]) {
+        this.gongToPlay.gongTypeId = this.gongTypes[0].id;
+      }
     });
   }
 
@@ -72,12 +95,59 @@ export class ManualActivationComponent implements OnInit {
     this.storeService.getAreasMap().subscribe(areasMap => {
       if (areasMap && areasMap.length > 0) {
         this.areas = areasMap.filter((value: Area) => value.id !== 0);
-        this.areas.forEach((area: Area) => this.areasMap[area.id] = area);
+        this.areas.forEach((area: Area) => {
+          this.areasMap[area.id] = area;
+        });
+        this.changeDetectorRef.detectChanges();
+        this.areasSelectionCtrl.selectAll();
       }
     });
   }
 
   playGong() {
-    console.log('aaaaaaa', this.selectedAreaOptions);
+    console.log('aaaaaaa', this.gongToPlay.areas);
+  }
+
+  scheduleGong() {
+    if (this.gongToPlay.areas.length <= 0) {
+      this.translateService.get('manualActivation.messages.areaIsEmpty').subscribe(messageTrans => {
+        this.snackBar.open(messageTrans, null, {
+          duration: 5000,
+          panelClass: 'snackBarClass',
+        });
+      });
+      return;
+    }
+    this.chosenTime = undefined;
+    this.scheduleGongStartDate = new Date();
+    this.isScheduledDatePickerOpen = true;
+  }
+
+  scheduledDateOnClose() {
+    if (this.chosenTime) {
+      this.gongToPlay.date = this.chosenTime;
+      this.storeService.addManualGong(this.gongToPlay);
+    }
+    this.isScheduledDatePickerOpen = false;
+    this.chosenTime = new Date();
+  }
+
+  private setOnScheduledGongsArrayChange() {
+
+    this.subscription = this.ngRedux.select<ScheduledGong[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'manualGongs'])
+      .subscribe((scheduledGongs: ScheduledGong[]) => {
+        if (scheduledGongs) {
+          // scheduledGongs.forEach((scheduledGong: ScheduledGong) => {
+          //   this.scheduledGongsArray.push(scheduledGong);
+          // });
+          this.scheduledGongsArray = scheduledGongs;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

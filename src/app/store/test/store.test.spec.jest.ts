@@ -17,7 +17,7 @@ const mockedMiddlewareCreate = () => {
     dispatch: jest.fn(),
   };
 
-  const jsonConverterService = new JsonConverterService('', null);
+  const jsonConverterService = new JsonConverterService(null, null);
   const generalMiddlewareService = new GeneralMiddlewareService(jsonConverterService);
 
   const invoke = (action) => generalMiddlewareService.generalMiddleware(store)(next)(action);
@@ -32,7 +32,7 @@ fdescribe('store.test.spec.jest', () => {
 
   const testSeries003 = '003';
   fdescribe(`#${testSeries003} - REDUCERS TEST WITH MIDDLEWARE - allDataSetAction`, () => {
-    const jsonConverterService = new JsonConverterService('', null);
+    const jsonConverterService = new JsonConverterService(null, null);
     const generalMiddlewareService = new GeneralMiddlewareService(jsonConverterService);
     const middleWares = [generalMiddlewareService.generalMiddleware, apiMiddleware];
     const mockStore = configureStore(middleWares);
