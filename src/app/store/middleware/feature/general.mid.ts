@@ -24,7 +24,7 @@ export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
 export const AREA_URL = `${BASIC_URL}data/areas`;
 export const COURSES_URL = `${BASIC_URL}data/courses`;
 export const COURSES_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule`;
-export const ADD_MANUAL_GONG_URL = `${BASIC_URL}gong/add`;
+export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -88,7 +88,7 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${MANUAL_GONG_FEATURE} ${API_ERROR}`:
-        (action.data as ScheduledGong).updateStatus = UpdateStatusEnum.FAILED ;
+        (action.data as ScheduledGong).updateStatus = UpdateStatusEnum.FAILED;
         next(
           updateManualGong(action.data)
         );

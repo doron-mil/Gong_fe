@@ -6,11 +6,10 @@ export const apiMiddleware = ({dispatch}) => (next) => (action) => {
   if (action.type.includes(API_REQUEST)) {
     const {body, url, method, feature} = action.meta;
 
-    fetch(url, {body, method})
+    fetch(url, {body, method, headers: {'Content-Type': 'application/json'}})
       .then(response => response.json())
       .then(response => {
-        const apiSuccess1 = apiSuccess(response, feature, action.data);
-        dispatch(apiSuccess1);
+        dispatch(apiSuccess(response, feature, action.data));
       })
       .catch(error => {
         return dispatch(apiError(error, feature, action.data));
