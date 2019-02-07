@@ -3,11 +3,11 @@ import {
   ADD_MANUAL_GONG,
   AREA_FEATURE,
   COURSES_FEATURE,
-  COURSES_SCHEDULE_FEATURE, GONG_TYPES_FEATURE, MANUAL_GONG_FEATURE,
+  COURSES_SCHEDULE_FEATURE, GONG_TYPES_FEATURE, MANUAL_GONG_ADD_FEATURE, MANUAL_GONGS_LIST_FEATURE,
   READ_TO_STORE_DATA,
   setAreas,
   setCourses,
-  setCoursesSchedule, setGongTypes, updateManualGong
+  setCoursesSchedule, setGongTypes, setManualGongsList, updateManualGong
 } from '../../actions/action';
 import {API_ERROR, API_REQUEST, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
@@ -24,6 +24,7 @@ export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
 export const AREA_URL = `${BASIC_URL}data/areas`;
 export const COURSES_URL = `${BASIC_URL}data/courses`;
 export const COURSES_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule`;
+export const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
 export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
 
 @Injectable()
@@ -48,6 +49,9 @@ export class GeneralMiddlewareService {
         );
         next(
           apiRequest(null, 'GET', COURSES_SCHEDULE_URL, COURSES_SCHEDULE_FEATURE, null)
+        );
+        next(
+          apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
         );
         break;
       case `${GONG_TYPES_FEATURE} ${API_SUCCESS}`:
@@ -74,20 +78,27 @@ export class GeneralMiddlewareService {
           setCoursesSchedule(courseScheduleArray)
         );
         break;
-      case ADD_MANUAL_GONG:
-        const manualGongJson = JSON.stringify(action.payload);
+      case `${MANUAL_GONGS_LIST_FEATURE} ${API_SUCCESS}`:
+        const scheduledGongsArray = this.jsonConverterService.convert(action.payload.data, ScheduledGong);
         next(
-          apiRequest(manualGongJson, 'POST', ADD_MANUAL_GONG_URL, MANUAL_GONG_FEATURE, action.payload)
+          setManualGongsList(scheduledGongsArray)
         );
         break;
-      case `${MANUAL_GONG_FEATURE} ${API_SUCCESS}`:
+      case ADD_MANUAL_GONG:
+        const manualGongJson = this.jsonConverterService.convertToJson(action.payload);
+        const stringedifiedManualGongJson = JSON.stringify(manualGongJson);
+        next(
+          apiRequest(stringedifiedManualGongJson, 'POST', ADD_MANUAL_GONG_URL, MANUAL_GONG_ADD_FEATURE, action.payload)
+        );
+        break;
+      case `${MANUAL_GONG_ADD_FEATURE} ${API_SUCCESS}`:
         (action.data as ScheduledGong).updateStatus =
           action.payload.data === 'SUCCESS' ? UpdateStatusEnum.SUCCESS : UpdateStatusEnum.FAILED;
         next(
           updateManualGong(action.data)
         );
         break;
-      case `${MANUAL_GONG_FEATURE} ${API_ERROR}`:
+      case `${MANUAL_GONG_ADD_FEATURE} ${API_ERROR}`:
         (action.data as ScheduledGong).updateStatus = UpdateStatusEnum.FAILED;
         next(
           updateManualGong(action.data)

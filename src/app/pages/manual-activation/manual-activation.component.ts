@@ -141,6 +141,12 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
           //   this.scheduledGongsArray.push(scheduledGong);
           // });
           this.scheduledGongsArray = scheduledGongs;
+          if (this.scheduledGongsArray){
+            this.scheduledGongsArray.forEach(scheduledGongRecord =>{
+              scheduledGongRecord.span =1;
+              scheduledGongRecord.time =11111111;
+            });
+          }
         }
       });
   }

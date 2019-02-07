@@ -1,4 +1,4 @@
-import {ADD_MANUAL_GONG, AppAction, SET_COURSES_SCHEDULE, UPDATE_MANUAL_GONG} from '../actions/action';
+import {ADD_MANUAL_GONG, AppAction, SET_COURSES_SCHEDULE, SET_MANUAL_GONGS_LIST, UPDATE_MANUAL_GONG} from '../actions/action';
 import {DynamicDataState, INITIAL_DYNAMIC_DATA_STATE} from '../states/dynamic.data.state';
 import {Gong} from '../../model/gong';
 import {ScheduledGong} from '../../model/ScheduledGong';
@@ -9,6 +9,8 @@ export function dynamicDataReducer(state: DynamicDataState = INITIAL_DYNAMIC_DAT
   switch (action.type) {
     case SET_COURSES_SCHEDULE:
       return Object.assign({}, state, {coursesSchedule: action.payload});
+    case SET_MANUAL_GONGS_LIST:
+      return Object.assign({}, state, {manualGongs: action.payload});
     case ADD_MANUAL_GONG:
       const newState = Object.assign({}, state);
       newState.manualGongs = [...state.manualGongs];

@@ -88,7 +88,7 @@ export class JsonConverterService {
           if (!jsonPropertyName) {
             jsonPropertyName = propertyName;
           }
-          const jsonPropertyValue = simpleObj[jsonPropertyName];
+          const jsonPropertyValue = this.getJsonPropertyValue(simpleObj, jsonPropertyName);
           if (jsonPropertyValue != null && jsonPropertyValue !== null &&
             typeof jsonPropertyValue !== 'undefined') {
             if (propertyConversion.conversionFunctionName && this.conversionFunctions) {
@@ -111,6 +111,57 @@ export class JsonConverterService {
     return retObjectClass;
   }
 
+  convertToJson(classedObject: [any | any[]]): any | Array<any> {
+    const className = classedObject.constructor.name;
+    const conversionSchema = this.conversionMap[className];
+
+    let retJsonObjectArray = new Array<any>();
+    let classedObjectsArray: Array<any>;
+    let isArray = false;
+
+    if (conversionSchema && conversionSchema.hasSpecificConversions()) {
+      if (JsonConverterService.isArray(classedObject)) {
+        isArray = true;
+        classedObjectsArray = <Array<any>>classedObject;
+      } else {
+        classedObjectsArray = new Array<any>(classedObject);
+      }
+
+      classedObjectsArray.forEach(classedObjectItem => {
+        retJsonObjectArray.push(this.convertToJsonOneObject(classedObjectItem, conversionSchema));
+      });
+
+    } else {
+      isArray = true;
+      retJsonObjectArray = classedObject;
+    }
+
+    return isArray ? retJsonObjectArray : (retJsonObjectArray.length > 0 ? retJsonObjectArray[0] : undefined);
+  }
+
+  private convertToJsonOneObject(classedObjectItem: any, conversionSchema: ConversionSchema) {
+    const retObject = {};
+
+    conversionSchema.propertyConversionArray.forEach(
+      (propertyConversion: PropertyConversion) => {
+        const propertyName = propertyConversion.propertyName;
+        let jsonPropertyName = propertyConversion.propertyNameInJson;
+        if (!jsonPropertyName) {
+          jsonPropertyName = propertyName;
+        }
+        const classedObjectValue = classedObjectItem[propertyName];
+        let convertedValue = classedObjectValue;
+        if (propertyConversion.conversionFunctionToJsonName && this.conversionFunctions) {
+          const conversionFunction =
+            this.conversionFunctions[propertyConversion.conversionFunctionToJsonName];
+          convertedValue = conversionFunction(classedObjectValue);
+        }
+        this.setJsonPropertyValue(retObject, jsonPropertyName, convertedValue);
+      });
+
+    return retObject;
+  }
+
   private generateDefaultConversionSchema() {
     const conversionSchema = new ConversionSchema();
     conversionSchema.iterateAllProperties = true;
@@ -123,12 +174,39 @@ export class JsonConverterService {
       this.conversionMap[conversionSchemas.className] = conversionSchemas;
     });
   }
+
+  private getJsonPropertyValue(simpleObj: any, jsonPropertyName: string) {
+    const indexOfDot = jsonPropertyName.indexOf('.');
+    if (indexOfDot >= 0) {
+      const firstPart = jsonPropertyName.substr(0, indexOfDot);
+      const secondPart = jsonPropertyName.substr(indexOfDot + 1);
+      return this.getJsonPropertyValue(simpleObj[firstPart], secondPart);
+    } else {
+      return simpleObj[jsonPropertyName];
+    }
+
+  }
+
+  private setJsonPropertyValue(retObject: any, jsonPropertyName: string, assignedValue: any) {
+    const propertiesArray = jsonPropertyName.split('.');
+    let objectToAssign = retObject;
+    propertiesArray.forEach((property, index) => {
+      if (index <= propertiesArray.length - 2) {
+        if (!objectToAssign[property]) {
+          objectToAssign[property] = {};
+        }
+        objectToAssign = objectToAssign[property];
+      }
+    });
+    objectToAssign[propertiesArray[propertiesArray.length - 1]] = assignedValue;
+  }
 }
 
 class PropertyConversion {
   propertyName: string;
   propertyNameInJson?: string;
   conversionFunctionName?: string;
+  conversionFunctionToJsonName?: string;
 }
 
 class ConversionSchema {

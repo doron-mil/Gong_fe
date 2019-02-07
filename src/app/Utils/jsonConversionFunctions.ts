@@ -22,6 +22,8 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
     this.conversionFunctions['agendaConversion'] = this.agendaConversion;
     this.conversionFunctions['timeConversion'] = this.timeConversion;
     this.conversionFunctions['dateConversion'] = this.dateConversion;
+    this.conversionFunctions['timeToDateConversion'] = this.timeToDateConversion;
+    this.conversionFunctions['dateToTimeConversionForJson'] = this.dateToTimeConversionForJson;
   }
 
   agendaConversion = (coursesAgendaArray: Array<any>): ScheduledGong[] => {
@@ -65,5 +67,15 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
   dateConversion = (dateAsStr: string): Date => {
     const date = moment(dateAsStr, 'YYYY-MM-DD').toDate();
     return date;
+  };
+
+  timeToDateConversion = (time: number): Date => {
+    const date = moment(time).toDate();
+    return date;
+  };
+
+  dateToTimeConversionForJson = (date: Date): number => {
+    const time = date.getTime();
+    return time;
   };
 }

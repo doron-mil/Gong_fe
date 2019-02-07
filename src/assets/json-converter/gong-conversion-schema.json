@@ -30,6 +30,17 @@
     ]
   },
   {
+    "className": "GongType",
+    "propertyConversionArray": [
+      {
+        "propertyName": "id"
+      },
+      {
+        "propertyName": "name"
+      }
+    ]
+  },
+  {
     "className": "CourseSchedule",
     "propertyConversionArray": [
       {
@@ -46,13 +57,31 @@
     ]
   },
   {
-    "className": "GongType",
+    "className": "ScheduledGong",
     "propertyConversionArray": [
       {
-        "propertyName": "id"
+        "propertyName": "date",
+        "conversionFunctionName": "timeToDateConversion",
+        "conversionFunctionToJsonName": "dateToTimeConversionForJson"
       },
       {
-        "propertyName": "name"
+        "propertyName": "isActive"
+      },
+      {
+        "propertyName": "gongTypeId",
+        "propertyNameInJson": "gong.gongType"
+      },
+      {
+        "propertyName": "volume",
+        "propertyNameInJson": "gong.volume"
+      },
+      {
+        "propertyName": "areas",
+        "propertyNameInJson": "gong.areas"
+      },
+      {
+        "propertyName": "areas",
+        "propertyNameInJson": "gong.areas"
       }
     ]
   }

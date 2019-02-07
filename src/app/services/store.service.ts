@@ -98,6 +98,17 @@ export class StoreService implements OnInit, OnDestroy {
     return this.coursesMapObservable;
   }
 
+  async getAreasMapAsync(): Promise<Area[]> {
+    return await this.areasMapObservable.toPromise();
+  }
+
+  async getGongTypesMapAsync(): Promise<GongType[]> {
+    return await this.gongTypesMapObservable.toPromise();
+  }
+
+  async getCoursesMapAsync(): Promise<{ [key: string]: Course }> {
+    return await this.coursesMapObservable.toPromise();
+  }
 
   ngOnDestroy(): void {
     this.subscriptionsArray.forEach(subscription => subscription.unsubscribe());
