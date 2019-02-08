@@ -4,7 +4,7 @@ import {
   MatButtonModule,
   MatCheckboxModule,
   MatFormFieldModule,
-  MatInputModule, MatListModule,
+  MatInputModule, MatListModule, MatProgressSpinnerModule,
   MatSelectModule,
   MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule,
   MatToolbarModule, MatTooltipModule
@@ -29,6 +29,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     Md2DatepickerModule,
     MdNativeDateModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     MatToolbarModule,
@@ -45,6 +46,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatListModule,
     Md2DatepickerModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class MaterialModule {

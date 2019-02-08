@@ -21,7 +21,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges {
   }
 
 
-  displayedColumns = ['day', 'date', 'isOn', 'time', 'gongType', 'area'];
+  displayedColumns = ['day', 'date', 'isOn', 'time', 'gongType', 'area', 'volume'];
   dataSource: MatTableDataSource<ScheduledGong>;
 
   constructor(private storeService: StoreService) {

@@ -5,3 +5,35 @@ th, td {
   padding-top: 14px !important;
   text-align: center !important;
 }
+
+::ng-deep .volumeTooltipClass {
+  color: black;
+  background: violet;
+}
+
+th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
+  padding-left: 0px;
+}
+
+.areaTd {
+  width: 20% !important;
+}
+
+.gongTypeTd {
+  width: 20%;
+}
+
+.dayTd {
+  border-right: none;
+}
+
+.volumeTd {
+  width: 12%;
+  padding-right: 0px !important;
+}
+
+.volumeContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

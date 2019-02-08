@@ -38,18 +38,4 @@ body {
 
 
 
-th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
-  padding-left: 0px;
-}
 
-.areaTd {
-  width: 20% !important;
-}
-
-.gongTypeTd {
-  width: 20%;
-}
-
-.dayTd{
-  border-right: none;
-}

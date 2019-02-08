@@ -72,6 +72,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       if (foundCourse) {
         foundCourse.routine.forEach(course => {
           const copiedCourse = course.cloneForUi(selectedCourseStartDate);
+          if (!copiedCourse.volume) {
+            copiedCourse.volume = 100;
+          }
           this.selectedCourseRoutineArray.push(copiedCourse);
         });
       } else {
