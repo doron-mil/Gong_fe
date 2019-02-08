@@ -21,8 +21,6 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   coursesData: CourseSchedule[] = [];
   selectedRowIndex: number = -1;
 
-  selectedCourseDisplayedColumns = ['day', 'date', 'isOn', 'time', 'gongType', 'area'];
-  selectedCourseDataSource: MatTableDataSource<ScheduledGong>;
   selectedCourseRoutineArray: ScheduledGong[] = [];
 
   subscription: Subscription;
@@ -42,11 +40,17 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       const coursesSchedule: CourseSchedule[] = mergedResult[0];
       const coursesMap: { [key: string]: Course } = mergedResult[1];
       if (coursesSchedule && coursesMap) {
+        this.coursesData = [];
         coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
-          courseSchedule.daysCount = coursesMap[courseSchedule.name].days;
-          this.coursesData.push(courseSchedule);
+          const course = coursesMap[courseSchedule.name];
+          if (course) {
+            courseSchedule.daysCount = course.days;
+            this.coursesData.push(courseSchedule);
+          }
         });
-        this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
+        if (this.coursesData.length > 0) {
+          this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
+        }
       }
     });
   }
@@ -60,38 +64,16 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     const selectedCourseStartDate = selectedCourseScheduled.date;
     const selectedCourseName = selectedCourseScheduled.name;
 
-    const mergedObservable =
-      combineLatest(
-        this.storeService.getCoursesMap(),
-        this.storeService.getGongTypesMap()
-      );
-
-    this.subscription = mergedObservable.subscribe(mergedResult => {
-      const courseMap: { [key: string]: Course } = mergedResult[0];
-      const gongTypesMap: GongType[] = mergedResult[1];
+    this.subscription = this.storeService.getCoursesMap().subscribe(courseMap => {
 
       const foundCourse = courseMap[selectedCourseName];
 
       this.selectedCourseRoutineArray = [];
       if (foundCourse) {
-        let lastScheduledGongReord: ScheduledGong = new ScheduledGong();
         foundCourse.routine.forEach(course => {
           const copiedCourse = course.cloneForUi(selectedCourseStartDate);
-
-          copiedCourse.gongTypeName = gongTypesMap[copiedCourse.gongTypeId].name;
-
-          if (copiedCourse.dayNumber !== lastScheduledGongReord.dayNumber) {
-            lastScheduledGongReord = copiedCourse;
-            lastScheduledGongReord.span = 1;
-          } else {
-            copiedCourse.span = 0;
-            lastScheduledGongReord.span++;
-          }
-
           this.selectedCourseRoutineArray.push(copiedCourse);
         });
-        this.selectedCourseDataSource = new MatTableDataSource<ScheduledGong>(this.selectedCourseRoutineArray);
-
       } else {
         console.error('couldn\'t find course name : ' + selectedCourseName);
       }

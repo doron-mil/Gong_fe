@@ -13,14 +13,26 @@ export class ScheduledGong {
   span: number;
   updateStatus: UpdateStatusEnum;
 
-  cloneForUi(courseStartDate: Date) {
+  cloneForUi(courseStartDate?: Date) {
     const clonedObject = new ScheduledGong();
     clonedObject.dayNumber = this.dayNumber;
-    clonedObject.time = this.time;
     clonedObject.gongTypeId = this.gongTypeId;
     clonedObject.areas = this.areas;
+    clonedObject.volume = this.volume;
+    clonedObject.isActive = this.isActive;
 
-    clonedObject.date = moment(courseStartDate).add(clonedObject.dayNumber, 'd').toDate();
+    clonedObject.date = this.date;
+    clonedObject.time = this.time;
+
+    if (!clonedObject.date) {
+      clonedObject.date = moment(courseStartDate).add(clonedObject.dayNumber, 'd').toDate();
+    } else if (!clonedObject.time) {
+      clonedObject.time = moment(clonedObject.date).diff(moment(clonedObject.date).startOf('day'));
+    }
+
+    if (!clonedObject.dayNumber) {
+      clonedObject.dayNumber = parseInt(moment(clonedObject.date).format('DDD'), 10);
+    }
 
     return clonedObject;
   }

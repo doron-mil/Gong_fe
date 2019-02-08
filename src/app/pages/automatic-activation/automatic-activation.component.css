@@ -36,13 +36,7 @@ body {
   overflow: auto;
 }
 
-th, td {
-  vertical-align: top;
-  border-right: 1px solid rgba(0, 0, 0, .12);
-  /*padding-left: 16px !important;*/
-  padding-top: 14px !important;
-  text-align: center !important;
-}
+
 
 th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
   padding-left: 0px;

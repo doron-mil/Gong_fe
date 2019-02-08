@@ -137,16 +137,12 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
     this.subscription = this.ngRedux.select<ScheduledGong[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'manualGongs'])
       .subscribe((scheduledGongs: ScheduledGong[]) => {
         if (scheduledGongs) {
-          // scheduledGongs.forEach((scheduledGong: ScheduledGong) => {
-          //   this.scheduledGongsArray.push(scheduledGong);
-          // });
-          this.scheduledGongsArray = scheduledGongs;
-          if (this.scheduledGongsArray){
-            this.scheduledGongsArray.forEach(scheduledGongRecord =>{
-              scheduledGongRecord.span =1;
-              scheduledGongRecord.time =11111111;
-            });
-          }
+          this.scheduledGongsArray = [];
+          scheduledGongs.forEach((scheduledGong: ScheduledGong) => {
+            const clonedScheduledGong = scheduledGong.cloneForUi();
+            this.scheduledGongsArray.push(clonedScheduledGong);
+          });
+          this.scheduledGongsArray.sort((a, b) => a.date.getTime() - b.date.getTime());
         }
       });
   }

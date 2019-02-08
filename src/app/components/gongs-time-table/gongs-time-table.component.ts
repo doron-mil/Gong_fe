@@ -49,9 +49,18 @@ export class GongsTimeTableComponent implements OnInit, OnChanges {
     if (this._scheduledGongsArray && this._scheduledGongsArray.length > 0) {
       // const  gongTypesMapAsync = await this.storeService.getGongTypesMapAsync();
       this.storeService.getGongTypesMap().subscribe(gongTypesMap => {
+        let lastScheduledGongReord: ScheduledGong = new ScheduledGong();
         this._scheduledGongsArray.forEach(scheduledGong => {
-          const aaa = scheduledGong.gongTypeName;
           scheduledGong.gongTypeName = gongTypesMap[scheduledGong.gongTypeId].name;
+
+          if (scheduledGong.dayNumber !== lastScheduledGongReord.dayNumber) {
+            lastScheduledGongReord = scheduledGong;
+            lastScheduledGongReord.span = 1;
+          } else {
+            scheduledGong.span = 0;
+            lastScheduledGongReord.span++;
+          }
+
         });
         this.dataSource = new MatTableDataSource<ScheduledGong>(this._scheduledGongsArray);
 
