@@ -61,6 +61,7 @@
     "propertyConversionArray": [
       {
         "propertyName": "date",
+        "propertyNameInJson": "time",
         "conversionFunctionName": "timeToDateConversion",
         "conversionFunctionToJsonName": "dateToTimeConversionForJson"
       },
