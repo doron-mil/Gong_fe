@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "test": "jest ",
     "test:update": "jest -u",
@@ -28,6 +28,7 @@
     "@angular/pwa": "^0.7.5",
     "@angular/router": "^6.0.3",
     "@angular/service-worker": "^6.0.3",
+    "@auth0/angular-jwt": "^2.1.0",
     "@ngx-translate/core": "^10.0.2",
     "@ngx-translate/http-loader": "^3.0.1",
     "axios": "^0.18.0",

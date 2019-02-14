@@ -4,20 +4,28 @@ import {TestPage2Component} from '../pages/test-page2/test-page2.component';
 import {TestPage1Component} from '../pages/test-page1/test-page1.component';
 import {ManualActivationComponent} from '../pages/manual-activation/manual-activation.component';
 import {AutomaticActivationComponent} from '../pages/automatic-activation/automatic-activation.component';
+import {AuthGuard} from '../auth/auth.guard';
+import {LoginComponent} from '../pages/login/login.component';
+import {MainPageComponent} from '../pages/main-page/main-page.component';
 
 const routes: Routes = [
+  {path: '', pathMatch: 'full', redirectTo: 'login'},
+  {path: 'login', component: LoginComponent},
   {
-    path: '', pathMatch: 'full', component: ManualActivationComponent, data: {
+    path: 'mainPage', component: MainPageComponent,
+    canActivate: [AuthGuard], data: {
+      name: 'Main Page'
+    }
+  },
+  {
+      path: 'manualActivation', component: ManualActivationComponent,
+    canActivate: [AuthGuard], data: {
       name: 'Manual Activation'
     }
   },
   {
-    path: 'manualActivation', component: ManualActivationComponent, data: {
-      name: 'Manual Activation'
-    }
-  },
-  {
-    path: 'automaticActivation', component: AutomaticActivationComponent, data: {
+    path: 'automaticActivation', component: AutomaticActivationComponent,
+    canActivate: [AuthGuard], data: {
       name: 'Automatic Activation'
     }
   },

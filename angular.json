@@ -103,5 +103,12 @@
       }
     }
   },
-  "defaultProject": "gong"
+  "defaultProject": "gong",
+  "schematics": {
+    "@schematics/angular": {
+      "component": {
+        "spec": false
+      }
+    }
+  }
 }

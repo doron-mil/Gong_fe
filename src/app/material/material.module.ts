@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
-  MatButtonModule,
+  MatButtonModule, MatCardModule,
   MatCheckboxModule,
   MatFormFieldModule,
   MatInputModule, MatListModule, MatProgressSpinnerModule,
@@ -30,6 +30,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MdNativeDateModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatCardModule,
   ],
   exports: [
     MatToolbarModule,
@@ -47,6 +48,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     Md2DatepickerModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatCardModule,
   ],
 })
 export class MaterialModule {

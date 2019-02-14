@@ -98,7 +98,9 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
         this.areas.forEach((area: Area) => {
           this.areasMap[area.id] = area;
         });
-        this.changeDetectorRef.detectChanges();
+        if (!this.changeDetectorRef['destroyed']) {
+          this.changeDetectorRef.detectChanges();
+        }
         this.areasSelectionCtrl.selectAll();
       }
     });

@@ -2,11 +2,12 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {ServiceWorkerModule} from '@angular/service-worker';
 
+import {JwtModule} from '@auth0/angular-jwt';
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
 import {DevToolsExtension, NgRedux, NgReduxModule} from '@angular-redux/store';
 import {GeneralMiddlewareService} from './store/middleware/feature/general.mid';
-import {apiMiddleware} from './store/middleware/core/api.mid';
+import {ApiMiddlewareService} from './store/middleware/core/api.mid';
 import {applyMiddleware, combineReducers, createStore, Store} from 'redux';
 import {StoreDataTypeEnum} from './store/storeDataTypeEnum';
 import {generalReducer} from './store/reducers/general.reducer';
@@ -27,6 +28,12 @@ import {SelectedAreasComponent} from './components/selected-areas/selected-areas
 import {dynamicDataReducer} from './store/reducers/dynamic.data.reducer';
 import {staticDataReducer} from './store/reducers/static.data.reducer';
 import {GongsTimeTableComponent} from './components/gongs-time-table/gongs-time-table.component';
+import {LoginComponent} from './pages/login/login.component';
+import {MainPageComponent} from './pages/main-page/main-page.component';
+
+export function tokenGetter() {
+  return localStorage.getItem('access_token');
+}
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -48,7 +55,9 @@ export const translationRoot = {
     ManualActivationComponent,
     AutomaticActivationComponent,
     SelectedAreasComponent,
-    GongsTimeTableComponent
+    GongsTimeTableComponent,
+    LoginComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,
@@ -61,8 +70,15 @@ export const translationRoot = {
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
     JsonConverterModule.forRoot(JsonConversionFunctions.getInstance()),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['api'],
+        blacklistedRoutes: ['api/login']
+      }
+    }),
   ],
-  providers: [GeneralMiddlewareService],
+  providers: [ApiMiddlewareService, GeneralMiddlewareService],
   bootstrap: [AppComponent]
 })
 
@@ -71,6 +87,7 @@ export class AppModule {
   constructor(private ngRedux: NgRedux<any>,
               private devTools: DevToolsExtension,
               generalMiddlewareService: GeneralMiddlewareService,
+              apiMiddlewareService: ApiMiddlewareService,
               translate: TranslateService) {
 
     // ************* Translator Init *****************
@@ -89,7 +106,7 @@ export class AppModule {
     ];
 
     const coreMiddleware = [
-      apiMiddleware,
+      apiMiddlewareService.apiMiddleware,
     ];
 
     // ************* Reducers   **********************

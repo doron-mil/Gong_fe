@@ -37,42 +37,8 @@
 </mat-toolbar>
 
 <div class="main-display">
-  <!--<nav mat-tab-nav-bar [backgroundColor]="'primary'">-->
-  <!--<a mat-tab-link-->
-  <!--routerLink="/manualActivation"-->
-  <!--(click)="activeLink = 1"-->
-  <!--[active]="activeLink == 1">-->
-  <!--{{ 'main.tabs.manual' | translate }}-->
-  <!--</a>-->
-  <!--<a mat-tab-link-->
-  <!--routerLink="/automaticActivation"-->
-  <!--(click)="activeLink = 2"-->
-  <!--[active]="activeLink == 2">-->
-  <!--{{ 'main.tabs.automatic' | translate }}-->
-  <!--</a>-->
-  <!--<div class="btn-group">-->
-  <!--<button mat-raised-button color="warn" (click)="onClick()">just button</button>-->
-  <!--</div>-->
 
-  <!--</nav>-->
-  <!--<router-outlet></router-outlet>-->
-
-  <mat-tab-group class="matTabGroupClass">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        {{ 'main.tabs.manual' | translate }}
-      </ng-template>
-      <app-manual-activation></app-manual-activation>
-    </mat-tab>
-
-    <mat-tab >
-      <ng-template mat-tab-label>
-        {{ 'main.tabs.automatic' | translate }}
-      </ng-template>
-      <app-automatic-activation></app-automatic-activation>
-    </mat-tab>
-
-  </mat-tab-group>
+  <router-outlet></router-outlet>
 
 </div>
 

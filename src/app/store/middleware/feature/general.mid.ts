@@ -19,7 +19,7 @@ import {GongType} from '../../../model/gongType';
 import {UpdateStatusEnum} from '../../../model/updateStatusEnum';
 import {ScheduledGong} from '../../../model/ScheduledGong';
 
-export const BASIC_URL = 'http://localhost:8081/';
+export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
 export const AREA_URL = `${BASIC_URL}data/areas`;
 export const COURSES_URL = `${BASIC_URL}data/courses`;

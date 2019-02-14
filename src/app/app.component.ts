@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.readToStore();
+    // this.readToStore();
   }
 
   private readToStore() {

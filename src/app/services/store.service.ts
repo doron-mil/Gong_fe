@@ -6,7 +6,7 @@ import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
-import {addManualGong} from '../store/actions/action';
+import {addManualGong, readToStoreData} from '../store/actions/action';
 import {ScheduledGong} from '../model/ScheduledGong';
 
 @Injectable({
@@ -84,6 +84,10 @@ export class StoreService implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+  }
+
+  readToStore() {
+    this.ngRedux.dispatch(readToStoreData());
   }
 
   getAreasMap(): Observable<Area[]> {
