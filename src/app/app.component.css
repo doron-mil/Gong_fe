@@ -29,11 +29,14 @@
   font-size: large;
 }
 
-.btn-group {
-  padding: 0px 5px;
+.nextGongTimecontainer {
+  display: flex;
+  flex-direction: row;
+  direction: rtl;
 }
 
-.toggle-container {
-  width: 20%;
+::ng-deep .manualTooltipClass {
+  color: black;
+  background: violet;
 }
 

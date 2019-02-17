@@ -37,11 +37,12 @@
     }
   },
   "main": {
-    "toolbar": {
-      "buttons": {
-        "manualActivation": "ידני"
-      },
-      "manualSlider": {
+    "labels":{
+        "currentTime" : "זמן נוכחי",
+        "nextGong" : "הגונג הבא"
+    },
+    "tooltips": {
+      "manual": {
         "true": "ידני",
         "false": "אוטומטי"
       }

@@ -4,7 +4,9 @@ import {Course} from '../../model/course';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {GongType} from '../../model/gongType';
 import {ScheduledGong} from '../../model/ScheduledGong';
+import {BasicServerData} from '../../model/basicServerData';
 
+export const BASIC_DATA_FEATURE = '[BASIC_DATA]';
 export const GONG_TYPES_FEATURE = '[GONG_TYPES]';
 export const AREA_FEATURE = '[AREA]';
 export const COURSES_FEATURE = '[COURSES]';
@@ -14,6 +16,8 @@ export const MANUAL_GONG_ADD_FEATURE = '[MANUAL_GONG_ADD]';
 
 
 export const READ_TO_STORE_DATA = 'READ_TO_STORE_DATA';
+export const GET_BASIC_DATA = 'GET_BASIC_DATA';
+export const SET_BASIC_DATA = 'SET_BASIC_DATA';
 export const SET_GONG_TYPES = 'SET_GONG_TYPES';
 export const SET_AREAS = 'SET_AREAS';
 export const SET_COURSES = 'SET_COURSES';
@@ -28,7 +32,17 @@ export interface AppAction extends Action {
 
 // action creators
 export const readToStoreData = () => ({
-  type: `READ_TO_STORE_DATA`
+  type: READ_TO_STORE_DATA
+});
+
+export const getBasicData = () => ({
+  type: GET_BASIC_DATA
+});
+
+export const setBasicServerData = (basicServerData: BasicServerData) => ({
+  type: SET_BASIC_DATA,
+  payload: basicServerData,
+  meta: {feature: BASIC_DATA_FEATURE}
 });
 
 export const setGongTypes = (gongTypes: GongType[]) => ({

@@ -1,10 +1,19 @@
 <mat-toolbar style="background-color: #e3f2fd;" class="main-toolbar">
 
-  <section class="toggle-container">
-    {{ now |  date:'HH:mm'}}
+  <section class="">
+    {{'main.labels.currentTime' | translate}} : {{ now | amDateFormat: 'HH:mm'}}
   </section>
 
-
+  <section class="nextGongTimecontainer">
+    {{'main.labels.nextGong' | translate}} :
+    <div>
+      {{ nextGongTime | amDateFormat: 'YYYY/MM/DD HH:mm'}}
+      <span matTooltip="{{ 'main.tooltips.manual.' + isManual | translate}}"
+            matTooltipClass="manualTooltipClass">
+        {{isManual?'M':'A'}}
+      </span>
+    </div>
+  </section>
 
   <div class="logo-container">
     <img width="40px" height="40px" alt="Custo, Logo" src="assets/icons/icon-72x72.png">

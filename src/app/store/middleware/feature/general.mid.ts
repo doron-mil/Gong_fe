@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 import {
   ADD_MANUAL_GONG,
-  AREA_FEATURE,
+  AREA_FEATURE, BASIC_DATA_FEATURE,
   COURSES_FEATURE,
-  COURSES_SCHEDULE_FEATURE, GONG_TYPES_FEATURE, MANUAL_GONG_ADD_FEATURE, MANUAL_GONGS_LIST_FEATURE,
+  COURSES_SCHEDULE_FEATURE, GET_BASIC_DATA, GONG_TYPES_FEATURE, MANUAL_GONG_ADD_FEATURE, MANUAL_GONGS_LIST_FEATURE,
   READ_TO_STORE_DATA,
-  setAreas,
+  setAreas, setBasicServerData,
   setCourses,
   setCoursesSchedule, setGongTypes, setManualGongsList, updateManualGong
 } from '../../actions/action';
@@ -18,6 +18,7 @@ import {Course} from '../../../model/course';
 import {GongType} from '../../../model/gongType';
 import {UpdateStatusEnum} from '../../../model/updateStatusEnum';
 import {ScheduledGong} from '../../../model/ScheduledGong';
+import {BasicServerData} from '../../../model/basicServerData';
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -26,6 +27,7 @@ export const COURSES_URL = `${BASIC_URL}data/courses`;
 export const COURSES_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule`;
 export const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
 export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
+export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -82,6 +84,17 @@ export class GeneralMiddlewareService {
         const scheduledGongsArray = this.jsonConverterService.convert(action.payload.data, ScheduledGong);
         next(
           setManualGongsList(scheduledGongsArray)
+        );
+        break;
+      case GET_BASIC_DATA:
+        next(
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, BASIC_DATA_FEATURE, null)
+        );
+        break;
+      case `${BASIC_DATA_FEATURE} ${API_SUCCESS}`:
+        const basicServerData = this.jsonConverterService.convertOneObject(action.payload.data, BasicServerData);
+        next(
+          setBasicServerData(basicServerData)
         );
         break;
       case ADD_MANUAL_GONG:

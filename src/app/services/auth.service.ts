@@ -15,10 +15,10 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<{ token: string }>('/api/login', {username: username, password: password})
+    return this.http.post<{ data: { token: string } }>('/api/login', {username: username, password: password})
       .pipe(
         map(result => {
-          localStorage.setItem('access_token', result.token);
+          localStorage.setItem('access_token', result.data.token);
           return true;
         })
       );
@@ -31,7 +31,7 @@ export class AuthService {
   public get loggedIn(): boolean {
     let token = localStorage.getItem('access_token');
     if (token && this.jwtHelper.isTokenExpired(token)) {
-      token =  null ;
+      token = null;
       this.logout();
     }
     return (!!token);

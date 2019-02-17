@@ -1,5 +1,23 @@
 [
   {
+    "className": "BasicServerData",
+    "propertyConversionArray": [
+      {
+        "propertyName": "currentServerTime",
+        "conversionFunctionName": "timeToDateConversion"
+      },
+      {
+        "propertyName": "nextScheduledJobTime",
+        "propertyNameInJson": "nextScheduledJob.time",
+        "conversionFunctionName": "timeToDateConversion"
+      },
+      {
+        "propertyName": "isManual",
+        "propertyNameInJson": "nextScheduledJob.isManual"
+      }
+    ]
+  },
+  {
     "className": "Area",
     "propertyConversionArray": [
       {

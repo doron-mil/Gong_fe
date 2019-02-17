@@ -30,6 +30,7 @@ import {staticDataReducer} from './store/reducers/static.data.reducer';
 import {GongsTimeTableComponent} from './components/gongs-time-table/gongs-time-table.component';
 import {LoginComponent} from './pages/login/login.component';
 import {MainPageComponent} from './pages/main-page/main-page.component';
+import {MomentModule} from 'ngx-moment';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -69,12 +70,13 @@ export const translationRoot = {
     HttpClientModule,
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
+    MomentModule,
     JsonConverterModule.forRoot(JsonConversionFunctions.getInstance()),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
         whitelistedDomains: ['api'],
-        blacklistedRoutes: ['api/login']
+        blacklistedRoutes: ['api/login', 'api/nextgong']
       }
     }),
   ],
