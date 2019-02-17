@@ -1,0 +1,124 @@
+{
+  "none": "none",
+  "general": {
+    "typesValues": {
+      "gongType": {
+        "values": {
+          "long": "Long",
+          "short": "short",
+          "single": "Single",
+          "chanting": "Chanting"
+        }
+      },
+      "areas": {
+        "values": {
+          "all": "All",
+          "workers": "Workers",
+          "hall": "Hall",
+          "dining": "Dining",
+          "outside": "Outside"
+        }
+      }
+    },
+    "tableHeaders": {
+      "gongsTimeTable": {
+        "day": "Day",
+        "date": "Date",
+        "isOn": "Active",
+        "time": "Time",
+        "gongType": "Type",
+        "area": "Areas",
+        "volume": "Volume"
+      }
+    }
+  },
+  "main": {
+    "labels": {
+      "currentTime": "Current time",
+      "nextGong": "Next gong"
+    },
+    "tooltips": {
+      "manual": {
+        "true": "Manual",
+        "false": "Automatic"
+      }
+    },
+    "tabs": {
+      "manual": "Manual",
+      "automatic": "Automatic"
+    },
+    "menu": {
+      "language": {
+        "main": "language",
+        "subMenu": {
+          "he": "Hebrew",
+          "en": "English"
+        }
+      },
+      "logout": "Logout"
+    }
+  },
+  "manualActivation": {
+    "dropdowns": {
+      "gongType": {
+        "label": "Type",
+        "values": {
+          "LONG_GONG": "Long",
+          "SHORT_GONG": "Short",
+          "SINGLE_GONG": "Single",
+          "CHANTING": "Chanting"
+        }
+      },
+      "areas": {
+        "label": "Areas",
+        "values": {
+          "all": "All",
+          "workers": "Workers",
+          "hall": "Hall",
+          "dining": "Dining",
+          "outside": "Outside"
+        }
+      }
+    },
+    "labels": {
+      "volume": "Volume"
+    },
+    "buttons": {
+      "play": "Play",
+      "schedulePlay": "Sched."
+    },
+    "messages": {
+      "areaIsEmpty": "Must choose at least one area"
+    }
+  },
+  "automaticActivation": {
+    "scheduleTable": {
+      "headers": {
+        "name": "Course Name",
+        "date": "Start Date",
+        "daysCount": "No. Days"
+      },
+      "courseName": {
+        "10_day_course": "10 Days",
+        "satipattana": "Satipattana",
+        "test": "test",
+        "test2": "test2"
+      }
+    },
+    "selectedCourseTable": {
+      "headers": {
+        "day": "Day",
+        "date": "Date",
+        "isOn": "On",
+        "time": "Time",
+        "gongType": "Type",
+        "area": "Areas"
+      }
+    },
+    "buttons": {
+      "addCourse": "Add Course",
+      "removeCourse": "Remove Course",
+      "updateCourse": "Update Course"
+    }
+  }
+}

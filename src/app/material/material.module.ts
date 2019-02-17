@@ -3,8 +3,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
   MatButtonModule, MatCardModule,
   MatCheckboxModule,
-  MatFormFieldModule,
-  MatInputModule, MatListModule, MatProgressSpinnerModule,
+  MatFormFieldModule, MatIconModule,
+  MatInputModule, MatListModule, MatMenuModule, MatProgressSpinnerModule,
   MatSelectModule,
   MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule,
   MatToolbarModule, MatTooltipModule
@@ -31,6 +31,8 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatCardModule,
+    MatMenuModule,
+    MatIconModule,
   ],
   exports: [
     MatToolbarModule,
@@ -49,6 +51,8 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatCardModule,
+    MatMenuModule,
+    MatIconModule,
   ],
 })
 export class MaterialModule {

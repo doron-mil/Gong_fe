@@ -14,6 +14,16 @@
   flex-direction: row;
 }
 
+.options {
+  color: blue;
+  height: 5vh;
+  width: 5vw;
+}
+
+.selectedLangClass{
+  background-color: lightcyan;
+}
+
 ::ng-deep .matTabGroupClass .mat-tab-header {
   background-color: #e3f2fd;
   /*height: 100%;*/
@@ -29,9 +39,12 @@
   font-size: large;
 }
 
-.nextGongTimecontainer {
+.nextGongTimeContainer {
   display: flex;
   flex-direction: row;
+}
+
+.langRtl {
   direction: rtl;
 }
 

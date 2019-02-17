@@ -1,10 +1,42 @@
 <mat-toolbar style="background-color: #e3f2fd;" class="main-toolbar">
 
   <section class="">
+    <button mat-icon-button [matMenuTriggerFor]="mainOptionsMenu">
+      <mat-icon svgIcon="options" class="options"></mat-icon>
+    </button>
+
+    <mat-menu #mainOptionsMenu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="languagesMenu">
+        <mat-icon svgIcon="language"></mat-icon>
+        <span>
+          {{'main.menu.language.main' | translate}}
+        </span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon svgIcon="power_off"></mat-icon>
+        <span>
+          {{'main.menu.logout' | translate}}
+        </span>
+      </button>
+    </mat-menu>
+
+    <mat-menu #languagesMenu="matMenu">
+      <button mat-menu-item *ngFor="let lang of supportedLanguagesArray"
+        (click)="setLanguage(lang)" [ngClass]="{selectedLangClass: lang === currentLanguage}">
+        <mat-icon svgIcon="lang_{{lang}}"></mat-icon>
+        <span >
+          {{'main.menu.language.subMenu.' + lang | translate}}
+        </span>
+      </button>
+
+    </mat-menu>
+  </section>
+
+  <section class="">
     {{'main.labels.currentTime' | translate}} : {{ now | amDateFormat: 'HH:mm'}}
   </section>
 
-  <section class="nextGongTimecontainer">
+  <section class="nextGongTimeContainer" [ngClass]="{langRtl: currentLanguage === 'he'}">
     {{'main.labels.nextGong' | translate}} :
     <div>
       {{ nextGongTime | amDateFormat: 'YYYY/MM/DD HH:mm'}}
@@ -14,6 +46,7 @@
       </span>
     </div>
   </section>
+
 
   <div class="logo-container">
     <img width="40px" height="40px" alt="Custo, Logo" src="assets/icons/icon-72x72.png">
