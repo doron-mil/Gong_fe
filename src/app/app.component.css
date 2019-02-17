@@ -1,12 +1,12 @@
-.main-toolbar{
+.main-toolbar {
   display: flex;
   flex-direction: row;
-  justify-content:space-between ;
+  justify-content: space-between;
   height: 8vh;
 }
 
-.main-display{
- height: 92vh;
+.main-display {
+  height: 92vh;
 }
 
 .btn-container {
@@ -14,15 +14,26 @@
   flex-direction: row;
 }
 
-.matTabGroupClass{
-  height: 100%;
+::ng-deep .matTabGroupClass .mat-tab-header {
+  background-color: #e3f2fd;
+  /*height: 100%;*/
+}
+
+::ng-deep .matTabGroupClass .mat-tab-label {
+  font-weight: bolder;
+  font-size: large;
+}
+
+::ng-deep .matTabGroupClass .mat-tab-label-activ {
+  font-weight: bolder;
+  font-size: large;
 }
 
 .btn-group {
   padding: 0px 5px;
 }
 
-.toggle-container{
+.toggle-container {
   width: 20%;
 }
 

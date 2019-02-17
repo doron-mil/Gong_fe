@@ -4,7 +4,7 @@ import 'jest-preset-angular';
 import configureStore from 'redux-mock-store';
 
 import {GeneralMiddlewareService} from '../middleware/feature/general.mid';
-import {apiMiddleware} from '../middleware/core/api.mid';
+import {ApiMiddlewareService} from '../middleware/core/api.mid';
 import {generalReducer} from '../reducers/general.reducer';
 import {JsonConverterService} from '../../Utils/json-converter/json-converter.service';
 
@@ -34,7 +34,8 @@ fdescribe('store.test.spec.jest', () => {
   fdescribe(`#${testSeries003} - REDUCERS TEST WITH MIDDLEWARE - allDataSetAction`, () => {
     const jsonConverterService = new JsonConverterService(null, null);
     const generalMiddlewareService = new GeneralMiddlewareService(jsonConverterService);
-    const middleWares = [generalMiddlewareService.generalMiddleware, apiMiddleware];
+    const apiMiddlewareService = new ApiMiddlewareService(null);
+    const middleWares = [generalMiddlewareService.generalMiddleware, apiMiddlewareService.apiMiddleware];
     const mockStore = configureStore(middleWares);
 
     const store = mockStore({});

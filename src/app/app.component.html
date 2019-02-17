@@ -1,33 +1,10 @@
 <mat-toolbar style="background-color: #e3f2fd;" class="main-toolbar">
 
   <section class="toggle-container">
-    <mat-slide-toggle
-      class="example-margin"
-      color="primary"
-      (change)="onManualChange($event)"
-      [(ngModel)]="isManual">
-      {{ 'main.toolbar.manualSlider.' + isManual | translate}}
-    </mat-slide-toggle>
+    {{ now |  date:'HH:mm'}}
   </section>
 
-  <div class="btn-container">
 
-    <div class="btn-group">
-      <button mat-raised-button color="primary" routerLink="/manualActivation">
-        {{ 'main.toolbar.buttons.manualActivation' | translate }}
-      </button>
-    </div>
-    <div class="btn-group">
-      <button mat-raised-button color="accent" routerLink="/pageNo1">Test P1!</button>
-    </div>
-    <div class="btn-group">
-      <button mat-raised-button color="warn" routerLink="/pageNo2">Test P1!</button>
-    </div>
-    <div class="btn-group">
-      <button mat-raised-button color="warn" (click)="onClick()">just button</button>
-    </div>
-
-  </div>
 
   <div class="logo-container">
     <img width="40px" height="40px" alt="Custo, Logo" src="assets/icons/icon-72x72.png">

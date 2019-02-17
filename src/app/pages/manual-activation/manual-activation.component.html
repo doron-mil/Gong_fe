@@ -4,14 +4,14 @@
 
     <div class="manualFirstColumnContainer">
 
-      <div class="gongTypeSelectionContainer">
+      <div class="gongTypeSelectionContainer mat-elevation-z8">
         <div class="containerHeader">
           {{ 'manualActivation.dropdowns.gongType.label' | translate }}
         </div>
 
-        <div class="mat-elevation-z8">
+        <div class="ctrlContentContainer">
           <mat-list>
-            <mat-list-item *ngFor="let gongType of gongTypes" class="center"
+            <mat-list-item *ngFor="let gongType of gongTypes" class="listItemClass center"
                            [ngClass]="{selectedGongTypeClass: gongType.id === gongToPlay?.gongTypeId}"
                            (click)="gongToPlay.gongTypeId = gongType.id" style="cursor: pointer">
               <span style="text-align: center">
@@ -22,42 +22,38 @@
         </div>
       </div><!--End of gongTypeSelectionContainer-->
 
-      <div class="areaSelectionContainer">
+      <div class="areaSelectionContainer mat-elevation-z8">
         <div class="containerHeader">
           {{ 'manualActivation.dropdowns.areas.label' | translate }}
         </div>
 
-        <div class="mat-elevation-z8">
+        <div class="ctrlContentContainer">
           <mat-selection-list #areasSelectionCtrl [(ngModel)]="gongToPlay.areas">
-            <mat-list-option [value]="0" #allAreasSelectionCtrl >
+            <mat-list-option [value]="0" #allAreasSelectionCtrl class="listItemClass">
               {{'manualActivation.dropdowns.areas.values.all' | translate }}
             </mat-list-option>
             <mat-divider></mat-divider>
-            <mat-list-option *ngFor="let area of areas" [value]="area.id" >
+            <mat-list-option *ngFor="let area of areas" [value]="area.id" class="listItemClass">
               {{'manualActivation.dropdowns.areas.values.' + area.name | translate }}
             </mat-list-option>
           </mat-selection-list>
         </div>
       </div><!--End of areaSelectionContainer-->
 
-
-    </div><!--End of manualFirstColumnContainer-->
-
-    <div class="manualSecondColumnContainer">
-      <div class="volumeSelectionContainer">
+      <div class="volumeSelectionContainer mat-elevation-z8">
         <div class="containerHeader">
           {{ 'manualActivation.labels.volume' | translate }}
         </div>
 
-        <div class="mat-elevation-z8 volumeSliderContainer">
-          <mat-slider thumbLabel vertical min="1" tickInterval="1"
+        <div class=" ctrlContentContainer volumeSliderContainer">
+          <mat-slider thumbLabel min="1" tickInterval="1"
                       [(value)]="gongToPlay.volume" class="sliderClass">
 
           </mat-slider>
         </div>
       </div><!--End of volumeSelectionContainer-->
 
-      <div class="btn-group">
+      <div class="btnGroup">
         <div class="datePickerContainer">
 
           <md2-datepicker [(ngModel)]="chosenTime"
@@ -79,10 +75,9 @@
                 [disabled]="">
           {{ 'manualActivation.buttons.schedulePlay' | translate }}
         </button>
-      </div>
+      </div><!--End of btnGroup-->
 
-
-    </div><!--End of manualSecondColumnContainer-->
+    </div><!--End of manualFirstColumnContainer-->
 
   </div><!--End of manualControlsContainer-->
 

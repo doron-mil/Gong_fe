@@ -1,5 +1,4 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Gong} from '../../model/gong';
 import {GongType} from '../../model/gongType';
 import {Area} from '../../model/area';
 import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar, MatTableDataSource} from '@angular/material';
@@ -9,8 +8,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {UpdateStatusEnum} from '../../model/updateStatusEnum';
 import {NgRedux} from '@angular-redux/store';
 import {BehaviorSubject, combineLatest, Subscription} from 'rxjs';
-import {CourseSchedule} from '../../model/courseSchedule';
-import {Course} from '../../model/course';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 
 @Component({

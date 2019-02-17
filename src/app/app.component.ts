@@ -12,6 +12,8 @@ import {Router} from '@angular/router';
 })
 export class AppComponent implements OnInit {
   title = 'app';
+  public now: Date = new Date();
+
 
   isManual = true;
   activeLink = 1;
@@ -26,6 +28,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    setInterval(() => {
+      this.now = new Date();
+    }, 1000 * 60);
     // this.readToStore();
   }
 

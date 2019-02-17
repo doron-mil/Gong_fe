@@ -93,8 +93,9 @@
       },
       "courseName": {
         "10_day_course": "10 ימים",
+        "satipattana": "סאטיפטהאנה",
         "test": "זהו תרגיל",
-        "satipattana": "סאטיפטהאנה"
+        "test2": "MinTest"
       }
     },
     "selectedCourseTable": {
