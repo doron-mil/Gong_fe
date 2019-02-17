@@ -30,7 +30,7 @@ export class ScheduledGong {
       clonedObject.time = moment(clonedObject.date).diff(moment(clonedObject.date).startOf('day'));
     }
 
-    if (!clonedObject.dayNumber) {
+    if (!clonedObject.dayNumber && clonedObject.dayNumber !== 0 ) {
       clonedObject.dayNumber = parseInt(moment(clonedObject.date).format('DDD'), 10);
     }
 

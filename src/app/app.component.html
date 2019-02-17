@@ -41,7 +41,7 @@
     <div>
       {{ nextGongTime | amDateFormat: 'YYYY/MM/DD HH:mm'}}
       <span matTooltip="{{ 'main.tooltips.manual.' + isManual | translate}}"
-            matTooltipClass="manualTooltipClass">
+            matTooltipClass="manualTooltipClass" class="isManualSymbol mat-elevation-z8">
         {{isManual?'M':'A'}}
       </span>
     </div>

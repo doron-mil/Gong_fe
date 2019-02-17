@@ -20,7 +20,7 @@
   width: 5vw;
 }
 
-.selectedLangClass{
+.selectedLangClass {
   background-color: lightcyan;
 }
 
@@ -46,6 +46,17 @@
 
 .langRtl {
   direction: rtl;
+}
+
+.logo-container {
+  padding-top: 2vh;
+}
+
+.isManualSymbol {
+  font-weight: bolder;
+  color: blue;
+  background-color: lightgray;
+  padding: 2px;
 }
 
 ::ng-deep .manualTooltipClass {

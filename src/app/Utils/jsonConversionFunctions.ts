@@ -5,6 +5,15 @@ import {
 import {ScheduledGong} from '../model/ScheduledGong';
 import * as moment from 'moment';
 
+const addNewGongToArray = (aCourseDay, aGongTime, aGongRecord, aGongsArray) => {
+  const newScheduledGong = new ScheduledGong();
+  newScheduledGong.dayNumber = aCourseDay;
+  newScheduledGong.time = aGongTime;
+  newScheduledGong.gongTypeId = aGongRecord.type;
+  newScheduledGong.areas = aGongRecord.areas;
+  newScheduledGong.volume = aGongRecord.volume ? aGongRecord.volume : 100;
+  aGongsArray.push(newScheduledGong);
+};
 
 export class JsonConversionFunctions implements JsonConverterConfigurationInterface {
   conversionFunctions: ConversionFunctionsType = {};
@@ -35,12 +44,13 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
       (agendaRecord.days as Array<any>).forEach(day => {
         const gongRecord = agendaRecord.gongs;
         (gongRecord.times as Array<any>).forEach(gongTime => {
-          scheduledGong = new ScheduledGong();
-          scheduledGong.dayNumber = day;
-          scheduledGong.time = this.timeConversion(gongTime);
-          scheduledGong.gongTypeId = gongRecord.type;
-          scheduledGong.areas = gongRecord.areas;
-          returnedScheduledGongArray.push(scheduledGong);
+          if (gongTime.indexOf(':') > 0) {
+            addNewGongToArray(day, this.timeConversion(gongTime), gongRecord, returnedScheduledGongArray);
+          } else {
+            for (let hourInDay = 7; hourInDay < 8; hourInDay += 1) { // 0 .. < 24
+              addNewGongToArray(day, this.timeConversion(hourInDay + gongTime), gongRecord, returnedScheduledGongArray);
+            }
+          }
         });
       });
     });

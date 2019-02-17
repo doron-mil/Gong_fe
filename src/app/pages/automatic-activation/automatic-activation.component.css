@@ -3,12 +3,14 @@ body {
   /*height: auto;*/
   /*max-height: 100% !important;*/
 }
-.automaticActivationContainer{
+
+.automaticActivationContainer {
   height: 98%;
 }
 
 .highlight {
-  background: red;
+  color: white;
+  background: #e3f2fd;
 }
 
 .btn-group {
