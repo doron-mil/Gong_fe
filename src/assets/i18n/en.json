@@ -85,7 +85,7 @@
     },
     "buttons": {
       "play": "Play",
-      "schedulePlay": "Sched."
+      "schedulePlay": "Schedule"
     },
     "messages": {
       "areaIsEmpty": "Must choose at least one area"
@@ -101,6 +101,7 @@
       "courseName": {
         "10_day_course": "10 Days",
         "satipattana": "Satipattana",
+        "sati_short": "Sati_test",
         "test": "test",
         "test2": "test2"
       }

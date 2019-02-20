@@ -8,7 +8,9 @@
     <td mat-cell *matCellDef="let element" class="dayTd"
         [attr.rowspan]="element.span"
         [style.display]="element.span > 0 ? '' : 'none'">
-      {{ element.dayNumber }}
+      <span class="dayClass">
+        {{ element.dayNumber }}
+      </span>
     </td>
   </ng-container>
 

@@ -4,6 +4,30 @@
 
     <div class="manualFirstColumnContainer">
 
+      <div class="btnGroup">
+        <div class="datePickerContainer">
+
+          <md2-datepicker [(ngModel)]="chosenTime"
+                          [isOpen]="isScheduledDatePickerOpen"
+                          (onClose)="scheduledDateOnClose()"
+                          touchUi="true"
+                          type="datetime"
+                          [min]="scheduleGongStartDate"
+                          [startAt]="scheduleGongStartDate"
+                          style="top: 80px; height: 9vh; margin-top: 2vh;">
+
+          </md2-datepicker>
+        </div>
+
+        <button mat-fab color="accent" (click)="playGong()" class="manualButton">
+          {{ 'manualActivation.buttons.play' | translate }}
+        </button>
+        <button mat-raised-button color="primary" (click)="scheduleGong()" class="manualButton"
+                [disabled]="">
+          {{ 'manualActivation.buttons.schedulePlay' | translate }}
+        </button>
+      </div><!--End of btnGroup-->
+
       <div class="gongTypeSelectionContainer mat-elevation-z8">
         <div class="containerHeader">
           {{ 'manualActivation.dropdowns.gongType.label' | translate }}
@@ -53,29 +77,6 @@
         </div>
       </div><!--End of volumeSelectionContainer-->
 
-      <div class="btnGroup">
-        <div class="datePickerContainer">
-
-          <md2-datepicker [(ngModel)]="chosenTime"
-                          [isOpen]="isScheduledDatePickerOpen"
-                          (onClose)="scheduledDateOnClose()"
-                          touchUi="true"
-                          type="datetime"
-                          [min]="scheduleGongStartDate"
-                          [startAt]="scheduleGongStartDate"
-                          style="top: 80px; height: 9vh; margin-top: 2vh;">
-
-          </md2-datepicker>
-        </div>
-
-        <button mat-fab color="accent" (click)="playGong()" class="manualButton">
-          {{ 'manualActivation.buttons.play' | translate }}
-        </button>
-        <button mat-fab color="primary" (click)="scheduleGong()" class="manualButton"
-                [disabled]="">
-          {{ 'manualActivation.buttons.schedulePlay' | translate }}
-        </button>
-      </div><!--End of btnGroup-->
 
     </div><!--End of manualFirstColumnContainer-->
 
