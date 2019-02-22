@@ -1,0 +1,64 @@
+<div class="message-title">
+  <div class="header">
+    {{ 'dialogs.scheduleCourse.header.' + (isNew ? 'new' :'update')| translate}}
+  </div>
+  <mat-icon (click)="closeDialog(false)" svgIcon="window-close" class="close-dialog"></mat-icon>
+</div>
+<hr class="line">
+<div class="body-content">
+  <h4>
+    {{ 'dialogs.scheduleCourse.labels.courseName' | translate}}
+  </h4>
+  <mat-form-field>
+    <mat-select [(value)]="selectedCourse" (selectionChange)="onCourseSelectedChange()"
+                placeholder="{{ 'dialogs.scheduleCourse.placeHolders.courseName' | translate}}">
+      <mat-option *ngFor="let course of courses" [value]="course">
+        {{ 'automaticActivation.scheduleTable.courseName.' + course.name| translate}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <h4>
+    {{ 'dialogs.scheduleCourse.labels.dayStart' | translate}}
+  </h4>
+  <mat-form-field>
+    <mat-select [(value)]="selectedStartFromDay" (selectionChange)="onStartFromDaySelectedChange()"
+                placeholder="{{ 'dialogs.scheduleCourse.placeHolders.dayStart' | translate}}">
+      <mat-option *ngFor="let startDay of startDayArray" [value]="startDay">
+        {{ startDay }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <h4>
+    {{ 'dialogs.scheduleCourse.labels.date' | translate}}
+  </h4>
+  <div class="date-picker">
+
+    <md2-datepicker
+                    [isOpen]="datePickerIsOpened"
+                    (onClose)="datePickerIsOpened = false"
+                    [(ngModel)]="selectedStartDate"
+                    [disabled]="!selectedCourse"
+                    [touchUi]="true"
+                    [dateFilter]="dateFilter"
+                    [min]="minStartDate"
+                    type="date">
+
+    </md2-datepicker>
+  </div>
+  <div class="date-display-container">
+    <button mat-icon-button (click)="openDatePicker()" [disabled]="!selectedCourse">
+      <mat-icon svgIcon="calendar-today"></mat-icon>
+    </button>
+    <span class="start-date-display" (click)="selectedCourse && openDatePicker()"
+      [ngClass]="{'start-date-display-disabled': !selectedCourse}" >
+      {{selectedStartDate | date:'yyyy-MM-dd'}}
+    </span>
+  </div>
+
+  <button mat-raised-button color="primary" (click)="scheduleCourse()" class="scheduleCourseButton">
+    {{ 'dialogs.scheduleCourse.buttons.scheduleCourse' | translate }}
+  </button>
+
+</div>

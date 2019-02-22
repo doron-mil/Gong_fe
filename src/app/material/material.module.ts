@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
   MatButtonModule, MatCardModule,
-  MatCheckboxModule,
+  MatCheckboxModule, MatDialogModule,
   MatFormFieldModule, MatIconModule,
   MatInputModule, MatListModule, MatMenuModule, MatProgressSpinnerModule,
   MatSelectModule,
@@ -33,6 +33,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatCardModule,
     MatMenuModule,
     MatIconModule,
+    MatDialogModule,
   ],
   exports: [
     MatToolbarModule,
@@ -53,6 +54,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatCardModule,
     MatMenuModule,
     MatIconModule,
+    MatDialogModule,
   ],
 })
 export class MaterialModule {

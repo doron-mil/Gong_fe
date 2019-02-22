@@ -8,6 +8,7 @@ import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
 import {addManualGong, getBasicData, readToStoreData} from '../store/actions/action';
 import {ScheduledGong} from '../model/ScheduledGong';
+import {CourseSchedule} from '../model/courseSchedule';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +23,22 @@ export class StoreService implements OnInit, OnDestroy {
   areasMap: Area[] = [];
   gongTypesMap: GongType[] = [];
   coursesMap: { [key: string]: Course } = {};
+  coursesMap2: Map<string, Course>;
 
   subscriptionsArray: Subscription[] = [];
+
+  courseScheduleArray: CourseSchedule[];
+  isCourseScheduleArrayEnhanced: boolean;
 
   constructor(private ngRedux: NgRedux<any>,
               private translateService: TranslateService) {
     this.populateAreasMap();
     this.populateGongTypesMap();
     this.populateGongTypeCoursesMap();
+    this.populateScheduledCoursesArray();
+  }
+
+  ngOnInit(): void {
   }
 
   private populateAreasMap() {
@@ -72,8 +81,10 @@ export class StoreService implements OnInit, OnDestroy {
         .subscribe((courses: Course[]) => {
           if (courses && courses.length > 0) {
             this.coursesMap = {};
+            this.coursesMap2 = new Map();
             courses.forEach((course: Course) => {
               this.coursesMap[course.name] = course;
+              this.coursesMap2.set(course.name, course);
             });
           }
           this.coursesMapObservable.next(this.coursesMap);
@@ -82,8 +93,15 @@ export class StoreService implements OnInit, OnDestroy {
     this.subscriptionsArray.push(coursesSubscription);
   }
 
+  private populateScheduledCoursesArray() {
+    const coursesSubscription =
+      this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule'])
+        .subscribe((courseScheduleArray: CourseSchedule[]) => {
+          this.isCourseScheduleArrayEnhanced = false;
+          this.courseScheduleArray = courseScheduleArray;
+        });
 
-  ngOnInit(): void {
+    this.subscriptionsArray.push(coursesSubscription);
   }
 
   readToStore() {
@@ -110,15 +128,14 @@ export class StoreService implements OnInit, OnDestroy {
     return await this.gongTypesMapObservable.toPromise();
   }
 
-  async getCoursesMapAsync(): Promise<{ [key: string]: Course }> {
-    return await this.coursesMapObservable.toPromise();
+  getCoursesMapSync(): Map<string, Course> {
+    return this.coursesMap2;
   }
 
-  ngOnDestroy(): void {
-    this.subscriptionsArray.forEach(subscription => subscription.unsubscribe());
-    console.log('c1');
+  getCourseScheduleArraySync(): CourseSchedule[] {
+    this.enhanceCourseScheduleArray();
+    return this.courseScheduleArray;
   }
-
 
   addManualGong(gongToPlay: ScheduledGong) {
     this.ngRedux.dispatch(addManualGong(gongToPlay));
@@ -127,4 +144,23 @@ export class StoreService implements OnInit, OnDestroy {
   getBasicData() {
     this.ngRedux.dispatch(getBasicData());
   }
+
+  addCourse(aCourseSchedule: CourseSchedule) {
+
+  }
+
+  private enhanceCourseScheduleArray() {
+    if (!this.isCourseScheduleArrayEnhanced) {
+      this.courseScheduleArray.forEach((courseSchedule: CourseSchedule) => {
+        courseSchedule.daysCount = this.coursesMap2.get(courseSchedule.name).days;
+      });
+      this.isCourseScheduleArrayEnhanced = true;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptionsArray.forEach(subscription => subscription.unsubscribe());
+    console.log('c1');
+  }
+
 }

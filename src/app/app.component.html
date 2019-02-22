@@ -2,18 +2,18 @@
 
   <section class="">
     <button mat-icon-button [matMenuTriggerFor]="mainOptionsMenu">
-      <mat-icon svgIcon="options" class="options"></mat-icon>
+      <mat-icon svgIcon="apps" class="options"></mat-icon>
     </button>
 
     <mat-menu #mainOptionsMenu="matMenu">
       <button mat-menu-item [matMenuTriggerFor]="languagesMenu">
-        <mat-icon svgIcon="language"></mat-icon>
+        <mat-icon svgIcon="web"></mat-icon>
         <span>
           {{'main.menu.language.main' | translate}}
         </span>
       </button>
       <button mat-menu-item (click)="logout()">
-        <mat-icon svgIcon="power_off"></mat-icon>
+        <mat-icon svgIcon="logout"></mat-icon>
         <span>
           {{'main.menu.logout' | translate}}
         </span>

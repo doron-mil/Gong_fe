@@ -1,4 +1,4 @@
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {ServiceWorkerModule} from '@angular/service-worker';
 
@@ -31,6 +31,8 @@ import {GongsTimeTableComponent} from './components/gongs-time-table/gongs-time-
 import {LoginComponent} from './pages/login/login.component';
 import {MainPageComponent} from './pages/main-page/main-page.component';
 import {MomentModule} from 'ngx-moment';
+import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/schedule-course-dialog.component';
+import {MatIconRegistry} from '@angular/material';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -58,7 +60,8 @@ export const translationRoot = {
     SelectedAreasComponent,
     GongsTimeTableComponent,
     LoginComponent,
-    MainPageComponent
+    MainPageComponent,
+    ScheduleCourseDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -80,6 +83,7 @@ export const translationRoot = {
       }
     }),
   ],
+  entryComponents: [ScheduleCourseDialogComponent],
   providers: [ApiMiddlewareService, GeneralMiddlewareService],
   bootstrap: [AppComponent]
 })
@@ -90,7 +94,10 @@ export class AppModule {
               private devTools: DevToolsExtension,
               generalMiddlewareService: GeneralMiddlewareService,
               apiMiddlewareService: ApiMiddlewareService,
+              matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer,
               translate: TranslateService) {
+
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('./assets/icons/mdi.svg'));
 
     // ************* Translator Init *****************
     // ***********************************************

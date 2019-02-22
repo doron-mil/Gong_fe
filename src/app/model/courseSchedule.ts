@@ -3,4 +3,5 @@ export class CourseSchedule {
   name: string;
   date: Date;
   daysCount: number;
+  startFromDay: number;
 }

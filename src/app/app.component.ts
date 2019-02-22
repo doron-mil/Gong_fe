@@ -42,18 +42,18 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private addSvgIcons() {
-    this.matIconRegistry.addSvgIcon(
-      'options',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-apps-24px.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      'language',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-language-24px.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      'power_off',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-power_off-24px.svg')
-    );
+    // this.matIconRegistry.addSvgIcon(
+    //   'options',
+    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-apps-24px.svg')
+    // );
+    // this.matIconRegistry.addSvgIcon(
+    //   'language',
+    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-language-24px.svg')
+    // );
+    // this.matIconRegistry.addSvgIcon(
+    //   'power_off',
+    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-power_off-24px.svg')
+    // );
     this.matIconRegistry.addSvgIcon(
       'lang_he',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lang/he.svg')

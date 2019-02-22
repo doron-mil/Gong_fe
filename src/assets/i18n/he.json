@@ -53,10 +53,10 @@
     },
     "menu": {
       "language": {
-        "main":"שפה",
-        "subMenu":{
-         "he":"עברית",
-         "en":"אנגלית"
+        "main": "שפה",
+        "subMenu": {
+          "he": "עברית",
+          "en": "אנגלית"
         }
       },
       "logout": "יציאה"
@@ -123,6 +123,26 @@
       "addCourse": "הוסף קורס",
       "removeCourse": "מחק קורס",
       "updateCourse": "עדכן קורס"
+    }
+  },
+  "dialogs": {
+    "scheduleCourse": {
+      "header": {
+        "new": "הוסף קורס",
+        "update": "עדכן קורס"
+      },
+      "labels": {
+        "courseName": "Course Name",
+        "dayStart": "Start from day",
+        "date": "Schedule day"
+      },
+      "placeHolders": {
+        "courseName": "Select a course",
+        "dayStart": "Select the day to start with"
+      },
+      "buttons": {
+        "scheduleCourse": "Schedule Course"
+      }
     }
   }
 }

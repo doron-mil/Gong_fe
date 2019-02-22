@@ -2,12 +2,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {NgRedux} from '@angular-redux/store';
 import {Course} from '../../model/course';
-import {MatTableDataSource} from '@angular/material';
+import {MatDialog, MatTableDataSource} from '@angular/material';
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {combineLatest, Subscription} from 'rxjs';
 import {StoreService} from '../../services/store.service';
 import {GongType} from '../../model/gongType';
+import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialog/schedule-course-dialog.component';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -26,6 +27,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(private ngRedux: NgRedux<any>,
+              private dialog: MatDialog,
               private storeService: StoreService) {
   }
 
@@ -84,7 +86,18 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   }
 
   addCourse() {
+    const dialogRef = this.dialog.open(ScheduleCourseDialogComponent, {
+      height: '70vh',
+      width: '70vw',
+      position: {top: '15vh'},
+      data: {}
+    });
 
+    dialogRef.afterClosed().subscribe((data: CourseSchedule) => {
+      if (data) {
+        this.storeService.addCourse(data);
+      }
+    });
   }
 
   ngOnDestroy(): void {

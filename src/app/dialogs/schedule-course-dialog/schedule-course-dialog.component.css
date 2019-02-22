@@ -1,0 +1,56 @@
+.message-title {
+  font-size: 2em;
+  font-weight: bolder;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: normal;
+  color: #000000;
+  display: flex;
+  flex-direction: row;
+  padding: 1.4vh 1.5vw;
+  background-color: #e6e7e7;
+}
+
+::ng-deep .message-dialog .mat-dialog-container {
+  padding: 0;
+  border-radius: 0.3rem;
+}
+
+.body-content {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.header {
+  margin-right: 1vw;
+  vertical-align: center;
+  flex-grow: 1;
+}
+
+.close-dialog {
+  cursor: pointer;
+  height: 2vw;
+  width: 2vw;
+}
+
+.date-picker {
+  display: none;
+}
+
+.date-display-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.start-date-display {
+}
+.start-date-display-disabled {
+  color: lightgray;
+}
+
+h4 {
+  margin: 0px;
+}
+
+

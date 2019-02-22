@@ -121,5 +121,25 @@
       "removeCourse": "Remove Course",
       "updateCourse": "Update Course"
     }
+  },
+  "dialogs" :{
+    "scheduleCourse" : {
+      "header" : {
+        "new" : "Schedule A New Course",
+        "update" : "Update A Course Schedule"
+      },
+      "labels":{
+        "courseName": "Course Name" ,
+        "dayStart": "Start from day" ,
+        "date": "Schedule day"
+      },
+      "placeHolders":{
+        "courseName": "Select a course" ,
+        "dayStart": "Select the day to start with"
+      },
+      "buttons":{
+        "scheduleCourse" :"Schedule Course"
+      }
+    }
   }
 }
