@@ -96,7 +96,8 @@
       "headers": {
         "name": "Course Name",
         "date": "Start Date",
-        "daysCount": "No. Days"
+        "daysCount": "No. Days",
+        "startFromDay": "Day Start"
       },
       "courseName": {
         "10_day_course": "10 Days",
@@ -117,9 +118,19 @@
       }
     },
     "buttons": {
-      "addCourse": "Add Course",
+      "scheduleCourse": "Schedule Course",
       "removeCourse": "Remove Course",
       "updateCourse": "Update Course"
+    },
+    "alerts" :{
+      "confirmRemoveSchedule" :{
+        "title" : "Remove Scheduled Course",
+        "text" : "Are you sure?",
+        "buttons" : {
+          "cancel" : "Cancel",
+          "confirm" :"Yes"
+        }
+      }
     }
   },
   "dialogs" :{

@@ -4,6 +4,8 @@ import * as moment from 'moment';
 import {Course} from '../../model/course';
 import {StoreService} from '../../services/store.service';
 import {CourseSchedule} from '../../model/courseSchedule';
+import {UpdateStatusEnum} from '../../model/updateStatusEnum';
+import {v4 as uuid} from 'uuid';
 
 const dateFormat = 'YY-MM-DD HH:mm:ss';
 
@@ -62,21 +64,17 @@ export class ScheduleCourseDialogComponent implements OnInit {
     this.coursesMap = this.storeService.getCoursesMapSync();
     this.coursesMap.forEach(value => this.courses.push(value));
 
-    const aaaa = [];
-
     const courseScheduleArray = this.storeService.getCourseScheduleArraySync();
     courseScheduleArray.forEach((courseSchedule: CourseSchedule) => {
       const momentRange = MomentRange.createInstanceOutOfCourseSchedule(courseSchedule);
-      aaaa.push(momentRange.print());
       this.coursesMomentRangeArray.push(momentRange);
     });
-    console.log('111\n', aaaa);
 
     this.selectedStartDate = new Date();
   }
 
-  closeDialog(userApproved: boolean): void {
-    this.dialogRef.close(userApproved);
+  closeDialog(aCourseSchedule: CourseSchedule = null): void {
+    this.dialogRef.close(aCourseSchedule);
   }
 
   onCourseSelectedChange() {
@@ -101,6 +99,15 @@ export class ScheduleCourseDialogComponent implements OnInit {
   }
 
   scheduleCourse() {
+    if (this.selectedCourse) {
+      const courseSchedule = new CourseSchedule();
+      courseSchedule.tmpId = uuid();
+      courseSchedule.name = this.selectedCourse.name;
+      courseSchedule.date = this.selectedStartDate;
+      courseSchedule.startFromDay = this.selectedStartFromDay;
+      courseSchedule.updateStatus = UpdateStatusEnum.PENDING;
+      this.closeDialog(courseSchedule);
+    }
   }
 
   openDatePicker() {

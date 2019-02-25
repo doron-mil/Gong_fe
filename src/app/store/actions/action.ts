@@ -13,6 +13,8 @@ export const COURSES_FEATURE = '[COURSES]';
 export const COURSES_SCHEDULE_FEATURE = '[COURSES_SCHEDULE]';
 export const MANUAL_GONGS_LIST_FEATURE = '[MANUAL_GONGS_LIST]';
 export const MANUAL_GONG_ADD_FEATURE = '[MANUAL_GONG_ADD]';
+export const SCHEDULE_COURSE_FEATURE = '[SCHEDULE_COURSE_ADD]';
+export const SCHEDULED_COURSE_REMOVE_FEATURE = '[SCHEDULED_COURSE_REMOVE]';
 
 
 export const READ_TO_STORE_DATA = 'READ_TO_STORE_DATA';
@@ -25,6 +27,9 @@ export const SET_COURSES_SCHEDULE = 'SET_COURSES_SCHEDULE';
 export const SET_MANUAL_GONGS_LIST = 'SET_MANUAL_GONGS_LIST';
 export const ADD_MANUAL_GONG = 'ADD_MANUAL_GONG';
 export const UPDATE_MANUAL_GONG = 'UPDATE_MANUAL_GONG';
+export const SCHEDULE_COURSE_ADD = 'SCHEDULE_COURSE_ADD';
+export const SCHEDULED_COURSE_UPDATE = 'SCHEDULED_COURSE_UPDATE';
+export const SCHEDULED_COURSE_REMOVE = 'SCHEDULED_COURSE_REMOVE';
 
 export interface AppAction extends Action {
   payload: any;
@@ -85,4 +90,22 @@ export const updateManualGong = (manualGong: ScheduledGong) => ({
   type: UPDATE_MANUAL_GONG,
   payload: manualGong,
   meta: {feature: MANUAL_GONG_ADD_FEATURE}
+});
+
+export const scheduleCourse = (aCourseSchedule: CourseSchedule) => ({
+  type: SCHEDULE_COURSE_ADD,
+  payload: aCourseSchedule,
+  meta: {feature: SCHEDULE_COURSE_FEATURE}
+});
+
+export const updateCourseSchedule = (aCourseSchedule: CourseSchedule) => ({
+  type: SCHEDULED_COURSE_UPDATE,
+  payload: aCourseSchedule,
+  meta: {feature: SCHEDULE_COURSE_FEATURE}
+});
+
+export const removeScheduleCourse = (aCourseScheduledToRemove: CourseSchedule) => ({
+  type: SCHEDULED_COURSE_REMOVE,
+  payload: aCourseScheduledToRemove,
+  meta: {feature: SCHEDULED_COURSE_REMOVE_FEATURE}
 });

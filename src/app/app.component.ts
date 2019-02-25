@@ -10,6 +10,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from './services/auth.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -42,18 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private addSvgIcons() {
-    // this.matIconRegistry.addSvgIcon(
-    //   'options',
-    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-apps-24px.svg')
-    // );
-    // this.matIconRegistry.addSvgIcon(
-    //   'language',
-    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-language-24px.svg')
-    // );
-    // this.matIconRegistry.addSvgIcon(
-    //   'power_off',
-    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/baseline-power_off-24px.svg')
-    // );
     this.matIconRegistry.addSvgIcon(
       'lang_he',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lang/he.svg')
@@ -84,12 +73,15 @@ export class AppComponent implements OnInit, OnDestroy {
               this.now = this.now.clone().add(1, 'm');
             }
           });
-          this.nextGongTime = moment(basicServerData.nextScheduledJobTime);
           this.isManual = basicServerData.isManual;
-          const timeToNextScheduledJob = this.nextGongTime.clone().startOf('minute').add(1, 'm');
-          this.nextGongSubscription = timer(timeToNextScheduledJob.toDate()).subscribe(() => {
-            this.getBasicData();
-          });
+          const nextGongTime = moment(basicServerData.nextScheduledJobTime);
+          if (!nextGongTime.isSame(this.nextGongTime)) {
+            this.nextGongTime = nextGongTime;
+            const timeToNextScheduledJob = this.nextGongTime.clone().startOf('minute').add(1, 'm');
+            this.nextGongSubscription = timer(timeToNextScheduledJob.toDate()).subscribe((aaa) => {
+              this.getBasicData();
+            });
+          }
         }
       });
   }

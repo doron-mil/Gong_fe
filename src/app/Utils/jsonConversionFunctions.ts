@@ -18,6 +18,8 @@ const addNewGongToArray = (aCourseDay, aGongTime, aGongRecord, aGongsArray) => {
 export class JsonConversionFunctions implements JsonConverterConfigurationInterface {
   conversionFunctions: ConversionFunctionsType = {};
 
+  private dateFormat = 'YYYY-MM-DD';
+
   converterMainMethodOverride = undefined;
 
   static getInstance(): JsonConversionFunctions {
@@ -33,6 +35,7 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
     this.conversionFunctions['dateConversion'] = this.dateConversion;
     this.conversionFunctions['timeToDateConversion'] = this.timeToDateConversion;
     this.conversionFunctions['dateToTimeConversionForJson'] = this.dateToTimeConversionForJson;
+    this.conversionFunctions['dateToStrDateConversionForJson'] = this.dateToStrDateConversionForJson;
   }
 
   agendaConversion = (coursesAgendaArray: Array<any>): ScheduledGong[] => {
@@ -75,7 +78,7 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
   };
 
   dateConversion = (dateAsStr: string): Date => {
-    const date = moment(dateAsStr, 'YYYY-MM-DD').toDate();
+    const date = moment(dateAsStr, this.dateFormat).toDate();
     return date;
   };
 
@@ -87,5 +90,10 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
   dateToTimeConversionForJson = (date: Date): number => {
     const time = date.getTime();
     return time;
+  };
+
+  dateToStrDateConversionForJson = (aDate: Date): string => {
+    const dateStr = moment(aDate).format(this.dateFormat);
+    return dateStr;
   };
 }

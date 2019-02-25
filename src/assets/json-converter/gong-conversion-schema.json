@@ -70,7 +70,8 @@
       },
       {
         "propertyName": "date",
-        "conversionFunctionName": "dateConversion"
+        "conversionFunctionName": "dateConversion",
+        "conversionFunctionToJsonName": "dateToStrDateConversionForJson"
       }
     ]
   },

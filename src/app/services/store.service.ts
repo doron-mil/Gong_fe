@@ -6,7 +6,7 @@ import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
-import {addManualGong, getBasicData, readToStoreData} from '../store/actions/action';
+import {addManualGong, getBasicData, readToStoreData, removeScheduleCourse, scheduleCourse} from '../store/actions/action';
 import {ScheduledGong} from '../model/ScheduledGong';
 import {CourseSchedule} from '../model/courseSchedule';
 
@@ -17,13 +17,14 @@ export class StoreService implements OnInit, OnDestroy {
 
   private areasMapObservable: BehaviorSubject<Area[]> = new BehaviorSubject<Area[]>([]);
   private gongTypesMapObservable: BehaviorSubject<GongType[]> = new BehaviorSubject<GongType[]>([]);
-  private coursesMapObservable: BehaviorSubject<{ [key: string]: Course }> =
+  private coursesMapObservableObsolete: BehaviorSubject<{ [key: string]: Course }> =
     new BehaviorSubject<{ [key: string]: Course }>({});
+  private coursesMapObservable: BehaviorSubject<Map<string, Course>> = new BehaviorSubject<Map<string, Course>>(null);
 
   areasMap: Area[] = [];
   gongTypesMap: GongType[] = [];
-  coursesMap: { [key: string]: Course } = {};
-  coursesMap2: Map<string, Course>;
+  coursesMapObsolete: { [key: string]: Course } = {};
+  coursesMap: Map<string, Course>;
 
   subscriptionsArray: Subscription[] = [];
 
@@ -80,13 +81,14 @@ export class StoreService implements OnInit, OnDestroy {
       this.ngRedux.select<Course[]>([StoreDataTypeEnum.STATIC_DATA, 'courses'])
         .subscribe((courses: Course[]) => {
           if (courses && courses.length > 0) {
-            this.coursesMap = {};
-            this.coursesMap2 = new Map();
+            this.coursesMapObsolete = {};
+            this.coursesMap = new Map();
             courses.forEach((course: Course) => {
-              this.coursesMap[course.name] = course;
-              this.coursesMap2.set(course.name, course);
+              this.coursesMapObsolete[course.name] = course;
+              this.coursesMap.set(course.name, course);
             });
           }
+          this.coursesMapObservableObsolete.next(this.coursesMapObsolete);
           this.coursesMapObservable.next(this.coursesMap);
         });
 
@@ -116,7 +118,11 @@ export class StoreService implements OnInit, OnDestroy {
     return this.gongTypesMapObservable;
   }
 
-  getCoursesMap(): Observable<{ [key: string]: Course }> {
+  getCoursesMapObsolete(): Observable<{ [key: string]: Course }> {
+    return this.coursesMapObservableObsolete;
+  }
+
+  getCoursesMap(): Observable<Map<string, Course>> {
     return this.coursesMapObservable;
   }
 
@@ -129,7 +135,7 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   getCoursesMapSync(): Map<string, Course> {
-    return this.coursesMap2;
+    return this.coursesMap;
   }
 
   getCourseScheduleArraySync(): CourseSchedule[] {
@@ -145,14 +151,20 @@ export class StoreService implements OnInit, OnDestroy {
     this.ngRedux.dispatch(getBasicData());
   }
 
-  addCourse(aCourseSchedule: CourseSchedule) {
+  scheduleCourse(aCourseSchedule: CourseSchedule) {
+    this.ngRedux.dispatch(scheduleCourse(aCourseSchedule));
+  }
 
+  removeScheduledCourse(aCourseScheduledToRemove: CourseSchedule) {
+      console.log( '2222',aCourseScheduledToRemove)
+
+    this.ngRedux.dispatch(removeScheduleCourse(aCourseScheduledToRemove));
   }
 
   private enhanceCourseScheduleArray() {
     if (!this.isCourseScheduleArrayEnhanced) {
       this.courseScheduleArray.forEach((courseSchedule: CourseSchedule) => {
-        courseSchedule.daysCount = this.coursesMap2.get(courseSchedule.name).days;
+        courseSchedule.daysCount = this.coursesMap.get(courseSchedule.name).days;
       });
       this.isCourseScheduleArrayEnhanced = true;
     }
@@ -162,5 +174,4 @@ export class StoreService implements OnInit, OnDestroy {
     this.subscriptionsArray.forEach(subscription => subscription.unsubscribe());
     console.log('c1');
   }
-
 }

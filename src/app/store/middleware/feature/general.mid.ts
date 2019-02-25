@@ -4,10 +4,10 @@ import {
   AREA_FEATURE, BASIC_DATA_FEATURE,
   COURSES_FEATURE,
   COURSES_SCHEDULE_FEATURE, GET_BASIC_DATA, GONG_TYPES_FEATURE, MANUAL_GONG_ADD_FEATURE, MANUAL_GONGS_LIST_FEATURE,
-  READ_TO_STORE_DATA,
+  READ_TO_STORE_DATA, SCHEDULE_COURSE_ADD, SCHEDULE_COURSE_FEATURE, SCHEDULED_COURSE_REMOVE, SCHEDULED_COURSE_REMOVE_FEATURE,
   setAreas, setBasicServerData,
   setCourses,
-  setCoursesSchedule, setGongTypes, setManualGongsList, updateManualGong
+  setCoursesSchedule, setGongTypes, setManualGongsList, updateCourseSchedule, updateManualGong
 } from '../../actions/action';
 import {API_ERROR, API_REQUEST, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
@@ -25,6 +25,8 @@ export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
 export const AREA_URL = `${BASIC_URL}data/areas`;
 export const COURSES_URL = `${BASIC_URL}data/courses`;
 export const COURSES_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule`;
+export const ADD_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/add`;
+export const REMOVE_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/remove`;
 export const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
 export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
 export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
@@ -117,7 +119,37 @@ export class GeneralMiddlewareService {
           updateManualGong(action.data)
         );
         break;
-
+      case SCHEDULE_COURSE_ADD:
+        const courseSchedule = this.jsonConverterService.convertToJson(action.payload);
+        const stringedifiedCourseScheduleJson = JSON.stringify(courseSchedule);
+        next(
+          apiRequest(stringedifiedCourseScheduleJson, 'POST', ADD_COURSE_SCHEDULE_URL, SCHEDULE_COURSE_FEATURE, action.payload)
+        );
+        break;
+      case `${SCHEDULE_COURSE_FEATURE} ${API_SUCCESS}`:
+        const oldCourseSchedule = action.data as CourseSchedule;
+        const addedCourseSchedule = this.jsonConverterService.convertOneObject(action.payload.data, CourseSchedule);
+        addedCourseSchedule.tmpId = oldCourseSchedule.tmpId;
+        addedCourseSchedule.updateStatus = UpdateStatusEnum.SUCCESS;
+        next(
+          updateCourseSchedule(addedCourseSchedule)
+        );
+        break;
+      case `${SCHEDULE_COURSE_FEATURE} ${API_ERROR}`:
+        const newCourseSchedule = (action.data as CourseSchedule).clone();
+        newCourseSchedule.updateStatus = UpdateStatusEnum.FAILED;
+        next(
+          updateCourseSchedule(newCourseSchedule)
+        );
+        break;
+      case SCHEDULED_COURSE_REMOVE:
+        const courseScheduleForRemoval = this.jsonConverterService.convertToJson(action.payload);
+        const stringedifiedCourseScheduleForRemovalJson = JSON.stringify(courseScheduleForRemoval);
+        next(
+          apiRequest(stringedifiedCourseScheduleForRemovalJson, 'DELETE', REMOVE_COURSE_SCHEDULE_URL,
+            SCHEDULED_COURSE_REMOVE_FEATURE, action.payload)
+        );
+        break;
     }
 
     if (action.type.includes(API_ERROR)) {

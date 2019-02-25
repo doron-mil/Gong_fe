@@ -1,13 +1,11 @@
 <div class="automaticActivationContainer">
   <div class="btn-group">
-    <button mat-raised-button color="primary" (click)="addCourse()">
-      {{ 'automaticActivation.buttons.addCourse' | translate }}
+    <button mat-raised-button color="primary" (click)="scheduleCourse()">
+      {{ 'automaticActivation.buttons.scheduleCourse' | translate }}
     </button>
-    <button mat-raised-button color="accent" (click)="addCourse()">
+    <button mat-raised-button color="accent" (click)="removeScheduledCourse()"
+            [disabled]="!selectedCourseScheduled">
       {{ 'automaticActivation.buttons.removeCourse' | translate }}
-    </button>
-    <button mat-raised-button color="basic" (click)="addCourse()">
-      {{ 'automaticActivation.buttons.updateCourse' | translate }}
     </button>
   </div>
 
@@ -32,9 +30,15 @@
         <!-- no. Of Days -->
         <ng-container matColumnDef="daysCount">
           <mat-header-cell *matHeaderCellDef>
+            [{{ 'automaticActivation.scheduleTable.headers.startFromDay' | translate }}/]<BR/>
             {{ 'automaticActivation.scheduleTable.headers.daysCount' | translate }}
           </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.daysCount}}</mat-cell>
+          <mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.startFromDay >= 0">
+              {{element.startFromDay}} /
+            </ng-container>
+            {{element.daysCount}}
+          </mat-cell>
         </ng-container>
 
         <!-- date -->
@@ -49,7 +53,7 @@
 
         <mat-header-row *matHeaderRowDef="coursesDisplayedColumns; sticky: true"></mat-header-row>
         <mat-row *matRowDef="let row; columns: coursesDisplayedColumns;"
-                 [ngClass]="{'highlight': selectedRowIndex == row.id}"
+                 [ngClass]="{'highlight': selectedCourseScheduled && selectedCourseScheduled.id == row.id}"
                  (click)="onRowClick(row)">
         </mat-row>
       </mat-table>

@@ -1,14 +1,16 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CourseSchedule} from '../../model/courseSchedule';
 import {NgRedux} from '@angular-redux/store';
-import {Course} from '../../model/course';
 import {MatDialog, MatTableDataSource} from '@angular/material';
+import {combineLatest, Subscription} from 'rxjs';
+import swal from 'sweetalert';
+
+import {CourseSchedule} from '../../model/courseSchedule';
+import {Course} from '../../model/course';
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
-import {combineLatest, Subscription} from 'rxjs';
 import {StoreService} from '../../services/store.service';
-import {GongType} from '../../model/gongType';
 import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialog/schedule-course-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -20,7 +22,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   coursesDisplayedColumns = ['course_name', 'daysCount', 'date'];
   coursesDataSource: MatTableDataSource<CourseSchedule>;
   coursesData: CourseSchedule[] = [];
-  selectedRowIndex: number = -1;
+  selectedCourseScheduled: CourseSchedule;
+
+  coursesMap: Map<string, Course>;
 
   selectedCourseRoutineArray: ScheduledGong[] = [];
 
@@ -28,6 +32,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   constructor(private ngRedux: NgRedux<any>,
               private dialog: MatDialog,
+              private translate: TranslateService,
               private storeService: StoreService) {
   }
 
@@ -40,14 +45,16 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
     this.subscription = mergedObservable.subscribe(mergedResult => {
       const coursesSchedule: CourseSchedule[] = mergedResult[0];
-      const coursesMap: { [key: string]: Course } = mergedResult[1];
-      if (coursesSchedule && coursesMap) {
+      this.coursesMap = mergedResult[1];
+      if (coursesSchedule && this.coursesMap) {
+        coursesSchedule.sort(((a, b) => a.date.getTime() - b.date.getTime()));
         this.coursesData = [];
         coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
-          const course = coursesMap[courseSchedule.name];
+          const course = this.coursesMap.get(courseSchedule.name);
           if (course) {
-            courseSchedule.daysCount = course.days;
-            this.coursesData.push(courseSchedule);
+            const clonedCourseSchedule = courseSchedule.clone();
+            clonedCourseSchedule.daysCount = course.days;
+            this.coursesData.push(clonedCourseSchedule);
           }
         });
         if (this.coursesData.length > 0) {
@@ -58,7 +65,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   }
 
   onRowClick(row): void {
-    this.selectedRowIndex = row.id;
+    this.selectedCourseScheduled = row;
     this.getCourseRoutine(row);
   }
 
@@ -66,26 +73,23 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     const selectedCourseStartDate = selectedCourseScheduled.date;
     const selectedCourseName = selectedCourseScheduled.name;
 
-    this.subscription = this.storeService.getCoursesMap().subscribe(courseMap => {
+    const foundCourse = this.coursesMap.get(selectedCourseName);
 
-      const foundCourse = courseMap[selectedCourseName];
-
-      this.selectedCourseRoutineArray = [];
-      if (foundCourse) {
-        foundCourse.routine.forEach(course => {
-          const copiedCourse = course.cloneForUi(selectedCourseStartDate);
-          if (!copiedCourse.volume) {
-            copiedCourse.volume = 100;
-          }
-          this.selectedCourseRoutineArray.push(copiedCourse);
-        });
-      } else {
-        console.error('couldn\'t find course name : ' + selectedCourseName);
-      }
-    });
+    this.selectedCourseRoutineArray = [];
+    if (foundCourse) {
+      foundCourse.routine.forEach(course => {
+        const copiedCourse = course.cloneForUi(selectedCourseStartDate);
+        if (!copiedCourse.volume) {
+          copiedCourse.volume = 100;
+        }
+        this.selectedCourseRoutineArray.push(copiedCourse);
+      });
+    } else {
+      console.error('couldn\'t find course name : ' + selectedCourseName);
+    }
   }
 
-  addCourse() {
+  scheduleCourse() {
     const dialogRef = this.dialog.open(ScheduleCourseDialogComponent, {
       height: '70vh',
       width: '70vw',
@@ -93,10 +97,44 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       data: {}
     });
 
-    dialogRef.afterClosed().subscribe((data: CourseSchedule) => {
-      if (data) {
-        this.storeService.addCourse(data);
+    dialogRef.afterClosed().subscribe((aCourseSchedule: CourseSchedule) => {
+      if (aCourseSchedule) {
+        this.storeService.scheduleCourse(aCourseSchedule);
       }
+    });
+  }
+
+  removeScheduledCourse() {
+    const translationKeyBase = 'automaticActivation.alerts.confirmRemoveSchedule.';
+    const translationKeyTitle = translationKeyBase + 'title';
+    const translationKeyText = translationKeyBase + 'text';
+    const translationKeyCancel = translationKeyBase + 'buttons.cancel';
+    const translationKeyConfirm = translationKeyBase + 'buttons.confirm';
+
+    this.translate.get([translationKeyTitle, translationKeyText,
+      translationKeyCancel, translationKeyConfirm]).subscribe(transResult => {
+      swal({
+        title: transResult[translationKeyTitle],
+        text: transResult[translationKeyText],
+        icon: 'warning',
+        dangerMode: true,
+        buttons: {
+          cancel: {
+            text: transResult[translationKeyCancel],
+            value: null,
+            visible: true,
+          },
+          confirm: {
+            text: transResult[translationKeyConfirm],
+          },
+        },
+      })
+        .then(willRemove => {
+          if (willRemove && this.selectedCourseScheduled) {
+            this.storeService.removeScheduledCourse(this.selectedCourseScheduled);
+            this.selectedCourseScheduled = undefined;
+          }
+        });
     });
   }
 

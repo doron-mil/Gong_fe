@@ -123,6 +123,16 @@
       "addCourse": "הוסף קורס",
       "removeCourse": "מחק קורס",
       "updateCourse": "עדכן קורס"
+    },
+    "alerts" :{
+      "confirmRemoveSchedule" :{
+        "title" : "מחיקת קורס מתוכנן",
+        "text" : "האם את/ה בטוח/ה?",
+        "buttons" : {
+          "cancel" : "ביטול",
+          "confirm" :"כן"
+        }
+      }
     }
   },
   "dialogs": {
