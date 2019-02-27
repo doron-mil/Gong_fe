@@ -156,8 +156,6 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   removeScheduledCourse(aCourseScheduledToRemove: CourseSchedule) {
-      console.log( '2222',aCourseScheduledToRemove)
-
     this.ngRedux.dispatch(removeScheduleCourse(aCourseScheduledToRemove));
   }
 

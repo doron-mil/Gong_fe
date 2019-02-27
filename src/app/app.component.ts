@@ -10,7 +10,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from './services/auth.service';
-import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',

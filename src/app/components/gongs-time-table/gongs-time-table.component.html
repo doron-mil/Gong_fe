@@ -32,8 +32,9 @@
       {{ 'general.tableHeaders.gongsTimeTable.isOn' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
-      <mat-checkbox (change)="$event ? gongToggle() : null"
-                    [disabled]="true" [checked]="true">
+      <mat-checkbox #cmd id="{{element.exactMoment.valueOf()}}"
+                    (click)="gongToggle($event,element.exactMoment.valueOf())"
+                    [disabled]="!element.isAfterNextGong" [checked]="true">
       </mat-checkbox>
     </td>
   </ng-container>

@@ -122,34 +122,52 @@
       "removeCourse": "Remove Course",
       "updateCourse": "Update Course"
     },
-    "alerts" :{
-      "confirmRemoveSchedule" :{
-        "title" : "Remove Scheduled Course",
-        "text" : "Are you sure?",
-        "buttons" : {
-          "cancel" : "Cancel",
-          "confirm" :"Yes"
+    "alerts": {
+      "confirmRemoveSchedule": {
+        "title": "Remove Scheduled Course",
+        "text": "Are you sure?",
+        "buttons": {
+          "cancel": "Cancel",
+          "confirm": "Yes"
         }
       }
     }
   },
-  "dialogs" :{
-    "scheduleCourse" : {
-      "header" : {
-        "new" : "Schedule A New Course",
-        "update" : "Update A Course Schedule"
+  "dialogs": {
+    "scheduleCourse": {
+      "header": {
+        "new": "Schedule A New Course",
+        "update": "Update A Course Schedule"
       },
-      "labels":{
-        "courseName": "Course Name" ,
-        "dayStart": "Start from day" ,
+      "labels": {
+        "courseName": "Course Name",
+        "dayStart": "Start from day",
         "date": "Schedule day"
       },
-      "placeHolders":{
-        "courseName": "Select a course" ,
+      "placeHolders": {
+        "courseName": "Select a course",
         "dayStart": "Select the day to start with"
       },
-      "buttons":{
-        "scheduleCourse" :"Schedule Course"
+      "buttons": {
+        "scheduleCourse": "Schedule Course"
+      }
+    }
+  },
+  "gongsTimeTable": {
+    "confirmations": {
+      "disableDeleteGong": {
+        "title": {
+          "disable": "DeActivate a Gong",
+          "delete": "Delete a Gong"
+        },
+        "text": "Are you sure you want to proceed with this action?",
+        "buttons": {
+          "cancel": "Cancel",
+          "confirm": {
+            "disable": "DeActivate",
+            "delete": "Delete"
+          }
+        }
       }
     }
   }

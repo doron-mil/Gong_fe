@@ -12,6 +12,10 @@ export class ScheduledGong {
   isActive: boolean;
   span: number;
   updateStatus: UpdateStatusEnum;
+  exactMoment: moment.Moment;
+
+  // Only used internally - not initialized
+  isAfterNextGong: boolean;
 
   cloneForUi(courseStartDate?: Date) {
     const clonedObject = new ScheduledGong();
@@ -24,13 +28,18 @@ export class ScheduledGong {
     clonedObject.date = this.date;
     clonedObject.time = this.time;
 
-    if (!clonedObject.date) {
-      clonedObject.date = moment(courseStartDate).add(clonedObject.dayNumber, 'd').toDate();
-    } else if (!clonedObject.time) {
-      clonedObject.time = moment(clonedObject.date).diff(moment(clonedObject.date).startOf('day'));
+    if (!clonedObject.date) { // Setting the exact date - used mostly for courses
+      clonedObject.exactMoment = moment(courseStartDate).add(clonedObject.dayNumber, 'd');
+      clonedObject.date = clonedObject.exactMoment.toDate();
+      clonedObject.exactMoment.add(clonedObject.time, 'ms');
+    } else if (!clonedObject.time) {  // If there is a date and no time -
+      // probably a manual gong that needs time of the day calculation
+      clonedObject.exactMoment = moment(clonedObject.date);
+      clonedObject.time = clonedObject.exactMoment.diff(clonedObject.exactMoment.clone().startOf('day'));
     }
 
-    if (!clonedObject.dayNumber && clonedObject.dayNumber !== 0 ) {
+    // To differentiate between manual gongs with the same date
+    if (!clonedObject.dayNumber && clonedObject.dayNumber !== 0) {
       clonedObject.dayNumber = parseInt(moment(clonedObject.date).format('DDD'), 10);
     }
 
