@@ -63,6 +63,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
       const indexOf = this.displayedColumns.indexOf('day');
       this.displayedColumns.splice(indexOf, 1);
     }
+
+    this.translate.onLangChange.subscribe( () => this.translateNeededText());
   }
 
   private translateNeededText() {
@@ -167,6 +169,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
           }
 
           scheduledGong.isAfterNextGong = scheduledGong.exactMoment.isSameOrAfter(this.nextGongTime);
+          scheduledGong.isTheNextGong = scheduledGong.exactMoment.isSame(this.nextGongTime);
         });
         this.dataSource = new MatTableDataSource<ScheduledGong>(this._scheduledGongsArray);
 

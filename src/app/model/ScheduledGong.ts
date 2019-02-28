@@ -16,6 +16,7 @@ export class ScheduledGong {
 
   // Only used internally - not initialized
   isAfterNextGong: boolean;
+  isTheNextGong: boolean;
 
   cloneForUi(courseStartDate?: Date) {
     const clonedObject = new ScheduledGong();

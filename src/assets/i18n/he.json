@@ -154,5 +154,23 @@
         "scheduleCourse": "Schedule Course"
       }
     }
+  },
+  "gongsTimeTable": {
+    "confirmations": {
+      "disableDeleteGong": {
+        "title": {
+          "disable": "DeActivate a Gong",
+          "delete": "Delete a Gong"
+        },
+        "text": "האם בטוח/ה שרוצה לבצע את הפעולה?",
+        "buttons": {
+          "cancel": "ביטול",
+          "confirm": {
+            "disable": "DeActivate",
+            "delete": "מחק"
+          }
+        }
+      }
+    }
   }
 }

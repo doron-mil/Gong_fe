@@ -44,6 +44,10 @@ th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
   color: blue;
 }
 
+.nextGong{
+  background-color:lightcyan ;
+}
+
 ::ng-deep .confirmClass .swal-icon {
   position: fixed;
   margin: 2vh 2vw;
