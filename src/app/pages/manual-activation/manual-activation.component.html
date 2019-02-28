@@ -2,83 +2,78 @@
 
   <div class="manualControlsContainer">
 
-    <div class="manualFirstColumnContainer">
+    <div class="btnGroup">
+      <div class="datePickerContainer">
 
-      <div class="btnGroup">
-        <div class="datePickerContainer">
+        <md2-datepicker [(ngModel)]="chosenTime"
+                        [isOpen]="isScheduledDatePickerOpen"
+                        (onClose)="scheduledDateOnClose()"
+                        touchUi="true"
+                        type="datetime"
+                        [min]="scheduleGongStartDate"
+                        [startAt]="scheduleGongStartDate"
+                        style="top: 80px; height: 9vh; margin-top: 2vh;">
 
-          <md2-datepicker [(ngModel)]="chosenTime"
-                          [isOpen]="isScheduledDatePickerOpen"
-                          (onClose)="scheduledDateOnClose()"
-                          touchUi="true"
-                          type="datetime"
-                          [min]="scheduleGongStartDate"
-                          [startAt]="scheduleGongStartDate"
-                          style="top: 80px; height: 9vh; margin-top: 2vh;">
+        </md2-datepicker>
+      </div>
 
-          </md2-datepicker>
-        </div>
+      <button mat-fab color="accent" (click)="playGong()" class="manualButton">
+        {{ 'manualActivation.buttons.play' | translate }}
+      </button>
+      <button mat-raised-button color="primary" (click)="scheduleGong()" class="manualButton"
+              [disabled]="">
+        {{ 'manualActivation.buttons.schedulePlay' | translate }}
+      </button>
+    </div><!--End of btnGroup-->
 
-        <button mat-fab color="accent" (click)="playGong()" class="manualButton">
-          {{ 'manualActivation.buttons.play' | translate }}
-        </button>
-        <button mat-raised-button color="primary" (click)="scheduleGong()" class="manualButton"
-                [disabled]="">
-          {{ 'manualActivation.buttons.schedulePlay' | translate }}
-        </button>
-      </div><!--End of btnGroup-->
+    <div class="gongTypeSelectionContainer mat-elevation-z8">
+      <div class="containerHeader">
+        {{ 'manualActivation.dropdowns.gongType.label' | translate }}
+      </div>
 
-      <div class="gongTypeSelectionContainer mat-elevation-z8">
-        <div class="containerHeader">
-          {{ 'manualActivation.dropdowns.gongType.label' | translate }}
-        </div>
-
-        <div class="ctrlContentContainer">
-          <mat-list>
-            <mat-list-item *ngFor="let gongType of gongTypes" class="listItemClass center"
-                           [ngClass]="{selectedGongTypeClass: gongType.id === gongToPlay?.gongTypeId}"
-                           (click)="gongToPlay.gongTypeId = gongType.id" style="cursor: pointer">
+      <div class="ctrlContentContainer">
+        <mat-list>
+          <mat-list-item *ngFor="let gongType of gongTypes" class="listItemClass center"
+                         [ngClass]="{selectedGongTypeClass: gongType.id === gongToPlay?.gongTypeId}"
+                         (click)="gongToPlay.gongTypeId = gongType.id" style="cursor: pointer">
               <span style="text-align: center">
                 {{'general.typesValues.gongType.values.' + gongType?.name | translate }}
               </span>
-            </mat-list-item>
-          </mat-list>
-        </div>
-      </div><!--End of gongTypeSelectionContainer-->
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div><!--End of gongTypeSelectionContainer-->
 
-      <div class="areaSelectionContainer mat-elevation-z8">
-        <div class="containerHeader">
-          {{ 'manualActivation.dropdowns.areas.label' | translate }}
-        </div>
+    <div class="areaSelectionContainer mat-elevation-z8">
+      <div class="containerHeader">
+        {{ 'manualActivation.dropdowns.areas.label' | translate }}
+      </div>
 
-        <div class="ctrlContentContainer">
-          <mat-selection-list #areasSelectionCtrl [(ngModel)]="gongToPlay.areas">
-            <mat-list-option [value]="0" #allAreasSelectionCtrl class="listItemClass">
-              {{'manualActivation.dropdowns.areas.values.all' | translate }}
-            </mat-list-option>
-            <mat-divider></mat-divider>
-            <mat-list-option *ngFor="let area of areas" [value]="area.id" class="listItemClass">
-              {{'manualActivation.dropdowns.areas.values.' + area.name | translate }}
-            </mat-list-option>
-          </mat-selection-list>
-        </div>
-      </div><!--End of areaSelectionContainer-->
+      <div class="ctrlContentContainer">
+        <mat-selection-list #areasSelectionCtrl [(ngModel)]="gongToPlay.areas">
+          <mat-list-option [value]="0" #allAreasSelectionCtrl class="listItemClass">
+            {{'manualActivation.dropdowns.areas.values.all' | translate }}
+          </mat-list-option>
+          <mat-divider></mat-divider>
+          <mat-list-option *ngFor="let area of areas" [value]="area.id" class="listItemClass">
+            {{'manualActivation.dropdowns.areas.values.' + area.name | translate }}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </div><!--End of areaSelectionContainer-->
 
-      <div class="volumeSelectionContainer mat-elevation-z8">
-        <div class="containerHeader">
-          {{ 'manualActivation.labels.volume' | translate }}
-        </div>
+    <div class="volumeSelectionContainer mat-elevation-z8">
+      <div class="containerHeader">
+        {{ 'manualActivation.labels.volume' | translate }}
+      </div>
 
-        <div class=" ctrlContentContainer volumeSliderContainer">
-          <mat-slider thumbLabel min="1" tickInterval="1"
-                      [(value)]="gongToPlay.volume" class="sliderClass">
+      <div class=" ctrlContentContainer volumeSliderContainer">
+        <mat-slider thumbLabel min="1" tickInterval="1"
+                    [(value)]="gongToPlay.volume" class="sliderClass">
 
-          </mat-slider>
-        </div>
-      </div><!--End of volumeSelectionContainer-->
-
-
-    </div><!--End of manualFirstColumnContainer-->
+        </mat-slider>
+      </div>
+    </div><!--End of volumeSelectionContainer-->
 
   </div><!--End of manualControlsContainer-->
 

@@ -1,31 +1,22 @@
 .manualMainContainer {
-  height: 100%;
+  height: 90%;
 }
 
-.manualMainContainer, .manualControlsContainer {
+.manualMainContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
 .manualControlsContainer {
+  display: flex;
+  flex-direction: column;
 }
 
 .manualScheduledTableContainer {
+  height: 100%;
   width: 100%;
   margin: 1vw;
-
-}
-
-.manualFirstColumnContainer {
-  flex-grow: 4;
-}
-
-.manualSecondColumnContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /*justify-content: space-evenly;*/
 
 }
 
