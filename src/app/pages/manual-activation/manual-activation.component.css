@@ -1,5 +1,5 @@
 .manualMainContainer {
-  height: 90%;
+  height: 95%;
 }
 
 .manualMainContainer {
@@ -17,7 +17,7 @@
   height: 100%;
   width: 100%;
   margin: 1vw;
-
+  overflow-y: auto;
 }
 
 .volumeSliderContainer {
@@ -34,9 +34,10 @@
 .volumeSelectionContainer {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   width: 25vw;
   border-left: 9px groove white;
-  margin-top: 1vh;
+  margin-top: 3vh;
 }
 
 .volumeSelectionContainer {
@@ -59,12 +60,13 @@
   text-align: center;
   border-left: 6px lightgray double;
   padding: 1vh 0vw 1vh 1vw;
+  width: 10%;
 }
 
 .btnGroup {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 25vw;
   padding-top: 2vh;
 }
