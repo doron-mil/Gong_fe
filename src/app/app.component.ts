@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
           if (!nextGongTime.isSame(this.nextGongTime)) {
             this.nextGongTime = nextGongTime;
             const timeToNextScheduledJob = this.nextGongTime.clone().startOf('minute').add(1, 'm');
-            this.nextGongSubscription = timer(timeToNextScheduledJob.toDate()).subscribe((aaa) => {
+            this.nextGongSubscription = timer(timeToNextScheduledJob.toDate()).subscribe(() => {
               this.getBasicData();
             });
           }

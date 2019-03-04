@@ -6,9 +6,17 @@ import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
-import {addManualGong, getBasicData, readToStoreData, removeScheduleCourse, scheduleCourse} from '../store/actions/action';
+import {
+  addManualGong,
+  getBasicData,
+  readToStoreData,
+  removeScheduleCourse,
+  scheduleCourse,
+  toggleScheduledGong
+} from '../store/actions/action';
 import {ScheduledGong} from '../model/ScheduledGong';
 import {CourseSchedule} from '../model/courseSchedule';
+import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 
 @Injectable({
   providedIn: 'root'
@@ -157,6 +165,10 @@ export class StoreService implements OnInit, OnDestroy {
 
   removeScheduledCourse(aCourseScheduledToRemove: CourseSchedule) {
     this.ngRedux.dispatch(removeScheduleCourse(aCourseScheduledToRemove));
+  }
+
+  toggleScheduledGong(aScheduledCourseGong: ScheduledCourseGong) {
+    this.ngRedux.dispatch(toggleScheduledGong(aScheduledCourseGong));
   }
 
   private enhanceCourseScheduleArray() {

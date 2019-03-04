@@ -11,6 +11,7 @@ import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {StoreService} from '../../services/store.service';
 import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialog/schedule-course-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
+import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -69,9 +70,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     this.getCourseRoutine(row);
   }
 
-  private getCourseRoutine(selectedCourseScheduled: CourseSchedule) {
-    const selectedCourseStartDate = selectedCourseScheduled.date;
-    const selectedCourseName = selectedCourseScheduled.name;
+  private getCourseRoutine(aSelectedCourseScheduled: CourseSchedule) {
+    const selectedCourseStartDate = aSelectedCourseScheduled.date;
+    const selectedCourseName = aSelectedCourseScheduled.name;
 
     const foundCourse = this.coursesMap.get(selectedCourseName);
 
@@ -82,6 +83,15 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         if (!copiedCourse.volume) {
           copiedCourse.volume = 100;
         }
+        // Dealing with Active/InActive
+        copiedCourse.isActive = true;
+        if (aSelectedCourseScheduled.exceptions &&
+          aSelectedCourseScheduled.exceptions.some(
+            (scheduledCourseGong: ScheduledCourseGong) =>
+              scheduledCourseGong.dayNumber === copiedCourse.dayNumber && scheduledCourseGong.time === copiedCourse.time)) {
+          copiedCourse.isActive = false;
+        }
+        // Adding to the list
         this.selectedCourseRoutineArray.push(copiedCourse);
       });
     } else {
@@ -138,13 +148,29 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     });
   }
 
+  onGongActiveToggle(aToggledScheduledGong: ScheduledGong) {
+    let toggledScheduledCourseGong: ScheduledCourseGong;
+    if (aToggledScheduledGong.isActive) {
+      toggledScheduledCourseGong = this.selectedCourseScheduled.findException(aToggledScheduledGong.dayNumber,
+        aToggledScheduledGong.time);
+    } else {
+      toggledScheduledCourseGong = new ScheduledCourseGong();
+      toggledScheduledCourseGong.dayNumber = aToggledScheduledGong.dayNumber;
+      toggledScheduledCourseGong.time = aToggledScheduledGong.time;
+    }
+
+    if (toggledScheduledCourseGong) {
+      toggledScheduledCourseGong.courseId = this.selectedCourseScheduled.id;
+      this.storeService.toggleScheduledGong(toggledScheduledCourseGong);
+    } else {
+      console.error('onGongActiveToggle Error : couldn\'t find ScheduledCourseGong for', aToggledScheduledGong);
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
   }
 
-  gongToggle() {
-    return undefined;
-  }
 }

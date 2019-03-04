@@ -59,6 +59,24 @@
     ]
   },
   {
+    "className": "ScheduledCourseGong",
+    "propertyConversionArray": [
+      {
+        "propertyName": "courseId",
+        "propertyNameInJson": "course_id"
+      },
+      {
+        "propertyName": "dayNumber",
+        "propertyNameInJson": "day_number"
+      },
+      {
+        "propertyName": "time",
+        "conversionFunctionName": "timeConversion",
+        "conversionFunctionToJsonName": "timeToStrConversionForJson"
+      }
+    ]
+  },
+  {
     "className": "CourseSchedule",
     "propertyConversionArray": [
       {
@@ -72,6 +90,13 @@
         "propertyName": "date",
         "conversionFunctionName": "dateConversion",
         "conversionFunctionToJsonName": "dateToStrDateConversionForJson"
+      },
+      {
+        "propertyName": "startFromDay"
+      },
+      {
+        "propertyName": "exceptions",
+        "type": "ScheduledCourseGong"
       }
     ]
   },

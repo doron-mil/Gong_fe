@@ -4,6 +4,7 @@ import {
 } from './json-converter/json-converter.service';
 import {ScheduledGong} from '../model/ScheduledGong';
 import * as moment from 'moment';
+import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 
 const addNewGongToArray = (aCourseDay, aGongTime, aGongRecord, aGongsArray) => {
   const newScheduledGong = new ScheduledGong();
@@ -22,6 +23,8 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
 
   converterMainMethodOverride = undefined;
 
+  classesMap = new Map<string, {new()}>();
+
   static getInstance(): JsonConversionFunctions {
     const jsonConversionFunctions = new JsonConversionFunctions();
     return jsonConversionFunctions;
@@ -36,6 +39,9 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
     this.conversionFunctions['timeToDateConversion'] = this.timeToDateConversion;
     this.conversionFunctions['dateToTimeConversionForJson'] = this.dateToTimeConversionForJson;
     this.conversionFunctions['dateToStrDateConversionForJson'] = this.dateToStrDateConversionForJson;
+    this.conversionFunctions['timeToStrConversionForJson'] = this.timeToStrConversionForJson;
+
+    this.classesMap.set('ScheduledCourseGong', ScheduledCourseGong);
   }
 
   agendaConversion = (coursesAgendaArray: Array<any>): ScheduledGong[] => {
@@ -75,6 +81,13 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
   timeConversion = (timeAsStr: string): number => {
     const timeNumber = moment.duration(timeAsStr).asMilliseconds();
     return timeNumber;
+  };
+
+  timeToStrConversionForJson = (aTime: number): string => {
+    const duration = moment.duration(aTime);
+    // const timeStr = `${duration.hours()}:${duration.minutes()}`;
+    const timeStr = moment.utc(aTime).format('HH:mm');
+    return timeStr;
   };
 
   dateConversion = (dateAsStr: string): Date => {

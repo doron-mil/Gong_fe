@@ -1,13 +1,30 @@
 import * as _ from 'lodash';
+import * as moment from 'moment';
 import {
   ADD_MANUAL_GONG,
-  AREA_FEATURE, BASIC_DATA_FEATURE,
+  AREA_FEATURE,
+  BASIC_DATA_FEATURE,
   COURSES_FEATURE,
-  COURSES_SCHEDULE_FEATURE, GET_BASIC_DATA, GONG_TYPES_FEATURE, MANUAL_GONG_ADD_FEATURE, MANUAL_GONGS_LIST_FEATURE,
-  READ_TO_STORE_DATA, SCHEDULE_COURSE_ADD, SCHEDULE_COURSE_FEATURE, SCHEDULED_COURSE_REMOVE, SCHEDULED_COURSE_REMOVE_FEATURE,
-  setAreas, setBasicServerData,
+  COURSES_SCHEDULE_FEATURE,
+  GET_BASIC_DATA, getBasicData,
+  GONG_TYPES_FEATURE,
+  MANUAL_GONG_ADD_FEATURE,
+  MANUAL_GONGS_LIST_FEATURE,
+  READ_TO_STORE_DATA,
+  SCHEDULE_COURSE_ADD,
+  SCHEDULE_COURSE_FEATURE,
+  SCHEDULED_COURSE_REMOVE,
+  SCHEDULED_COURSE_REMOVE_FEATURE,
+  TOGGLE_SCHEDULED_GONG,
+  TOGGLE_SCHEDULED_GONG_FEATURE,
+  setAreas,
+  setBasicServerData,
   setCourses,
-  setCoursesSchedule, setGongTypes, setManualGongsList, updateCourseSchedule, updateManualGong
+  setCoursesSchedule,
+  setGongTypes,
+  setManualGongsList,
+  updateCourseSchedule,
+  updateManualGong
 } from '../../actions/action';
 import {API_ERROR, API_REQUEST, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
@@ -19,6 +36,7 @@ import {GongType} from '../../../model/gongType';
 import {UpdateStatusEnum} from '../../../model/updateStatusEnum';
 import {ScheduledGong} from '../../../model/ScheduledGong';
 import {BasicServerData} from '../../../model/basicServerData';
+import {ScheduledCourseGong} from '../../../model/ScheduledCourseGong';
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -29,6 +47,7 @@ export const ADD_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/add`;
 export const REMOVE_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/remove`;
 export const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
 export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
+export const TOGGLE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/toggle`;
 export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 
 @Injectable()
@@ -149,6 +168,35 @@ export class GeneralMiddlewareService {
           apiRequest(stringedifiedCourseScheduleForRemovalJson, 'DELETE', REMOVE_COURSE_SCHEDULE_URL,
             SCHEDULED_COURSE_REMOVE_FEATURE, action.payload)
         );
+        break;
+      case TOGGLE_SCHEDULED_GONG:
+        const scheduledCourseGongJson = this.jsonConverterService.convertToJson(action.payload);
+        const stringedifiedScheduledCourseGongJsonJson = JSON.stringify(scheduledCourseGongJson);
+        next(
+          apiRequest(stringedifiedScheduledCourseGongJsonJson, 'POST', TOGGLE_SCHEDULED_GONG_URL,
+            TOGGLE_SCHEDULED_GONG_FEATURE, action.payload)
+        );
+        break;
+      case `${TOGGLE_SCHEDULED_GONG_FEATURE} ${API_SUCCESS}`:
+        const aToggledScheduledCourseGong = action.data as ScheduledCourseGong;
+        next(
+          apiRequest(null, 'GET', COURSES_SCHEDULE_URL, COURSES_SCHEDULE_FEATURE, null)
+        );
+        const currentState = getState();
+        const foundCourseSchedule = currentState.dynamic_data.coursesSchedule.find(
+          (tCourseSchedule: CourseSchedule) => tCourseSchedule.id === aToggledScheduledCourseGong.courseId);
+        if (foundCourseSchedule) {
+          const computedMomentOfGong = moment(foundCourseSchedule.date);
+          computedMomentOfGong.add(aToggledScheduledCourseGong.dayNumber, 'd');
+          computedMomentOfGong.add(aToggledScheduledCourseGong.time, 'ms');
+          if (computedMomentOfGong.isSame(currentState.dynamic_data.basicServerData.nextScheduledJobTime)) {
+            dispatch(getBasicData());
+          }
+        } else {
+          console.error(`GeneralMiddlewareService:${TOGGLE_SCHEDULED_GONG_FEATURE} ${API_SUCCESS}` + '' +
+            'Error in  processing API middleware : ', action);
+
+        }
         break;
     }
 

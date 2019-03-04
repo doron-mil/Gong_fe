@@ -60,7 +60,6 @@ function addCoursesScheduleToState(state: DynamicDataState, aCourseSchedule: Cou
 }
 
 function removeCoursesScheduleToState(state: DynamicDataState, aCourseSchedule: CourseSchedule): boolean {
-  console.log( '11111',aCourseSchedule)
   if (state.coursesSchedule) {
     const indexOfFoundGong = state.coursesSchedule.findIndex(
       courseSchedule => (courseSchedule.id && (courseSchedule.id === aCourseSchedule.id)) ||

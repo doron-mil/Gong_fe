@@ -1,4 +1,16 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  QueryList,
+  SimpleChanges,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {MatCheckbox, MatListOption, MatTableDataSource} from '@angular/material';
 import {NgRedux} from '@angular-redux/store';
 import {Subscription} from 'rxjs';
@@ -37,6 +49,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
     this._scheduledGongsArray = value;
   }
 
+  @Output() gongActiveToggleEvent = new EventEmitter<ScheduledGong>();
+
   @ViewChildren('cmd') customComponentChildren: QueryList<MatCheckbox>;
 
   const;
@@ -64,7 +78,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
       this.displayedColumns.splice(indexOf, 1);
     }
 
-    this.translate.onLangChange.subscribe( () => this.translateNeededText());
+    this.translate.onLangChange.subscribe(() => this.translateNeededText());
   }
 
   private translateNeededText() {
@@ -97,7 +111,13 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private gongActivationToggle(aId: number, aIsOnAction: boolean) {
-    console.log('1111', aId, aIsOnAction, moment(aId).format('YYYY-MM-DD HH:mm:ss'));
+    const foundScheduledGong =
+      this._scheduledGongsArray.find((scheduledGong: ScheduledGong) => scheduledGong.exactMoment.isSame(aId));
+    if (foundScheduledGong) {
+      const clonedObj = foundScheduledGong.clone();
+      clonedObj.isActive = aIsOnAction;
+      this.gongActiveToggleEvent.emit(clonedObj);
+    }
   }
 
   async gongToggle(aEvent, aId) {

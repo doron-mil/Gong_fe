@@ -11,6 +11,7 @@ export class JsonConverterService {
   conversionSchemaFileName: string;
   conversionMap: { [key: string]: ConversionSchema; } = {};
   conversionFunctions: ConversionFunctionsType;
+  classesMap: Map<string, {new()}>;
 
   static isArray(object) {
     if (object === Array) {
@@ -28,6 +29,7 @@ export class JsonConverterService {
 
     this.conversionSchemaFileName = aConversionSchemaFileName.getConfigurationFilePath();
     this.conversionFunctions = aConversionSchemaFileName.conversionFunctions;
+    this.classesMap = aConversionSchemaFileName.classesMap;
 
     if (!aConversionSchemaFileName.converterMainMethodOverride) {
       aConversionSchemaFileName.converterMainMethodOverride = this.convert;
@@ -91,7 +93,16 @@ export class JsonConverterService {
           const jsonPropertyValue = this.getJsonPropertyValue(simpleObj, jsonPropertyName);
           if (jsonPropertyValue != null && jsonPropertyValue !== null &&
             typeof jsonPropertyValue !== 'undefined') {
-            if (propertyConversion.conversionFunctionName && this.conversionFunctions) {
+            // If there is a typed conversion
+            if (propertyConversion.type && this.classesMap) {
+              const typeClazz = this.classesMap.get(propertyConversion.type);
+              if (typeClazz) {
+                retObjectClass[propertyName] = this.convert(jsonPropertyValue, typeClazz);
+              } else {
+
+              }
+              // If there is a conversion function to be used
+            } else if (propertyConversion.conversionFunctionName && this.conversionFunctions) {
               const conversionFunction =
                 this.conversionFunctions[propertyConversion.conversionFunctionName];
               if (conversionFunction) {
@@ -101,7 +112,7 @@ export class JsonConverterService {
                   propertyConversion.conversionFunctionName);
               }
 
-            } else {
+            } else {  // Else - simple conversion
               retObjectClass[propertyName] = jsonPropertyValue;
             }
           }
@@ -204,6 +215,7 @@ export class JsonConverterService {
 
 class PropertyConversion {
   propertyName: string;
+  type?: string;
   propertyNameInJson?: string;
   conversionFunctionName?: string;
   conversionFunctionToJsonName?: string;
@@ -231,4 +243,5 @@ export interface JsonConverterConfigurationInterface {
   getConfigurationFilePath: () => string;
   conversionFunctions: ConversionFunctionsType;
   converterMainMethodOverride: <T>(simpleObj: any, clazz: { new(): T }) => Array<T>;
+  classesMap: Map<string, {new()}>;
 }

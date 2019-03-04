@@ -36,7 +36,7 @@
     <td mat-cell *matCellDef="let element" [ngClass]="{'nextGong' : element.isTheNextGong}">
       <mat-checkbox #cmd id="{{element.exactMoment.valueOf()}}"
                     (click)="element.isAfterNextGong && gongToggle($event,element.exactMoment.valueOf())"
-                    [disabled]="!element.isAfterNextGong" [checked]="true">
+                    [disabled]="!element.isAfterNextGong" [checked]="element.isActive">
       </mat-checkbox>
     </td>
   </ng-container>

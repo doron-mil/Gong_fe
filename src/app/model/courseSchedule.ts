@@ -1,4 +1,6 @@
+import * as _ from 'lodash';
 import {UpdateStatusEnum} from './updateStatusEnum';
+import {ScheduledCourseGong} from './ScheduledCourseGong';
 
 export class CourseSchedule {
   id: number;
@@ -6,8 +8,10 @@ export class CourseSchedule {
   date: Date;
   daysCount: number;
   startFromDay: number;
+  exceptions: ScheduledCourseGong[];
   updateStatus: UpdateStatusEnum;
   tmpId: string;
+
 
   clone(): CourseSchedule {
     const newCourseSchedule = new CourseSchedule();
@@ -18,6 +22,23 @@ export class CourseSchedule {
     newCourseSchedule.startFromDay = this.startFromDay;
     newCourseSchedule.updateStatus = this.updateStatus;
     newCourseSchedule.tmpId = this.tmpId;
+    if (this.exceptions){
+     newCourseSchedule.exceptions = _.map(this.exceptions, _.clone);
+
+    }
     return newCourseSchedule;
   }
+
+  findException(aDayNumber: number, aTimeAtDay: number): ScheduledCourseGong {
+    let foundScheduledCourseGong: ScheduledCourseGong;
+    if (this.exceptions) {
+      foundScheduledCourseGong = this.exceptions.find(
+        (scheduledCourseGong: ScheduledCourseGong) =>
+          scheduledCourseGong.dayNumber === aDayNumber &&
+          scheduledCourseGong.time === aTimeAtDay);
+    }
+
+    return foundScheduledCourseGong;
+  }
+
 }

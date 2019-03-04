@@ -10,15 +10,15 @@ export class ScheduledGong {
   areas: number[];
   volume: number;
   isActive: boolean;
-  span: number;
-  updateStatus: UpdateStatusEnum;
-  exactMoment: moment.Moment;
 
   // Only used internally - not initialized
+  updateStatus: UpdateStatusEnum;
+  exactMoment: moment.Moment;
+  span: number;
   isAfterNextGong: boolean;
   isTheNextGong: boolean;
 
-  cloneForUi(courseStartDate?: Date) {
+  clone(): ScheduledGong {
     const clonedObject = new ScheduledGong();
     clonedObject.dayNumber = this.dayNumber;
     clonedObject.gongTypeId = this.gongTypeId;
@@ -28,6 +28,20 @@ export class ScheduledGong {
 
     clonedObject.date = this.date;
     clonedObject.time = this.time;
+
+    clonedObject.span = this.span;
+
+    clonedObject.updateStatus = this.updateStatus;
+    clonedObject.exactMoment = this.exactMoment;
+
+    clonedObject.isAfterNextGong = this.isAfterNextGong;
+    clonedObject.isTheNextGong = this.isTheNextGong;
+
+    return clonedObject;
+  }
+
+  cloneForUi(courseStartDate?: Date): ScheduledGong {
+    const clonedObject = this.clone();
 
     if (!clonedObject.date) { // Setting the exact date - used mostly for courses
       clonedObject.exactMoment = moment(courseStartDate).add(clonedObject.dayNumber, 'd');
