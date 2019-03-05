@@ -110,10 +110,11 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  private gongActivationToggle(aId: number, aIsOnAction: boolean) {
+  private gongActivationToggle(aId: number, aIsOnAction: boolean,aChkBxCtrl :MatCheckbox) {
     const foundScheduledGong =
       this._scheduledGongsArray.find((scheduledGong: ScheduledGong) => scheduledGong.exactMoment.isSame(aId));
     if (foundScheduledGong) {
+      aChkBxCtrl.disabled = true; // This will be refreshed when updating the data from the server
       const clonedObj = foundScheduledGong.clone();
       clonedObj.isActive = aIsOnAction;
       this.gongActiveToggleEvent.emit(clonedObj);
@@ -129,10 +130,10 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
         const isDisablingConfirmed = await this.confirmGongDisablingOrDeletion(false);
         if (isDisablingConfirmed) {
           foundItem.checked = false;
-          this.gongActivationToggle(aId, false);
+          this.gongActivationToggle(aId, false,foundItem);
         }
       } else {
-        this.gongActivationToggle(aId, true);
+        this.gongActivationToggle(aId, true,foundItem);
       }
     }
 

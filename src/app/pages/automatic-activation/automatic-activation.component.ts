@@ -61,6 +61,13 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         if (this.coursesData.length > 0) {
           this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
         }
+        if (this.selectedCourseScheduled) {
+          this.selectedCourseScheduled = this.coursesData.find(
+            (courseSchedule: CourseSchedule) => courseSchedule.id === this.selectedCourseScheduled.id);
+          if (this.selectedCourseScheduled) {
+            this.getCourseRoutine(this.selectedCourseScheduled);
+          }
+        }
       }
     });
   }
@@ -163,7 +170,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       toggledScheduledCourseGong.courseId = this.selectedCourseScheduled.id;
       this.storeService.toggleScheduledGong(toggledScheduledCourseGong);
     } else {
-      console.error('onGongActiveToggle Error : couldn\'t find ScheduledCourseGong for', aToggledScheduledGong);
+      console.error('onGongActiveToggle Error : couldn\'t find ScheduledCourseGong for ScheduledGong =', aToggledScheduledGong,
+        'selectedCourseScheduled = ', this.selectedCourseScheduled);
     }
   }
 
