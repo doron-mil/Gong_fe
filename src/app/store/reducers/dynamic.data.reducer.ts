@@ -1,7 +1,7 @@
 import {
   ADD_MANUAL_GONG,
   AppAction,
-  BASIC_DATA_FEATURE, SCHEDULE_COURSE_ADD, SCHEDULED_COURSE_REMOVE, SCHEDULED_COURSE_UPDATE, SET_BASIC_DATA,
+  BASIC_DATA_FEATURE, REMOVE_MANUAL_GONG, SCHEDULE_COURSE_ADD, SCHEDULED_COURSE_REMOVE, SCHEDULED_COURSE_UPDATE, SET_BASIC_DATA,
   SET_COURSES_SCHEDULE,
   SET_MANUAL_GONGS_LIST,
   UPDATE_MANUAL_GONG
@@ -32,6 +32,16 @@ export function dynamicDataReducer(state: DynamicDataState = INITIAL_DYNAMIC_DAT
         if (foundGong) {
           foundGong.isActive = updatedGong.isActive;
           foundGong.updateStatus = updatedGong.updateStatus;
+        }
+      }
+      return Object.assign({}, state);
+    case REMOVE_MANUAL_GONG:
+      const gong2BRemoved = action.payload as ScheduledGong;
+      if (state.manualGongs) {
+        const foundGongIndex = state.manualGongs.findIndex(gong => gong.date === gong2BRemoved.date);
+        if (foundGongIndex >= 0) {
+          state.manualGongs.splice(foundGongIndex, 1);
+          state.manualGongs = [...state.manualGongs];
         }
       }
       return Object.assign({}, state);

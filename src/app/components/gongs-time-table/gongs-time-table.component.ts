@@ -151,8 +151,15 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
     return true;
   }
 
-  gongRemove(aEvent) {
-    console.log('remove', aEvent);
+  gongRemove(aScheduledGongId: number) {
+    const foundScheduledGong =
+      this._scheduledGongsArray.find(
+        (scheduledGong: ScheduledGong) => scheduledGong.exactMoment.isSame(aScheduledGongId));
+    if (foundScheduledGong) {
+      const clonedObj = foundScheduledGong.clone();
+      clonedObj.isActive = false;
+      this.gongActiveToggleEvent.emit(clonedObj);
+    }
   }
 
   private async confirmGongDisablingOrDeletion(aIsDelete: boolean = false): Promise<boolean> {

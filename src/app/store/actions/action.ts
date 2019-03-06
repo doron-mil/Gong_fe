@@ -17,6 +17,7 @@ export const MANUAL_GONG_ADD_FEATURE = '[MANUAL_GONG_ADD]';
 export const SCHEDULE_COURSE_FEATURE = '[SCHEDULE_COURSE_ADD]';
 export const SCHEDULED_COURSE_REMOVE_FEATURE = '[SCHEDULED_COURSE_REMOVE]';
 export const TOGGLE_SCHEDULED_GONG_FEATURE = '[TOGGLE_SCHEDULED_GONG]';
+export const REMOVE_MANUAL_GONG_FEATURE = '[REMOVE_MANUAL_GONG]';
 
 
 export const READ_TO_STORE_DATA = 'READ_TO_STORE_DATA';
@@ -33,6 +34,7 @@ export const SCHEDULE_COURSE_ADD = 'SCHEDULE_COURSE_ADD';
 export const SCHEDULED_COURSE_UPDATE = 'SCHEDULED_COURSE_UPDATE';
 export const SCHEDULED_COURSE_REMOVE = 'SCHEDULED_COURSE_REMOVE';
 export const TOGGLE_SCHEDULED_GONG = 'TOGGLE_SCHEDULED_GONG';
+export const REMOVE_MANUAL_GONG = 'REMOVE_MANUAL_GONG';
 
 export interface AppAction extends Action {
   payload: any;
@@ -117,4 +119,10 @@ export const toggleScheduledGong = (aToggledScheduledCourseGong: ScheduledCourse
   type: TOGGLE_SCHEDULED_GONG,
   payload: aToggledScheduledCourseGong,
   meta: {feature: TOGGLE_SCHEDULED_GONG_FEATURE}
+});
+
+export const removeScheduledGong = (aRemovedScheduledGong: ScheduledGong) => ({
+  type: REMOVE_MANUAL_GONG,
+  payload: aRemovedScheduledGong,
+  meta: {feature: REMOVE_MANUAL_GONG_FEATURE}
 });

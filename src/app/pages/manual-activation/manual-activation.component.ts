@@ -146,6 +146,11 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
       });
   }
 
+  onGongRemove(aRemovedScheduledGong: ScheduledGong) {
+      this.storeService.removeScheduledGong(aRemovedScheduledGong);
+  }
+
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

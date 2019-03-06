@@ -24,7 +24,7 @@ import {
   setGongTypes,
   setManualGongsList,
   updateCourseSchedule,
-  updateManualGong
+  updateManualGong, REMOVE_MANUAL_GONG, REMOVE_MANUAL_GONG_FEATURE
 } from '../../actions/action';
 import {API_ERROR, API_REQUEST, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
@@ -48,6 +48,7 @@ export const REMOVE_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/remo
 export const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
 export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
 export const TOGGLE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/toggle`;
+export const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
 export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 
 @Injectable()
@@ -197,6 +198,20 @@ export class GeneralMiddlewareService {
             'Error in  processing API middleware : ', action);
 
         }
+        break;
+      case REMOVE_MANUAL_GONG:
+        const toBRemovedScheduledGongJson = this.jsonConverterService.convertToJson(action.payload);
+        const stringedified2BRemovedScheduledGongJson = JSON.stringify(toBRemovedScheduledGongJson);
+        next(
+          apiRequest(stringedified2BRemovedScheduledGongJson, 'POST', REMOVE_SCHEDULED_GONG_URL,
+            REMOVE_MANUAL_GONG_FEATURE, action.payload)
+        );
+        break;
+      case `${REMOVE_MANUAL_GONG_FEATURE} ${API_ERROR}`:
+      console.error('Error in  processingddddd');
+        // dispatch(
+        //   apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
+        // );
         break;
     }
 

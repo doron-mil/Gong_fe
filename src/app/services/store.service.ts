@@ -10,7 +10,7 @@ import {
   addManualGong,
   getBasicData,
   readToStoreData,
-  removeScheduleCourse,
+  removeScheduleCourse, removeScheduledGong,
   scheduleCourse,
   toggleScheduledGong
 } from '../store/actions/action';
@@ -169,6 +169,10 @@ export class StoreService implements OnInit, OnDestroy {
 
   toggleScheduledGong(aScheduledCourseGong: ScheduledCourseGong) {
     this.ngRedux.dispatch(toggleScheduledGong(aScheduledCourseGong));
+  }
+
+  removeScheduledGong(a2BRemovedScheduledGong: ScheduledGong) {
+    this.ngRedux.dispatch(removeScheduledGong(a2BRemovedScheduledGong));
   }
 
   private enhanceCourseScheduleArray() {
