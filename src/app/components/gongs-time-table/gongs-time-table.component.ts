@@ -42,11 +42,17 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
   private _scheduledGongsArray: ScheduledGong[];
 
   @Input() displayDay: boolean = true;
+  _displayDate: boolean = true;
   @Input() isDeleteButton: boolean = false;
 
+  @Input('displayDate')
+  set displayDate(aNewValue: boolean) {
+    this._displayDate = aNewValue;
+  }
+
   @Input('scheduledGongs')
-  set scheduledGongsArray(value: ScheduledGong[]) {
-    this._scheduledGongsArray = value;
+  set scheduledGongsArray(aNewValue: ScheduledGong[]) {
+    this._scheduledGongsArray = aNewValue;
   }
 
   @Output() gongActiveToggleEvent = new EventEmitter<ScheduledGong>();
@@ -56,7 +62,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
   const;
   translationMap = new Map<Translation_Enum, string>();
 
-  displayedColumns = ['day', 'date', 'isOn', 'time', 'gongType', 'area', 'volume'];
+  displayedColumnsOptions = ['day', 'date', 'time', 'gongType', 'area', 'volume', 'isOn'];
+  displayedColumns = [];
   dataSource: MatTableDataSource<ScheduledGong>;
 
   nextGongTime: moment.Moment;
@@ -73,12 +80,16 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
     this.translateNeededText();
     this.subscribeToNextGong();
 
-    if (this.displayDay === false) {
-      const indexOf = this.displayedColumns.indexOf('day');
-      this.displayedColumns.splice(indexOf, 1);
-    }
+    this.resetDisplayedColumnse();
 
     this.translate.onLangChange.subscribe(() => this.translateNeededText());
+  }
+
+  private resetDisplayedColumnse() {
+    this.displayedColumns = this.displayedColumnsOptions.filter((colItemName: string) => {
+      const isFieldNoDisplay = (!this.displayDay && colItemName === 'day') || (!this._displayDate && colItemName === 'date');
+      return !isFieldNoDisplay;
+    });
   }
 
   private translateNeededText() {
@@ -110,7 +121,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  private gongActivationToggle(aId: number, aIsOnAction: boolean,aChkBxCtrl :MatCheckbox) {
+  private gongActivationToggle(aId: number, aIsOnAction: boolean, aChkBxCtrl: MatCheckbox) {
     const foundScheduledGong =
       this._scheduledGongsArray.find((scheduledGong: ScheduledGong) => scheduledGong.exactMoment.isSame(aId));
     if (foundScheduledGong) {
@@ -130,14 +141,18 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
         const isDisablingConfirmed = await this.confirmGongDisablingOrDeletion(false);
         if (isDisablingConfirmed) {
           foundItem.checked = false;
-          this.gongActivationToggle(aId, false,foundItem);
+          this.gongActivationToggle(aId, false, foundItem);
         }
       } else {
-        this.gongActivationToggle(aId, true,foundItem);
+        this.gongActivationToggle(aId, true, foundItem);
       }
     }
 
     return true;
+  }
+
+  gongRemove(aEvent) {
+    console.log('remove', aEvent);
   }
 
   private async confirmGongDisablingOrDeletion(aIsDelete: boolean = false): Promise<boolean> {
@@ -170,7 +185,11 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.createDataSource();
+    if (changes.displayDate) {
+      this.resetDisplayedColumnse();
+    } else {
+      this.createDataSource();
+    }
   }
 
   private createDataSource() {
@@ -207,5 +226,4 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
       this.storeSubscription.unsubscribe();
     }
   }
-
 }

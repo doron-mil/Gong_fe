@@ -25,6 +25,7 @@
         "day": "Day",
         "date": "Date",
         "isOn": "Active",
+        "delete": "Delete",
         "time": "Time",
         "gongType": "Type",
         "area": "Areas",
@@ -121,6 +122,9 @@
       "scheduleCourse": "Schedule Course",
       "removeCourse": "Remove Course",
       "updateCourse": "Update Course"
+    },
+    "labels": {
+      "displayDate": "Display Date"
     },
     "alerts": {
       "confirmRemoveSchedule": {

@@ -7,6 +7,10 @@
             [disabled]="!selectedCourseScheduled">
       {{ 'automaticActivation.buttons.removeCourse' | translate }}
     </button>
+
+    <mat-checkbox  [(ngModel)]="displayDate" *ngIf="selectedCourseScheduled">
+       {{ 'automaticActivation.labels.displayDate' | translate }}
+    </mat-checkbox>
   </div>
 
 
@@ -60,8 +64,8 @@
     </div>
 
     <div class="selected-course-display-container mat-elevation-z8" *ngIf="true">
-      <app-gongs-time-table [scheduledGongs]="selectedCourseRoutineArray"
-      (gongActiveToggleEvent)="onGongActiveToggle($event)">
+      <app-gongs-time-table [scheduledGongs]="selectedCourseRoutineArray" [displayDate]="displayDate"
+                            (gongActiveToggleEvent)="onGongActiveToggle($event)">
       </app-gongs-time-table>
 
     </div><!--End of selected-course-display-container-->

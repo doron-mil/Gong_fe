@@ -31,6 +31,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   subscription: Subscription;
 
+  displayDate: boolean = false;
+
   constructor(private ngRedux: NgRedux<any>,
               private dialog: MatDialog,
               private translate: TranslateService,
