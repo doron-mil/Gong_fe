@@ -94,15 +94,10 @@ export class AppModule {
               private devTools: DevToolsExtension,
               generalMiddlewareService: GeneralMiddlewareService,
               apiMiddlewareService: ApiMiddlewareService,
-              matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer,
-              translate: TranslateService) {
+              matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
 
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('./assets/icons/mdi.svg'));
 
-    // ************* Translator Init *****************
-    // ***********************************************
-    translate.setDefaultLang('he');
-    translate.use('he');
 
     // ***********************************************
     // ************* Redux Init **********************

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve --host 0.0.0.0 --proxy-config proxy.conf.json",
     "build": "ng build",
     "test": "jest ",
     "test:update": "jest -u",
@@ -41,6 +41,7 @@
     "redux": "^4.0.0",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.4.0",
+    "sprintf-js": "^1.1.2",
     "sweetalert": "^2.1.2",
     "uuid": "^3.3.2",
     "zone.js": "^0.8.26"

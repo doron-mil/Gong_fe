@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import * as moment from 'moment';
 import {
   ADD_MANUAL_GONG,
@@ -26,7 +25,7 @@ import {
   updateCourseSchedule,
   updateManualGong, REMOVE_MANUAL_GONG, REMOVE_MANUAL_GONG_FEATURE
 } from '../../actions/action';
-import {API_ERROR, API_REQUEST, API_SUCCESS, apiRequest} from '../../actions/api.actions';
+import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
 import {Injectable} from '@angular/core';
 import {Area} from '../../../model/area';
@@ -37,6 +36,7 @@ import {UpdateStatusEnum} from '../../../model/updateStatusEnum';
 import {ScheduledGong} from '../../../model/ScheduledGong';
 import {BasicServerData} from '../../../model/basicServerData';
 import {ScheduledCourseGong} from '../../../model/ScheduledCourseGong';
+import {MessagesService} from '../../../services/messages.service';
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -53,7 +53,8 @@ export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 
 @Injectable()
 export class GeneralMiddlewareService {
-  constructor(private jsonConverterService: JsonConverterService) {
+  constructor(private jsonConverterService: JsonConverterService,
+              private messagesService: MessagesService) {
   }
 
 
@@ -208,10 +209,10 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${REMOVE_MANUAL_GONG_FEATURE} ${API_ERROR}`:
-      console.error('Error in  processingddddd');
-        // dispatch(
-        //   apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
-        // );
+        this.messagesService.cannotDeleteRecord(action.data)
+        dispatch(
+          apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
+        );
         break;
     }
 

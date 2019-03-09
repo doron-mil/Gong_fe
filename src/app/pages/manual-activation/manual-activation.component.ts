@@ -1,14 +1,17 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar, MatTableDataSource} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
+import {NgRedux} from '@angular-redux/store';
+import {BehaviorSubject, combineLatest, Subscription, timer} from 'rxjs';
+import * as moment from 'moment';
+
 import {GongType} from '../../model/gongType';
 import {Area} from '../../model/area';
-import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar, MatTableDataSource} from '@angular/material';
 import {StoreService} from '../../services/store.service';
 import {ScheduledGong} from '../../model/ScheduledGong';
-import {TranslateService} from '@ngx-translate/core';
 import {UpdateStatusEnum} from '../../model/updateStatusEnum';
-import {NgRedux} from '@angular-redux/store';
-import {BehaviorSubject, combineLatest, Subscription} from 'rxjs';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
+import {MessagesService} from '../../services/messages.service';
 
 @Component({
   selector: 'app-manual-activation',
@@ -32,12 +35,15 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   scheduledGongsArray: ScheduledGong[];
 
+  timerSubscription: Subscription;
+
   private isGongTypesArrayReady: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private ngRedux: NgRedux<any>,
               private changeDetectorRef: ChangeDetectorRef,
               private storeService: StoreService,
               private snackBar: MatSnackBar,
+              private messagesService: MessagesService,
               private translateService: TranslateService) {
   }
 
@@ -122,8 +128,23 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
     this.isScheduledDatePickerOpen = true;
   }
 
+  reopen() {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+    this.scheduleGongStartDate = new Date();
+    console.log('333' , moment(this.chosenTime).format('HH:mm'));
+    this.isScheduledDatePickerOpen = true;
+  }
+
   scheduledDateOnClose() {
     if (this.chosenTime) {
+      if (moment().isAfter(this.chosenTime)) {
+        this.timerSubscription = timer(100).subscribe(() => this.reopen());
+        this.isScheduledDatePickerOpen = false;
+        this.messagesService.scheduleGongToFutureTime();
+        return;
+      }
       this.gongToPlay.date = this.chosenTime;
       this.storeService.addManualGong(this.gongToPlay);
     }
@@ -147,7 +168,7 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   }
 
   onGongRemove(aRemovedScheduledGong: ScheduledGong) {
-      this.storeService.removeScheduledGong(aRemovedScheduledGong);
+    this.storeService.removeScheduledGong(aRemovedScheduledGong);
   }
 
 

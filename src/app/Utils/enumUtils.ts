@@ -1,8 +1,15 @@
 export class EnumUtils {
-  public static getEnumValues<T>(enumObject: T): T[] {
-    const retArray = new Array<T>();
-    Object.keys(enumObject).filter(key => isNaN(Number(key))).forEach(
-      key => retArray.push(enumObject[key]));
+  public static getEnumKeys<T>(aEnumObject: T): string[] {
+    const retArray = new Array<string>();
+    Object.keys(aEnumObject).filter(key => isNaN(Number(key))).forEach(
+      key => {
+        retArray.push(key);
+      });
+    return retArray;
+  }
+
+  public static getEnumValues<T>(aEnumObject: T): (string | number)[] {
+    const retArray = EnumUtils.getEnumKeys(aEnumObject).map((key: string) => aEnumObject[key]);
     return retArray;
   }
 }

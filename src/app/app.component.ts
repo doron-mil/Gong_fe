@@ -35,6 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
               private translate: TranslateService,
               private matIconRegistry: MatIconRegistry,
               private domSanitizer: DomSanitizer) {
+    this.translate.addLangs(['en', 'he']);
     this.translate.setDefaultLang(this.currentLanguage);
     this.translate.use(this.currentLanguage);
 
@@ -90,6 +91,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private getSupportedLanguages() {
+        console.log('1111' , this.translate.getLangs() );
+
     this.supportedLanguagesArray = this.translate.getLangs();
   }
 

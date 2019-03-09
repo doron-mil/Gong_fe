@@ -31,6 +31,10 @@
         "area": "Areas",
         "volume": "Volume"
       }
+    },
+    "messages" :{
+      "couldNotDeleteScheduledGong" : "Could not delete Gong dated :%s",
+      "couldNotScheduleObsoleteGong" : "Have to pick future time"
     }
   },
   "main": {
