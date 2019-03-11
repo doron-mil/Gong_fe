@@ -91,8 +91,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private getSupportedLanguages() {
-        console.log('1111' , this.translate.getLangs() );
-
     this.supportedLanguagesArray = this.translate.getLangs();
   }
 

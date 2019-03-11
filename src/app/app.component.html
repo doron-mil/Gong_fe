@@ -22,9 +22,9 @@
 
     <mat-menu #languagesMenu="matMenu">
       <button mat-menu-item *ngFor="let lang of supportedLanguagesArray"
-        (click)="setLanguage(lang)" [ngClass]="{selectedLangClass: lang === currentLanguage}">
+              (click)="setLanguage(lang)" [ngClass]="{selectedLangClass: lang === currentLanguage}">
         <mat-icon svgIcon="lang_{{lang}}"></mat-icon>
-        <span >
+        <span>
           {{'main.menu.language.subMenu.' + lang | translate}}
         </span>
       </button>
@@ -38,12 +38,15 @@
 
   <section class="nextGongTimeContainer" [ngClass]="{langRtl: currentLanguage === 'he'}">
     {{'main.labels.nextGong' | translate}} :
-    <div>
+    <div *ngIf="nextGongTime">
       {{ nextGongTime | amDateFormat: 'YYYY/MM/DD HH:mm'}}
       <span matTooltip="{{ 'main.tooltips.manual.' + isManual | translate}}"
             matTooltipClass="manualTooltipClass" class="isManualSymbol mat-elevation-z8">
         {{isManual?'M':'A'}}
       </span>
+    </div>
+    <div *ngIf="!nextGongTime">
+      {{'main.labels.nextGongNotAvailable' | translate}}
     </div>
   </section>
 

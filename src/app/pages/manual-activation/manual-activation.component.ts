@@ -124,16 +124,19 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
       return;
     }
     this.chosenTime = undefined;
-    this.scheduleGongStartDate = new Date();
+    this.computeDatePickerStartTime();
     this.isScheduledDatePickerOpen = true;
+  }
+
+  private computeDatePickerStartTime() {
+    this.scheduleGongStartDate = moment().add(1, 'm').toDate();
   }
 
   reopen() {
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
     }
-    this.scheduleGongStartDate = new Date();
-    console.log('333' , moment(this.chosenTime).format('HH:mm'));
+    this.computeDatePickerStartTime();
     this.isScheduledDatePickerOpen = true;
   }
 

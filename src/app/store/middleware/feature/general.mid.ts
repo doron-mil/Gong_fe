@@ -133,6 +133,9 @@ export class GeneralMiddlewareService {
         next(
           updateManualGong(action.data)
         );
+        dispatch(
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, BASIC_DATA_FEATURE, null)
+        );
         break;
       case `${MANUAL_GONG_ADD_FEATURE} ${API_ERROR}`:
         (action.data as ScheduledGong).updateStatus = UpdateStatusEnum.FAILED;

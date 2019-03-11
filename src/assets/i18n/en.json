@@ -32,15 +32,16 @@
         "volume": "Volume"
       }
     },
-    "messages" :{
-      "couldNotDeleteScheduledGong" : "Could not delete Gong dated :%s",
-      "couldNotScheduleObsoleteGong" : "Have to pick future time"
+    "messages": {
+      "couldNotDeleteScheduledGong": "Could not delete Gong dated :%s",
+      "couldNotScheduleObsoleteGong": "Have to pick future time"
     }
   },
   "main": {
     "labels": {
       "currentTime": "Current time",
-      "nextGong": "Next gong"
+      "nextGong": "Next gong",
+      "nextGongNotAvailable": "N/A"
     },
     "tooltips": {
       "manual": {

@@ -11,7 +11,7 @@ export class JsonConverterService {
   conversionSchemaFileName: string;
   conversionMap: { [key: string]: ConversionSchema; } = {};
   conversionFunctions: ConversionFunctionsType;
-  classesMap: Map<string, {new()}>;
+  classesMap: Map<string, { new() }>;
 
   static isArray(object) {
     if (object === Array) {
@@ -187,6 +187,9 @@ export class JsonConverterService {
   }
 
   private getJsonPropertyValue(simpleObj: any, jsonPropertyName: string) {
+    if (!simpleObj) {
+      return simpleObj;
+    }
     const indexOfDot = jsonPropertyName.indexOf('.');
     if (indexOfDot >= 0) {
       const firstPart = jsonPropertyName.substr(0, indexOfDot);
@@ -243,5 +246,5 @@ export interface JsonConverterConfigurationInterface {
   getConfigurationFilePath: () => string;
   conversionFunctions: ConversionFunctionsType;
   converterMainMethodOverride: <T>(simpleObj: any, clazz: { new(): T }) => Array<T>;
-  classesMap: Map<string, {new()}>;
+  classesMap: Map<string, { new() }>;
 }
