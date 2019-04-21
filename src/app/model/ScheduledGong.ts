@@ -1,6 +1,8 @@
 import * as moment from 'moment';
 import {UpdateStatusEnum} from './updateStatusEnum';
 
+const dateFormat = 'YY/MM/DD.HH:mm';
+
 export class ScheduledGong {
   dayNumber: number;
   date: Date;
@@ -59,5 +61,10 @@ export class ScheduledGong {
     }
 
     return clonedObject;
+  }
+
+  printLog( aPrefix :string) {
+    const timeFormatted = moment(this.date).format(dateFormat);
+    console.log(`\n${aPrefix} ScheduledGong time: ${timeFormatted} , areas : ${this.areas} , volume: ${this.areas}`);
   }
 }

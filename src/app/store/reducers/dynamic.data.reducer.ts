@@ -21,10 +21,10 @@ export function dynamicDataReducer(state: DynamicDataState = INITIAL_DYNAMIC_DAT
     case SET_MANUAL_GONGS_LIST:
       return Object.assign({}, state, {manualGongs: action.payload});
     case ADD_MANUAL_GONG:
-      const newState = Object.assign({}, state);
-      newState.manualGongs = [...state.manualGongs];
-      newState.manualGongs.push(action.payload);
-      return newState;
+      const newScheduledGong = (action.payload as ScheduledGong).clone();
+      state.manualGongs.push(newScheduledGong);
+      state.manualGongs = [...state.manualGongs];
+      return Object.assign({}, state);
     case UPDATE_MANUAL_GONG:
       const updatedGong = action.payload as ScheduledGong;
       if (state.manualGongs) {
