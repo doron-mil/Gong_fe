@@ -44,11 +44,24 @@ th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
   color: blue;
 }
 
-.nextGong{
-  background-color:lightcyan ;
+.nextGong {
+  background-color: lightcyan;
 }
 
 ::ng-deep .confirmClass .swal-icon {
   position: fixed;
   margin: 2vh 2vw;
+}
+
+.delete-cell {
+  /*display: flex;*/
+  /*flex-direction: row;*/
+  /*justify-content: center;*/
+}
+
+.delete-button {
+  /*color: red;*/
+  position: relative;
+  top: -7px;
+  left: 7px;
 }

@@ -1,3 +1,7 @@
-.matTabGroupClass{
+::ng-deep .mat-tab-body-wrapper {
+  height: 100%;
+}
+
+.matTabGroupClass {
   height: 100%;
 }
