@@ -126,7 +126,8 @@
     "buttons": {
       "scheduleCourse": "Schedule Course",
       "removeCourse": "Remove Course",
-      "updateCourse": "Update Course"
+      "updateCourse": "Update Course",
+      "nextAutoGong": "Next Gong"
     },
     "labels": {
       "displayDate": "Display Date"

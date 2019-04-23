@@ -17,8 +17,26 @@ body {
   margin: 10px;
 }
 
+.top-controls-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.btn-group-left-side {
+  width: 38%;
+}
+
+.btn-group-right-side {
+  width: 55%;
+}
+
 .btn-group button {
   margin-right: 2vw;
+}
+
+.scroll-next-gong-button {
+  margin-left: 2vw;
 }
 
 .courses-display-container {

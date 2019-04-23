@@ -33,6 +33,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   displayDate: boolean = false;
 
+  waitToScroll: boolean = false;
+
   constructor(private ngRedux: NgRedux<any>,
               private dialog: MatDialog,
               private translate: TranslateService,
@@ -86,6 +88,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     const foundCourse = this.coursesMap.get(selectedCourseName);
 
     this.selectedCourseRoutineArray = [];
+    const newSelectedCourseRoutineArray: ScheduledGong[] = [];
     if (foundCourse) {
       foundCourse.routine.forEach(course => {
         const copiedCourse = course.cloneForUi(selectedCourseStartDate);
@@ -101,8 +104,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
           copiedCourse.isActive = false;
         }
         // Adding to the list
-        this.selectedCourseRoutineArray.push(copiedCourse);
+        newSelectedCourseRoutineArray.push(copiedCourse);
       });
+      this.selectedCourseRoutineArray = newSelectedCourseRoutineArray;
     } else {
       console.error('couldn\'t find course name : ' + selectedCourseName);
     }
@@ -177,10 +181,34 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     }
   }
 
+  scrollToNextGong() {
+    const firstCourseSchedule = this.coursesData[0];
+    if (!firstCourseSchedule) {
+      return;
+    }
+
+    if (this.selectedCourseScheduled === firstCourseSchedule) {
+      this.waitToScroll = true;
+      this.onGongsTableDataChangedEvent();
+    } else {
+      this.onRowClick(firstCourseSchedule);
+      this.waitToScroll = true;
+    }
+  }
+
+  onGongsTableDataChangedEvent() {
+    if (this.waitToScroll) {
+      const el = document.getElementById('NEXT_GONG');
+      if (el) {
+        el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+        this.waitToScroll = false;
+      }
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
   }
-
 }

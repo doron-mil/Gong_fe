@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   Component,
   EventEmitter,
   Input,
@@ -37,7 +38,7 @@ enum Translation_Enum {
   templateUrl: './gongs-time-table.component.html',
   styleUrls: ['./gongs-time-table.component.css']
 })
-export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
+export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, OnChanges, AfterViewChecked {
 
   private _scheduledGongsArray: ScheduledGong[];
 
@@ -57,6 +58,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() gongActiveToggleEvent = new EventEmitter<ScheduledGong>();
 
+  @Output() gongsTableDataChangedEvent = new EventEmitter<void>();
+
   @ViewChildren('cmd') customComponentChildren: QueryList<MatCheckbox>;
 
   const;
@@ -70,6 +73,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
 
   gongTypesSubscription: Subscription;
   storeSubscription: Subscription;
+
+  dataSourceWasChanged: boolean;
 
   constructor(private ngRedux: NgRedux<any>,
               private storeService: StoreService,
@@ -194,8 +199,15 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.displayDate) {
       this.resetDisplayedColumnse();
-    } else {
+    } else if (changes.scheduledGongsArray) {
       this.createDataSource();
+    }
+  }
+
+  ngAfterViewChecked() {
+    if (this.dataSourceWasChanged) {
+      this.gongsTableDataChangedEvent.emit();
+      this.dataSourceWasChanged = false;
     }
   }
 
@@ -219,6 +231,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy {
           scheduledGong.isTheNextGong = scheduledGong.exactMoment.isSame(this.nextGongTime);
         });
         this.dataSource = new MatTableDataSource<ScheduledGong>(this._scheduledGongsArray);
+        this.dataSourceWasChanged = true;
 
       });
     }

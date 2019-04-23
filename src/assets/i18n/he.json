@@ -120,9 +120,10 @@
       }
     },
     "buttons": {
-      "addCourse": "הוסף קורס",
+      "scheduleCourse": "הוסף קורס",
       "removeCourse": "מחק קורס",
-      "updateCourse": "עדכן קורס"
+      "updateCourse": "עדכן קורס",
+      "nextAutoGong": "הגונג הבא"
     },
     "alerts" :{
       "confirmRemoveSchedule" :{
