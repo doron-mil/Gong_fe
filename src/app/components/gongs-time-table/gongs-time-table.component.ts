@@ -9,20 +9,16 @@ import {
   Output,
   QueryList,
   SimpleChanges,
-  ViewChild,
   ViewChildren
 } from '@angular/core';
-import {MatCheckbox, MatListOption, MatTableDataSource} from '@angular/material';
-import {NgRedux} from '@angular-redux/store';
-import {Subscription} from 'rxjs';
+import {MatCheckbox, MatTableDataSource} from '@angular/material';
+import {Subscription, timer} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import swal from 'sweetalert';
 import * as moment from 'moment';
 
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreService} from '../../services/store.service';
-import {BasicServerData} from '../../model/basicServerData';
-import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 
 enum Translation_Enum {
   CONFIRM_DEGONG_TITLE_DISABLE,
@@ -41,10 +37,13 @@ enum Translation_Enum {
 export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, OnChanges, AfterViewChecked {
 
   private _scheduledGongsArray: ScheduledGong[];
+  private _displayDate: boolean = true;
 
-  @Input() displayDay: boolean = true;
-  _displayDate: boolean = true;
-  @Input() isDeleteButton: boolean = false;
+  @Input()
+  displayDay: boolean = true;
+
+  @Input()
+  isDeleteButton: boolean = false;
 
   @Input('displayDate')
   set displayDate(aNewValue: boolean) {
@@ -56,34 +55,34 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
     this._scheduledGongsArray = aNewValue;
   }
 
+  @Input('computeNextGong')
+  private computeNextGong: boolean = false;
+
   @Output() gongActiveToggleEvent = new EventEmitter<ScheduledGong>();
 
   @Output() gongsTableDataChangedEvent = new EventEmitter<void>();
 
+  @Output() onScheduledGongEnded = new EventEmitter<boolean>();
+
   @ViewChildren('cmd') customComponentChildren: QueryList<MatCheckbox>;
 
-  const;
   translationMap = new Map<Translation_Enum, string>();
 
   displayedColumnsOptions = ['day', 'date', 'time', 'gongType', 'area', 'volume', 'isOn'];
   displayedColumns = [];
   dataSource: MatTableDataSource<ScheduledGong>;
 
-  nextGongTime: moment.Moment;
-
   gongTypesSubscription: Subscription;
-  storeSubscription: Subscription;
+  nextGongSubscription: Subscription;
 
   dataSourceWasChanged: boolean;
 
-  constructor(private ngRedux: NgRedux<any>,
-              private storeService: StoreService,
+  constructor(private storeService: StoreService,
               private translate: TranslateService) {
   }
 
   ngOnInit() {
     this.translateNeededText();
-    this.subscribeToNextGong();
 
     this.resetDisplayedColumnse();
 
@@ -113,17 +112,6 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
       transKeysConfirmDeGongMap.forEach(((value, key) =>
         this.translationMap.set(transKeysConfirmDeGongMap.get(key), transResult[key])));
     });
-  }
-
-
-  private subscribeToNextGong() {
-    this.storeSubscription = this.ngRedux.select<BasicServerData>([StoreDataTypeEnum.DYNAMIC_DATA, 'basicServerData'])
-      .subscribe((basicServerData: BasicServerData) => {
-        if (basicServerData) {
-          this.nextGongTime = moment(basicServerData.nextScheduledJobTime);
-          this.createDataSource();
-        }
-      });
   }
 
   private gongActivationToggle(aId: number, aIsOnAction: boolean, aChkBxCtrl: MatCheckbox) {
@@ -212,11 +200,15 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   }
 
   private createDataSource() {
+    this.cancelSubscription();
+
     if (this._scheduledGongsArray && this._scheduledGongsArray.length > 0) {
-      // const  gongTypesMapAsync = await this.storeService.getGongTypesMapAsync();
+      let nextGongIndex = -1;
+
       this.gongTypesSubscription = this.storeService.getGongTypesMap().subscribe(gongTypesMap => {
         let lastScheduledGongReord: ScheduledGong = new ScheduledGong();
-        this._scheduledGongsArray.forEach((scheduledGong: ScheduledGong) => {
+        const currentMoment = moment();
+        this._scheduledGongsArray.forEach((scheduledGong: ScheduledGong, index) => {
           scheduledGong.gongTypeName = gongTypesMap[scheduledGong.gongTypeId].name;
 
           if (scheduledGong.dayNumber !== lastScheduledGongReord.dayNumber) {
@@ -227,23 +219,57 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
             lastScheduledGongReord.span++;
           }
 
-          scheduledGong.isAfterNextGong = scheduledGong.exactMoment.isSameOrAfter(this.nextGongTime);
-          scheduledGong.isTheNextGong = scheduledGong.exactMoment.isSame(this.nextGongTime);
+          if (nextGongIndex < 0) {
+            scheduledGong.isAfterNextGong = scheduledGong.exactMoment.isSameOrAfter(currentMoment);
+            if (scheduledGong.isAfterNextGong) {
+              scheduledGong.isTheNextGong = true;
+              nextGongIndex = index;
+            }else{
+              scheduledGong.isTheNextGong = false;
+            }
+          } else {
+            scheduledGong.isAfterNextGong = true;
+            scheduledGong.isTheNextGong = false;
+          }
         });
         this.dataSource = new MatTableDataSource<ScheduledGong>(this._scheduledGongsArray);
         this.dataSourceWasChanged = true;
 
       });
+
+      this.timerToChangeNextGong(nextGongIndex);
+    }
+  }
+
+  private timerToChangeNextGong(aNextGongIndex: number) {
+    if (aNextGongIndex < 0) {
+      return;
+    }
+    if (aNextGongIndex >= this._scheduledGongsArray.length) {
+      this.onScheduledGongEnded.emit(true);
+      return;
+    }
+    const timeOfNextGong = this._scheduledGongsArray[aNextGongIndex].exactMoment.add(1, 'm');
+    this.nextGongSubscription = timer(timeOfNextGong.toDate()).subscribe(() => {
+      this.onScheduledGongEnded.emit(false);
+      this._scheduledGongsArray[aNextGongIndex].isTheNextGong = false;
+      this._scheduledGongsArray[aNextGongIndex].isAfterNextGong = false;
+      this._scheduledGongsArray[aNextGongIndex + 1].isTheNextGong = true;
+      this.timerToChangeNextGong(aNextGongIndex + 1);
+    });
+  }
+
+  cancelSubscription() {
+    if (this.gongTypesSubscription) {
+      this.gongTypesSubscription.unsubscribe();
+    }
+    if (this.nextGongSubscription) {
+      this.nextGongSubscription.unsubscribe();
     }
   }
 
   ngOnDestroy(): void {
-    if (this.gongTypesSubscription) {
-      this.gongTypesSubscription.unsubscribe();
-    }
-
-    if (this.storeSubscription) {
-      this.storeSubscription.unsubscribe();
-    }
+    this.cancelSubscription();
   }
+
 }
