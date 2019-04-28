@@ -37,6 +37,10 @@
         "propertyNameInJson": "course_name"
       },
       {
+        "propertyName": "isTest",
+        "propertyNameInJson": "test"
+      },
+      {
         "propertyName": "days",
         "propertyNameInJson": "days_count"
       },
@@ -97,6 +101,9 @@
       {
         "propertyName": "exceptions",
         "type": "ScheduledCourseGong"
+      },
+      {
+        "propertyName": "testHoursRange"
       }
     ]
   },

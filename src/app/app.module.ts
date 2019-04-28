@@ -33,6 +33,7 @@ import {MainPageComponent} from './pages/main-page/main-page.component';
 import {MomentModule} from 'ngx-moment';
 import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/schedule-course-dialog.component';
 import {MatIconRegistry} from '@angular/material';
+import {MaxDirective, MinDirective} from './shared/min-max.directive';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -61,7 +62,9 @@ export const translationRoot = {
     GongsTimeTableComponent,
     LoginComponent,
     MainPageComponent,
-    ScheduleCourseDialogComponent
+    ScheduleCourseDialogComponent,
+    MinDirective,
+    MaxDirective,
   ],
   imports: [
     BrowserModule,

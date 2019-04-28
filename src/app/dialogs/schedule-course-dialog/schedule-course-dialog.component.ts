@@ -40,7 +40,7 @@ class MomentRange {
   styleUrls: ['./schedule-course-dialog.component.css']
 })
 export class ScheduleCourseDialogComponent implements OnInit {
-  isNew: boolean;
+  isNew: boolean = true;
 
   coursesMap: Map<string, Course>;
   courses: Course[] = [];
@@ -56,12 +56,15 @@ export class ScheduleCourseDialogComponent implements OnInit {
 
   datePickerIsOpened: boolean;
 
+  testHoursRangeStart: number;
+  testHoursRangeEnd: number;
+
   constructor(public dialogRef: MatDialogRef<any>,
               private storeService: StoreService) {
   }
 
-  ngOnInit() {
-    this.coursesMap = this.storeService.getCoursesMapSync();
+  async ngOnInit() {
+    this.coursesMap = await this.storeService.getCoursesMapPromise();
     this.coursesMap.forEach(value => this.courses.push(value));
 
     const courseScheduleArray = this.storeService.getCourseScheduleArraySync();
@@ -106,6 +109,9 @@ export class ScheduleCourseDialogComponent implements OnInit {
       courseSchedule.date = this.selectedStartDate;
       courseSchedule.startFromDay = this.selectedStartFromDay;
       courseSchedule.updateStatus = UpdateStatusEnum.PENDING;
+      if (this.selectedCourse.isTest) {
+        courseSchedule.testHoursRange = {start: this.testHoursRangeStart, end: this.testHoursRangeEnd};
+      }
       this.closeDialog(courseSchedule);
     }
   }

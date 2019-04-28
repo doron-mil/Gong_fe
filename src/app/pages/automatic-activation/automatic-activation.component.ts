@@ -90,22 +90,29 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     this.selectedCourseRoutineArray = [];
     const newSelectedCourseRoutineArray: ScheduledGong[] = [];
     if (foundCourse) {
-      foundCourse.routine.forEach(course => {
-        const copiedCourse = course.cloneForUi(selectedCourseStartDate);
-        if (!copiedCourse.volume) {
-          copiedCourse.volume = 100;
+      foundCourse.routine.forEach(scheduledGong => {
+        const copiedScheduledGong = scheduledGong.cloneForUi(selectedCourseStartDate);
+        let scheduledGongArray = Array.of(copiedScheduledGong);
+        if (foundCourse.isTest) {
+          scheduledGongArray = copiedScheduledGong.cloneAsTestToArray(aSelectedCourseScheduled.testHoursRange);
         }
-        // Dealing with Active/InActive
-        copiedCourse.isActive = true;
-        if (aSelectedCourseScheduled.exceptions &&
-          aSelectedCourseScheduled.exceptions.some(
-            (scheduledCourseGong: ScheduledCourseGong) =>
-              scheduledCourseGong.dayNumber === copiedCourse.dayNumber && scheduledCourseGong.time === copiedCourse.time)) {
-          copiedCourse.isActive = false;
-        }
-        // Adding to the list
-        newSelectedCourseRoutineArray.push(copiedCourse);
+        scheduledGongArray.forEach((scheduledGongItem) => {
+          if (!scheduledGongItem.volume) {
+            scheduledGongItem.volume = 100;
+          }
+          // Dealing with Active/InActive
+          scheduledGongItem.isActive = true;
+          if (aSelectedCourseScheduled.exceptions &&
+            aSelectedCourseScheduled.exceptions.some(
+              (scheduledCourseGong: ScheduledCourseGong) =>
+                scheduledCourseGong.dayNumber === scheduledGongItem.dayNumber && scheduledCourseGong.time === scheduledGongItem.time)) {
+            scheduledGongItem.isActive = false;
+          }
+          // Adding to the list
+          newSelectedCourseRoutineArray.push(scheduledGongItem);
+        });
       });
+      newSelectedCourseRoutineArray.sort((a, b) => a.time - b.time);
       this.selectedCourseRoutineArray = newSelectedCourseRoutineArray;
     } else {
       console.error('couldn\'t find course name : ' + selectedCourseName);
@@ -114,8 +121,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   scheduleCourse() {
     const dialogRef = this.dialog.open(ScheduleCourseDialogComponent, {
-      height: '70vh',
+      height: '50vh',
       width: '70vw',
+      panelClass: 'schedule-course-dialog',
       position: {top: '15vh'},
       data: {}
     });

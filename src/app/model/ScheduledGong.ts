@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import {UpdateStatusEnum} from './updateStatusEnum';
+import {HoursRange} from './hoursRange';
 
 const dateFormat = 'YY/MM/DD.HH:mm';
 
@@ -34,7 +35,7 @@ export class ScheduledGong {
     clonedObject.span = this.span;
 
     clonedObject.updateStatus = this.updateStatus;
-    clonedObject.exactMoment = this.exactMoment;
+    clonedObject.exactMoment = this.exactMoment ? this.exactMoment.clone() : this.exactMoment;
 
     clonedObject.isAfterNextGong = this.isAfterNextGong;
     clonedObject.isTheNextGong = this.isTheNextGong;
@@ -63,7 +64,19 @@ export class ScheduledGong {
     return clonedObject;
   }
 
-  printLog( aPrefix :string) {
+  cloneAsTestToArray(aHoursRange: HoursRange): ScheduledGong[] {
+    const ScheduledGongArray = new Array<ScheduledGong>();
+    for (let hour = aHoursRange.start; hour <= aHoursRange.end; hour++) {
+      const clonedObject = this.clone();
+      clonedObject.exactMoment.add(hour, 'h');
+      clonedObject.time = clonedObject.exactMoment.diff(clonedObject.exactMoment.clone().startOf('day'));
+      ScheduledGongArray.push(clonedObject);
+    }
+
+    return ScheduledGongArray;
+  }
+
+  printLog(aPrefix: string) {
     const timeFormatted = moment(this.date).format(dateFormat);
     console.log(`\n${aPrefix} ScheduledGong time: ${timeFormatted} , areas : ${this.areas} , volume: ${this.areas}`);
   }

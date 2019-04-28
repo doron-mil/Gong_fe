@@ -23,7 +23,7 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
 
   converterMainMethodOverride = undefined;
 
-  classesMap = new Map<string, {new()}>();
+  classesMap = new Map<string, { new() }>();
 
   static getInstance(): JsonConversionFunctions {
     const jsonConversionFunctions = new JsonConversionFunctions();
@@ -53,13 +53,8 @@ export class JsonConversionFunctions implements JsonConverterConfigurationInterf
       (agendaRecord.days as Array<any>).forEach(day => {
         const gongRecord = agendaRecord.gongs;
         (gongRecord.times as Array<any>).forEach(gongTime => {
-          if (gongTime.indexOf(':') > 0) {
-            addNewGongToArray(day, this.timeConversion(gongTime), gongRecord, returnedScheduledGongArray);
-          } else {
-            for (let hourInDay = 7; hourInDay < 8; hourInDay += 1) { // 0 .. < 24
-              addNewGongToArray(day, this.timeConversion(hourInDay + gongTime), gongRecord, returnedScheduledGongArray);
-            }
-          }
+          const computedGongTime = (gongTime.indexOf(':') > 0) ? gongTime : `0${gongTime}`;
+          addNewGongToArray(day, this.timeConversion(computedGongTime), gongRecord, returnedScheduledGongArray);
         });
       });
     });

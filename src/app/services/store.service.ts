@@ -17,6 +17,8 @@ import {
 import {ScheduledGong} from '../model/ScheduledGong';
 import {CourseSchedule} from '../model/courseSchedule';
 import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
+import {filter, first, map, tap} from 'rxjs/operators';
+import {toPromise} from 'rxjs-compat/operator/toPromise';
 
 @Injectable({
   providedIn: 'root'
@@ -144,6 +146,12 @@ export class StoreService implements OnInit, OnDestroy {
 
   getCoursesMapSync(): Map<string, Course> {
     return this.coursesMap;
+  }
+
+  getCoursesMapPromise(): Promise<Map<string, Course>> {
+    return this.coursesMapObservable.pipe(
+      filter(res => !!res),
+      first()).toPromise();
   }
 
   getCourseScheduleArraySync(): CourseSchedule[] {

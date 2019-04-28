@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import {UpdateStatusEnum} from './updateStatusEnum';
 import {ScheduledCourseGong} from './ScheduledCourseGong';
+import {HoursRange} from './hoursRange';
 
 export class CourseSchedule {
   id: number;
@@ -11,6 +12,7 @@ export class CourseSchedule {
   exceptions: ScheduledCourseGong[];
   updateStatus: UpdateStatusEnum;
   tmpId: string;
+  testHoursRange?: HoursRange;
 
 
   clone(): CourseSchedule {
@@ -22,8 +24,12 @@ export class CourseSchedule {
     newCourseSchedule.startFromDay = this.startFromDay;
     newCourseSchedule.updateStatus = this.updateStatus;
     newCourseSchedule.tmpId = this.tmpId;
-    if (this.exceptions){
-     newCourseSchedule.exceptions = _.map(this.exceptions, _.clone);
+    if (this.exceptions) {
+      newCourseSchedule.exceptions = _.map(this.exceptions, _.clone);
+
+    }
+    if (this.testHoursRange) {
+      newCourseSchedule.testHoursRange = this.testHoursRange;
 
     }
     return newCourseSchedule;

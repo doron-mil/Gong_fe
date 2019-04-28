@@ -152,14 +152,19 @@
       "labels": {
         "courseName": "Course Name",
         "dayStart": "Start from day",
-        "date": "Schedule day"
+        "date": "Schedule day",
+        "isTest": "4 Test Only",
+        "testHoursRange": "Test Hours Range",
+        "testHoursRangeStart": "Start",
+        "testHoursRangeEnd": "End"
       },
       "placeHolders": {
         "courseName": "Select a course",
         "dayStart": "Select the day to start with"
       },
       "buttons": {
-        "scheduleCourse": "Schedule Course"
+        "scheduleCourse": "Schedule Course",
+        "cancel": "Cancel"
       }
     }
   },

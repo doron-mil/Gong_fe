@@ -125,13 +125,13 @@
       "updateCourse": "עדכן קורס",
       "nextAutoGong": "הגונג הבא"
     },
-    "alerts" :{
-      "confirmRemoveSchedule" :{
-        "title" : "מחיקת קורס מתוכנן",
-        "text" : "האם את/ה בטוח/ה?",
-        "buttons" : {
-          "cancel" : "ביטול",
-          "confirm" :"כן"
+    "alerts": {
+      "confirmRemoveSchedule": {
+        "title": "מחיקת קורס מתוכנן",
+        "text": "האם את/ה בטוח/ה?",
+        "buttons": {
+          "cancel": "ביטול",
+          "confirm": "כן"
         }
       }
     }
@@ -145,14 +145,19 @@
       "labels": {
         "courseName": "Course Name",
         "dayStart": "Start from day",
-        "date": "Schedule day"
+        "date": "Schedule day",
+        "isTest": "לבדיקות בלבד",
+        "testHoursRange": "טווח שעות לבדיקה",
+        "testHoursRangeStart": "התחלה",
+        "testHoursRangeEnd": "סוף"
       },
       "placeHolders": {
         "courseName": "Select a course",
         "dayStart": "Select the day to start with"
       },
       "buttons": {
-        "scheduleCourse": "Schedule Course"
+        "scheduleCourse": "Schedule Course",
+        "cancel": "בטל"
       }
     }
   },
