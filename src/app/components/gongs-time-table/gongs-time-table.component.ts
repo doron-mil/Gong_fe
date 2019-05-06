@@ -45,6 +45,9 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   @Input()
   isDeleteButton: boolean = false;
 
+  @Input()
+  isFindNext: boolean = false;
+
   @Input('displayDate')
   set displayDate(aNewValue: boolean) {
     this._displayDate = aNewValue;
@@ -219,12 +222,12 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
             lastScheduledGongReord.span++;
           }
 
-          if (nextGongIndex < 0) {
+          if (nextGongIndex < 0 && this.isFindNext) {
             scheduledGong.isAfterNextGong = scheduledGong.exactMoment.isSameOrAfter(currentMoment);
             if (scheduledGong.isAfterNextGong) {
               scheduledGong.isTheNextGong = true;
               nextGongIndex = index;
-            }else{
+            } else {
               scheduledGong.isTheNextGong = false;
             }
           } else {

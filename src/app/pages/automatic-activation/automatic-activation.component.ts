@@ -112,7 +112,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
           newSelectedCourseRoutineArray.push(scheduledGongItem);
         });
       });
-      newSelectedCourseRoutineArray.sort((a, b) => a.time - b.time);
+      newSelectedCourseRoutineArray.sort((a, b) => a.exactMoment.valueOf() - b.exactMoment.valueOf());
+      // console.log('22222', newSelectedCourseRoutineArray);
       this.selectedCourseRoutineArray = newSelectedCourseRoutineArray;
     } else {
       console.error('couldn\'t find course name : ' + selectedCourseName);
@@ -163,6 +164,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         .then(willRemove => {
           if (willRemove && this.selectedCourseScheduled) {
             this.storeService.removeScheduledCourse(this.selectedCourseScheduled);
+            this.selectedCourseRoutineArray = [];
             this.selectedCourseScheduled = undefined;
           }
         });
@@ -211,8 +213,18 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
         this.waitToScroll = false;
       }
+    } else {
+      const el = document.getElementById('FIRST_GONG');
+      if (el) {
+        // console.log('333333',el[0]);
+        // el.scrollTop = 0;
+        el.scrollIntoView({behavior: 'auto', block: 'center', inline: 'start'});
+        // this.waitToScroll = false;
+      }
+
     }
   }
+
 
   ngOnDestroy(): void {
     if (this.subscription) {

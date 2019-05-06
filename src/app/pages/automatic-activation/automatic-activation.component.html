@@ -73,10 +73,11 @@
       </mat-table>
     </div>
 
-    <div class="selected-course-display-container mat-elevation-z8" *ngIf="true">
+    <div class="selected-course-display-container mat-elevation-z8" >
       <app-gongs-time-table [scheduledGongs]="selectedCourseRoutineArray" [displayDate]="displayDate"
                             (gongActiveToggleEvent)="onGongActiveToggle($event)"
                             [computeNextGong]="true"
+                            [isFindNext]="selectedCourseScheduled === coursesData[0]"
                             (gongsTableDataChangedEvent)="onGongsTableDataChangedEvent()">
       </app-gongs-time-table>
 

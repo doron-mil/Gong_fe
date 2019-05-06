@@ -33,7 +33,8 @@
     <th mat-header-cell *matHeaderCellDef>
       {{ 'general.tableHeaders.gongsTimeTable.time' | translate }}
     </th>
-    <td mat-cell *matCellDef="let element" id="{{ element.isTheNextGong ? 'NEXT_GONG' :'' }}"
+    <td mat-cell *matCellDef="let element; let rowIndex = index;" id="{{ element.isTheNextGong ? 'NEXT_GONG' :'' }}"
+        id="{{ rowIndex === 0 ? 'FIRST_GONG' : ''}}"
         [ngClass]="{'nextGong' : element.isTheNextGong}">
       {{ element.time | date :'HH:mm' : 'UTC' }}
     </td>
@@ -84,7 +85,8 @@
     </th>
     <td mat-cell *matCellDef="let element" [ngClass]="{'nextGong' : element.isTheNextGong}" class="delete-cell">
       <ng-container *ngIf="isDeleteButton">
-        <button mat-icon-button (click)="gongRemove(element.exactMoment.valueOf())" color="accent" class="delete-button ">
+        <button mat-icon-button (click)="gongRemove(element.exactMoment.valueOf())" color="accent"
+                class="delete-button ">
           <mat-icon svgIcon="close-box"></mat-icon>
         </button>
       </ng-container>
