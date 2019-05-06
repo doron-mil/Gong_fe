@@ -1,13 +1,17 @@
 import {GongType} from './gongType';
-import {Area} from './area';
 import {UpdateStatusEnum} from './updateStatusEnum';
+import {ScheduledGong} from './ScheduledGong';
 
 export class Gong {
-  id: number;
-  type: GongType;
+  gongTypeId: number;
   volume: number;
-  areaIds: number[];
-  isActive: boolean;
-  time: Date;
-  updateStatus: UpdateStatusEnum;
+  areas: number[];
+
+  static createOutOfScheduledGong(aScheduledGong: ScheduledGong) {
+    const newGong = new Gong();
+    newGong.gongTypeId = aScheduledGong.gongTypeId;
+    newGong.areas = [...aScheduledGong.areas];
+    newGong.volume = aScheduledGong.volume;
+    return newGong;
+  }
 }

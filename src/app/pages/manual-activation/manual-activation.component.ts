@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar, MatTableDataSource} from '@angular/material';
+import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {NgRedux} from '@angular-redux/store';
-import {BehaviorSubject, combineLatest, Subscription, timer} from 'rxjs';
+import {BehaviorSubject, Subscription, timer} from 'rxjs';
 import * as moment from 'moment';
 
 import {GongType} from '../../model/gongType';
@@ -12,6 +12,7 @@ import {ScheduledGong} from '../../model/ScheduledGong';
 import {UpdateStatusEnum} from '../../model/updateStatusEnum';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {MessagesService} from '../../services/messages.service';
+import {Gong} from '../../model/gong';
 
 @Component({
   selector: 'app-manual-activation',
@@ -110,7 +111,8 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   }
 
   playGong() {
-    console.log('aaaaaaa', this.gongToPlay.areas);
+    const createdGong = Gong.createOutOfScheduledGong(this.gongToPlay);
+    this.storeService.playGong(createdGong);
   }
 
   scheduleGong() {

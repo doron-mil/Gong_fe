@@ -1,13 +1,16 @@
 import {
   ADD_MANUAL_GONG,
   AppAction,
-  BASIC_DATA_FEATURE, REMOVE_MANUAL_GONG, SCHEDULE_COURSE_ADD, SCHEDULED_COURSE_REMOVE, SCHEDULED_COURSE_UPDATE, SET_BASIC_DATA,
+  REMOVE_MANUAL_GONG,
+  SCHEDULE_COURSE_ADD,
+  SCHEDULED_COURSE_REMOVE,
+  SCHEDULED_COURSE_UPDATE,
+  SET_BASIC_DATA,
   SET_COURSES_SCHEDULE,
   SET_MANUAL_GONGS_LIST,
   UPDATE_MANUAL_GONG
 } from '../actions/action';
 import {DynamicDataState, INITIAL_DYNAMIC_DATA_STATE} from '../states/dynamic.data.state';
-import {Gong} from '../../model/gong';
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {CourseSchedule} from '../../model/courseSchedule';
 

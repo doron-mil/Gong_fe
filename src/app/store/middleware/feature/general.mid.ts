@@ -23,7 +23,7 @@ import {
   setGongTypes,
   setManualGongsList,
   updateCourseSchedule,
-  updateManualGong, REMOVE_MANUAL_GONG, REMOVE_MANUAL_GONG_FEATURE
+  updateManualGong, REMOVE_MANUAL_GONG, REMOVE_MANUAL_GONG_FEATURE, PLAY_GONG, PLAY_GONG_FEATURE
 } from '../../actions/action';
 import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
@@ -50,6 +50,7 @@ export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
 export const TOGGLE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/toggle`;
 export const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
 export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
+export const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -212,10 +213,21 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${REMOVE_MANUAL_GONG_FEATURE} ${API_ERROR}`:
-        this.messagesService.cannotDeleteRecord(action.data)
+        this.messagesService.cannotDeleteRecord(action.data);
         dispatch(
           apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
         );
+        break;
+      case PLAY_GONG:
+        const toBPlayedGongJson = this.jsonConverterService.convertToJson(action.payload);
+        const stringedified2PlayedGongJson = JSON.stringify(toBPlayedGongJson);
+        next(
+          apiRequest(stringedified2PlayedGongJson, 'POST', PLAY_GONG_URL,
+            PLAY_GONG_FEATURE, action.payload)
+        );
+        break;
+      case `${PLAY_GONG_FEATURE} ${API_SUCCESS}`:
+        console.log('11111', action.payload);
         break;
     }
 

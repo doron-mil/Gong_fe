@@ -8,7 +8,7 @@ import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
 import {
   addManualGong,
-  getBasicData,
+  getBasicData, playGong,
   readToStoreData,
   removeScheduleCourse, removeScheduledGong,
   scheduleCourse,
@@ -19,6 +19,7 @@ import {CourseSchedule} from '../model/courseSchedule';
 import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 import {filter, first, map, tap} from 'rxjs/operators';
 import {toPromise} from 'rxjs-compat/operator/toPromise';
+import {Gong} from '../model/gong';
 
 @Injectable({
   providedIn: 'root'
@@ -192,8 +193,13 @@ export class StoreService implements OnInit, OnDestroy {
     }
   }
 
+  playGong(aGongToPlay: Gong) {
+    this.ngRedux.dispatch(playGong(aGongToPlay));
+  }
+
   ngOnDestroy(): void {
     this.subscriptionsArray.forEach(subscription => subscription.unsubscribe());
     console.log('c1');
   }
+
 }
