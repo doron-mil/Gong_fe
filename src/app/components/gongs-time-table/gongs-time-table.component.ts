@@ -14,7 +14,7 @@ import {
 import {MatCheckbox, MatTableDataSource} from '@angular/material';
 import {Subscription, timer} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
-import swal from 'sweetalert';
+import Swal, {SweetAlertResult} from 'sweetalert2';
 import * as moment from 'moment';
 
 import {ScheduledGong} from '../../model/ScheduledGong';
@@ -165,26 +165,18 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
     const confirm = this.translationMap.get(
       aIsDelete ? Translation_Enum.CONFIRM_DEGONG_CONFIRM_DELETE : Translation_Enum.CONFIRM_DEGONG_CONFIRM_DISABLE);
 
-    return await swal({
+
+    const result: SweetAlertResult = await Swal.fire({
       title,
       text: this.translationMap.get(Translation_Enum.CONFIRM_DEGONG_TEXT),
-      icon: '/assets/icons/alerts/icons8-error-48.png',
-      className: 'confirmClass',
-      dangerMode: true,
-      buttons: {
-        cancel: {
-          text: this.translationMap.get(Translation_Enum.CONFIRM_DEGONG_CANCEL),
-          value: null,
-          visible: true,
-        },
-        confirm: {
-          text: confirm,
-        },
-      },
-    })
-      .then(isConfirm => {
-        return isConfirm ? isConfirm : false;
-      });
+      imageUrl: '/assets/icons/alerts/icons8-error-48.png',
+      customClass: 'confirmClass',
+      confirmButtonText: confirm,
+      showCancelButton: true,
+      cancelButtonText: this.translationMap.get(Translation_Enum.CONFIRM_DEGONG_CANCEL),
+    });
+
+    return Promise.resolve(result.value === true);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

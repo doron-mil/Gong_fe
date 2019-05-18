@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
 import {MatDialog, MatTableDataSource} from '@angular/material';
 import {combineLatest, Subscription} from 'rxjs';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2';
 
 import {CourseSchedule} from '../../model/courseSchedule';
 import {Course} from '../../model/course';
@@ -145,24 +145,16 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
     this.translate.get([translationKeyTitle, translationKeyText,
       translationKeyCancel, translationKeyConfirm]).subscribe(transResult => {
-      swal({
+      Swal.fire({
         title: transResult[translationKeyTitle],
         text: transResult[translationKeyText],
-        icon: 'warning',
-        dangerMode: true,
-        buttons: {
-          cancel: {
-            text: transResult[translationKeyCancel],
-            value: null,
-            visible: true,
-          },
-          confirm: {
-            text: transResult[translationKeyConfirm],
-          },
-        },
+        type: 'warning',
+        confirmButtonText: transResult[translationKeyConfirm],
+        showCancelButton: true,
+        cancelButtonText: transResult[translationKeyCancel],
       })
-        .then(willRemove => {
-          if (willRemove && this.selectedCourseScheduled) {
+        .then(result => {
+          if (result.value && this.selectedCourseScheduled) {
             this.storeService.removeScheduledCourse(this.selectedCourseScheduled);
             this.selectedCourseRoutineArray = [];
             this.selectedCourseScheduled = undefined;
