@@ -2,10 +2,10 @@
 
   <!-- Day -->
   <ng-container matColumnDef="day" *ngIf="displayDay">
-    <th mat-header-cell *matHeaderCellDef [ngClass]="{'dayTd': _displayDate}">
+    <th mat-header-cell *matHeaderCellDef [ngClass]="{'dayTd': displayDate}">
       {{ 'general.tableHeaders.gongsTimeTable.day' | translate }}
     </th>
-    <td mat-cell *matCellDef="let element" [ngClass]="{'dayTd': _displayDate}"
+    <td mat-cell *matCellDef="let element" [ngClass]="{'dayTd': displayDate}"
         [attr.rowspan]="element.span"
         [style.display]="element.span > 0 ? '' : 'none'">
       <span class="dayClass">
@@ -15,7 +15,7 @@
   </ng-container>
 
   <!-- Date -->
-  <ng-container matColumnDef="date" *ngIf="_displayDate">
+  <ng-container matColumnDef="date" *ngIf="displayDate">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'general.tableHeaders.gongsTimeTable.date' | translate }}
     </th>

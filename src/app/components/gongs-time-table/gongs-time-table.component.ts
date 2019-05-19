@@ -52,6 +52,9 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   set displayDate(aNewValue: boolean) {
     this._displayDate = aNewValue;
   }
+  get displayDate(): boolean {
+    return this._displayDate;
+  }
 
   @Input('scheduledGongs')
   set scheduledGongsArray(aNewValue: ScheduledGong[]) {
