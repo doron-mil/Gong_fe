@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {MatSnackBar} from '@angular/material';
 import {ScheduledGong} from '../model/ScheduledGong';
-import {EnumUtils} from '../Utils/enumUtils';
+import {EnumUtils} from '../utils/enumUtils';
 import {sprintf} from 'sprintf-js';
 
 // var old_sprintf = require('sprintf-js');

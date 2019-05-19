@@ -6,7 +6,7 @@
 // import {GeneralMiddlewareService} from '../middleware/feature/general.mid';
 // import {ApiMiddlewareService} from '../middleware/core/api.mid';
 // import {generalReducer} from '../reducers/general.reducer';
-// import {JsonConverterService} from '../../Utils/json-converter/json-converter.service';
+// import {JsonConverterService} from '../../utils/json-converter/json-converter.service';
 
 // *******************************
 // npm remove jest jest-preset-angular ts-jest @types/jest babel-jest

@@ -21,7 +21,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.json"
+              "src/manifest.json",
+              "src/app/utils/json-converter-config/gong-conversion-schema.json"
             ],
             "styles": [
               "src/styles.css"

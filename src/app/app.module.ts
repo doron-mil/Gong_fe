@@ -12,7 +12,7 @@ import {applyMiddleware, combineReducers, createStore, Store} from 'redux';
 import {StoreDataTypeEnum} from './store/storeDataTypeEnum';
 import {generalReducer} from './store/reducers/general.reducer';
 import {composeWithDevTools} from 'redux-devtools-extension';
-import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RoutingModule} from './routing/routing.module';
@@ -22,8 +22,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ManualActivationComponent} from './pages/manual-activation/manual-activation.component';
 import {MaterialModule} from './material/material.module';
 import {AutomaticActivationComponent} from './pages/automatic-activation/automatic-activation.component';
-import {JsonConverterModule} from './Utils/json-converter/json-converter.module';
-import {JsonConversionFunctions} from './Utils/jsonConversionFunctions';
+import {JsonConverterModule} from './utils/json-converter/json-converter.module';
+import {default as jsonConvConfigUtil} from './utils/json-converter-config/jsonConvConfigUtil';
 import {SelectedAreasComponent} from './components/selected-areas/selected-areas.component';
 import {dynamicDataReducer} from './store/reducers/dynamic.data.reducer';
 import {staticDataReducer} from './store/reducers/static.data.reducer';
@@ -49,6 +49,12 @@ export const translationRoot = {
     useFactory: HttpLoaderFactory,
     deps: [HttpClient]
   }
+};
+
+const jsonConverterConfig = {
+  configurationFilePath: 'app/utils/json-converter-config/gong-conversion-schema.json',
+  conversionFunctionsMapArray: jsonConvConfigUtil.functionsMapArray,
+  classesMapArray: jsonConvConfigUtil.classesMapArray
 };
 
 @NgModule({
@@ -77,7 +83,7 @@ export const translationRoot = {
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
     MomentModule,
-    JsonConverterModule.forRoot(JsonConversionFunctions.getInstance()),
+    JsonConverterModule.forRoot(jsonConverterConfig),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -100,7 +106,6 @@ export class AppModule {
               matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
 
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('./assets/icons/mdi.svg'));
-
 
     // ***********************************************
     // ************* Redux Init **********************
@@ -134,8 +139,5 @@ export class AppModule {
     );
 
     ngRedux.provideStore(store);
-
-
   }
-
 }

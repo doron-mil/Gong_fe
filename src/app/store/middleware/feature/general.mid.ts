@@ -5,28 +5,33 @@ import {
   BASIC_DATA_FEATURE,
   COURSES_FEATURE,
   COURSES_SCHEDULE_FEATURE,
-  GET_BASIC_DATA, getBasicData,
+  GET_BASIC_DATA,
+  getBasicData,
   GONG_TYPES_FEATURE,
   MANUAL_GONG_ADD_FEATURE,
   MANUAL_GONGS_LIST_FEATURE,
+  PLAY_GONG,
+  PLAY_GONG_FEATURE,
   READ_TO_STORE_DATA,
+  REMOVE_MANUAL_GONG,
+  REMOVE_MANUAL_GONG_FEATURE,
   SCHEDULE_COURSE_ADD,
   SCHEDULE_COURSE_FEATURE,
   SCHEDULED_COURSE_REMOVE,
   SCHEDULED_COURSE_REMOVE_FEATURE,
-  TOGGLE_SCHEDULED_GONG,
-  TOGGLE_SCHEDULED_GONG_FEATURE,
   setAreas,
   setBasicServerData,
   setCourses,
   setCoursesSchedule,
   setGongTypes,
   setManualGongsList,
+  TOGGLE_SCHEDULED_GONG,
+  TOGGLE_SCHEDULED_GONG_FEATURE,
   updateCourseSchedule,
-  updateManualGong, REMOVE_MANUAL_GONG, REMOVE_MANUAL_GONG_FEATURE, PLAY_GONG, PLAY_GONG_FEATURE
+  updateManualGong
 } from '../../actions/action';
 import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
-import {JsonConverterService} from '../../../Utils/json-converter/json-converter.service';
+import {JsonConverterService} from '../../../utils/json-converter/json-converter.service';
 import {Injectable} from '@angular/core';
 import {Area} from '../../../model/area';
 import {CourseSchedule} from '../../../model/courseSchedule';

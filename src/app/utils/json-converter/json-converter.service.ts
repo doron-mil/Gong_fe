@@ -10,8 +10,9 @@ export class JsonConverterService {
 
   conversionSchemaFileName: string;
   conversionMap: { [key: string]: ConversionSchema; } = {};
-  conversionFunctions: ConversionFunctionsType;
-  classesMap: Map<string, { new() }>;
+  conversionFunctionsMap: Map<string, ((any?) => any)> = new Map<string, ((any?) => any)>();
+  // The classMap is intended only for a typed conversion - we don't have the clazz - so to retrieve it...
+  classesMap: Map<string, { new() }> = new Map<string, { new() }>();
 
   static isArray(object) {
     if (object === Array) {
@@ -25,25 +26,29 @@ export class JsonConverterService {
 
   constructor(
     @Inject(JsonConverterConfig) private aConversionSchemaFileName: JsonConverterConfigurationInterface,
-    private http: HttpClient) {
+    private http: HttpClient
+  ) {
 
-    this.conversionSchemaFileName = aConversionSchemaFileName.getConfigurationFilePath();
-    this.conversionFunctions = aConversionSchemaFileName.conversionFunctions;
-    this.classesMap = aConversionSchemaFileName.classesMap;
+    this.conversionSchemaFileName = aConversionSchemaFileName.configurationFilePath;
 
-    if (!aConversionSchemaFileName.converterMainMethodOverride) {
-      aConversionSchemaFileName.converterMainMethodOverride = this.convert;
+    if (aConversionSchemaFileName.conversionFunctionsMapArray) {
+      aConversionSchemaFileName.conversionFunctionsMapArray.forEach(
+        (methodMapEntry: MethodMapEntry) => {
+          this.conversionFunctionsMap.set(methodMapEntry.methodName, methodMapEntry.method);
+        });
+    }
+
+    if (aConversionSchemaFileName.classesMapArray) {
+      aConversionSchemaFileName.classesMapArray.forEach(
+        (classMapEntry: ClassMapEntry) => {
+          this.classesMap.set(classMapEntry.className, classMapEntry.clazz);
+        });
     }
 
     this.http.get(this.conversionSchemaFileName)
       .subscribe(schema => {
         this.buildConversionsArray(schema);
-        // console.log('bbbbb', this.conversionMap);
       });
-  }
-
-  convertTest() {
-    console.log('aaaaa', this.conversionMap);
   }
 
   convert<T>(simpleObj: any, clazz: { new(): T }): Array<T> {
@@ -99,17 +104,16 @@ export class JsonConverterService {
               if (typeClazz) {
                 retObjectClass[propertyName] = this.convert(jsonPropertyValue, typeClazz);
               } else {
-
+                console.error(`Could not find class for typed conversion named : ${propertyConversion.type}`);
               }
               // If there is a conversion function to be used
-            } else if (propertyConversion.conversionFunctionName && this.conversionFunctions) {
+            } else if (propertyConversion.conversionFunctionName && this.conversionFunctionsMap) {
               const conversionFunction =
-                this.conversionFunctions[propertyConversion.conversionFunctionName];
+                this.conversionFunctionsMap.get(propertyConversion.conversionFunctionName);
               if (conversionFunction) {
                 retObjectClass[propertyName] = conversionFunction(jsonPropertyValue);
               } else {
-                console.error('Couldn\'t find conversion function named : ' +
-                  propertyConversion.conversionFunctionName);
+                console.error(`Could not find conversion function named : ${propertyConversion.conversionFunctionName}`);
               }
 
             } else {  // Else - simple conversion
@@ -162,9 +166,9 @@ export class JsonConverterService {
         }
         const classedObjectValue = classedObjectItem[propertyName];
         let convertedValue = classedObjectValue;
-        if (propertyConversion.conversionFunctionToJsonName && this.conversionFunctions) {
+        if (propertyConversion.conversionFunctionToJsonName && this.conversionFunctionsMap) {
           const conversionFunction =
-            this.conversionFunctions[propertyConversion.conversionFunctionToJsonName];
+            this.conversionFunctionsMap.get(propertyConversion.conversionFunctionToJsonName);
           convertedValue = conversionFunction(classedObjectValue);
         }
         this.setJsonPropertyValue(retObject, jsonPropertyName, convertedValue);
@@ -239,12 +243,18 @@ class ConversionSchema {
   }
 }
 
-// noinspection TsLint
-export type ConversionFunctionsType = { [key: string]: (source: any) => any } ;
+export interface MethodMapEntry {
+  methodName: string;
+  method: (any?) => any;
+}
+
+export interface ClassMapEntry {
+  className: string;
+  clazz: { new() };
+}
 
 export interface JsonConverterConfigurationInterface {
-  getConfigurationFilePath: () => string;
-  conversionFunctions: ConversionFunctionsType;
-  converterMainMethodOverride: <T>(simpleObj: any, clazz: { new(): T }) => Array<T>;
-  classesMap: Map<string, { new() }>;
+  configurationFilePath?: string;
+  conversionFunctionsMapArray?: MethodMapEntry[];
+  classesMapArray?: ClassMapEntry[];
 }
