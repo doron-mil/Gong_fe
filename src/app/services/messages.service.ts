@@ -9,6 +9,7 @@ import {sprintf} from 'sprintf-js';
 enum MessagesTranslationEnum {
   CANNOT_DELETE_SCHEDULED_GONG = 'couldNotDeleteScheduledGong',
   CANNOT_SCHEDULE_OBSOLETE_GONG = 'couldNotScheduleObsoleteGong',
+  GONG_PLAYED_SUCCESSFULLY = 'gongPlayedSuccessfully',
 }
 
 @Injectable({
@@ -65,5 +66,14 @@ export class MessagesService {
       panelClass: 'snackBarClass',
     });
   }
+
+  gongPlayedSuccessfully() {
+    const messageTrans = this.getTranlation(MessagesTranslationEnum.GONG_PLAYED_SUCCESSFULLY);
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
+  }
+
 
 }

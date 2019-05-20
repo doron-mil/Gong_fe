@@ -3,6 +3,23 @@ import {HttpClient} from '@angular/common/http';
 
 export const JsonConverterConfig = new InjectionToken<JsonConverterConfigurationInterface>('JsonConverterConfig');
 
+function getClassNameOutOfObject(classedObject: [(any | any[])], classesMap: Map<string, { new() }>) {
+  let foundClassName = null;
+  const objConstructor = (Array.isArray(classedObject) ? classedObject[0] : classedObject).constructor;
+
+  const entries = classesMap.entries();
+  let entry = entries.next();
+  while (!entry.done) {
+    if (entry.value[1] === objConstructor) {
+      foundClassName = entry.value[0]
+      break;
+    }
+    entry = entries.next();
+  }
+
+  return foundClassName;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +54,7 @@ export class JsonConverterService {
           this.conversionFunctionsMap.set(methodMapEntry.methodName, methodMapEntry.method);
         });
     }
-
+    this.classesMap.set('ConversionSchema', ConversionSchema);
     if (aConversionSchemaFileName.classesMapArray) {
       aConversionSchemaFileName.classesMapArray.forEach(
         (classMapEntry: ClassMapEntry) => {
@@ -51,27 +68,33 @@ export class JsonConverterService {
       });
   }
 
-  convert<T>(simpleObj: any, clazz: { new(): T }): Array<T> {
+  convert<T>(simpleObj: any, className: string): Array<T> {
     const retObjectClassArray = new Array<T>();
 
     if (JsonConverterService.isArray(simpleObj)) {
       (simpleObj as Array<any>).forEach(schemaRecord => {
-        const schemaItem = this.convertOneObject(schemaRecord, clazz);
+        const schemaItem = this.convertOneObject<T>(schemaRecord, className);
         retObjectClassArray.push(schemaItem);
       });
     } else {
       (simpleObj as Array<any>).forEach(simpleObjItem => {
-        retObjectClassArray.push(this.convertOneObject(simpleObjItem, clazz));
+        retObjectClassArray.push(this.convertOneObject(simpleObjItem, className));
       });
     }
 
     return retObjectClassArray;
   }
 
-  convertOneObject<T>(simpleObj: any, clazz: { new(): T }): T {
-    const retObjectClass = new clazz();
+  convertOneObject<T>(simpleObj: any, className: string): T {
+    const errorPrefix = 'JsonConverterService.convertOneObject ERROR.';
 
-    let conversionSchema = this.conversionMap[clazz.name];
+    const objConstructor = this.classesMap.get(className);
+    if (!objConstructor) {
+      throw new Error(`${errorPrefix} Can not find constructor for className : ${className}`);
+    }
+    const retObjectClass = new objConstructor();
+
+    let conversionSchema = this.conversionMap[className];
 
     if (!conversionSchema) {
       conversionSchema = this.generateDefaultConversionSchema();
@@ -99,13 +122,9 @@ export class JsonConverterService {
           if (jsonPropertyValue != null && jsonPropertyValue !== null &&
             typeof jsonPropertyValue !== 'undefined') {
             // If there is a typed conversion
-            if (propertyConversion.type && this.classesMap) {
-              const typeClazz = this.classesMap.get(propertyConversion.type);
-              if (typeClazz) {
-                retObjectClass[propertyName] = this.convert(jsonPropertyValue, typeClazz);
-              } else {
-                console.error(`Could not find class for typed conversion named : ${propertyConversion.type}`);
-              }
+            if (propertyConversion.type) {
+              retObjectClass[propertyName] = this.convert(jsonPropertyValue, propertyConversion.type);
+
               // If there is a conversion function to be used
             } else if (propertyConversion.conversionFunctionName && this.conversionFunctionsMap) {
               const conversionFunction =
@@ -127,7 +146,7 @@ export class JsonConverterService {
   }
 
   convertToJson(classedObject: [any | any[]]): any | Array<any> {
-    const className = classedObject.constructor.name;
+    const className = getClassNameOutOfObject(classedObject, this.classesMap);
     const conversionSchema = this.conversionMap[className];
 
     let retJsonObjectArray = new Array<any>();
@@ -184,7 +203,7 @@ export class JsonConverterService {
   }
 
   private buildConversionsArray(schema: any) {
-    const conversionSchemasArray = this.convert(schema, ConversionSchema);
+    const conversionSchemasArray = this.convert<ConversionSchema>(schema, 'ConversionSchema');
     conversionSchemasArray.forEach(conversionSchemas => {
       this.conversionMap[conversionSchemas.className] = conversionSchemas;
     });

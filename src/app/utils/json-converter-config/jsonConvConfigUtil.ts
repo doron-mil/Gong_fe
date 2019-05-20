@@ -2,6 +2,12 @@ import * as moment from 'moment';
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {ClassMapEntry, MethodMapEntry} from '../json-converter/json-converter.service';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
+import {BasicServerData} from '../../model/basicServerData';
+import {Area} from '../../model/area';
+import {Course} from '../../model/course';
+import {GongType} from '../../model/gongType';
+import {CourseSchedule} from '../../model/courseSchedule';
+import {Gong} from '../../model/gong';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -85,5 +91,14 @@ export default {
     {methodName: 'dateToStrDateConversionForJson', method: dateToStrDateConversionForJson},
     {methodName: 'timeToStrConversionForJson', method: timeToStrConversionForJson}
   ] as MethodMapEntry[],
-  classesMapArray: [{className: 'ScheduledCourseGong', clazz: ScheduledCourseGong}] as ClassMapEntry[]
+  classesMapArray: [
+    {className: 'BasicServerData', clazz: BasicServerData},
+    {className: 'Area', clazz: Area},
+    {className: 'Course', clazz: Course},
+    {className: 'GongType', clazz: GongType},
+    {className: 'ScheduledCourseGong', clazz: ScheduledCourseGong},
+    {className: 'CourseSchedule', clazz: CourseSchedule},
+    {className: 'ScheduledGong', clazz: ScheduledGong},
+    {className: 'Gong', clazz: Gong},
+    ] as ClassMapEntry[]
 };

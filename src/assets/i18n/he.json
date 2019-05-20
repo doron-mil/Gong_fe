@@ -36,6 +36,11 @@
       }
     }
   },
+  "messages": {
+    "couldNotDeleteScheduledGong": " %s לא הצליחה מחיקת הגונג שמתוארך ל:",
+    "couldNotScheduleObsoleteGong": "יש לבחור זמן עתידי",
+    "gongPlayedSuccessfully": "גונג נוגן בהצלחה"
+  },
   "main": {
     "labels": {
       "currentTime": "זמן נוכחי",

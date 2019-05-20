@@ -86,31 +86,33 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${GONG_TYPES_FEATURE} ${API_SUCCESS}`:
-        const gongsTypesArray = this.jsonConverterService.convert(action.payload.data, GongType);
+        const gongsTypesArray = this.jsonConverterService.convert<GongType>(action.payload.data, 'GongType');
         next(
           setGongTypes(gongsTypesArray)
         );
         break;
       case `${AREA_FEATURE} ${API_SUCCESS}`:
-        const areasArray = this.jsonConverterService.convert(action.payload.data, Area);
+        const areasArray = this.jsonConverterService.convert<Area>(action.payload.data, 'Area');
         next(
           setAreas(areasArray)
         );
         break;
       case `${COURSES_FEATURE} ${API_SUCCESS}`:
-        const coursesArray = this.jsonConverterService.convert(action.payload.data, Course);
+        const coursesArray = this.jsonConverterService.convert<Course>(action.payload.data, 'Course');
         next(
           setCourses(coursesArray)
         );
         break;
       case `${COURSES_SCHEDULE_FEATURE} ${API_SUCCESS}`:
-        const courseScheduleArray = this.jsonConverterService.convert(action.payload.data, CourseSchedule);
+        const courseScheduleArray = this.jsonConverterService.convert<CourseSchedule>(
+          action.payload.data, 'CourseSchedule');
         next(
           setCoursesSchedule(courseScheduleArray)
         );
         break;
       case `${MANUAL_GONGS_LIST_FEATURE} ${API_SUCCESS}`:
-        const scheduledGongsArray = this.jsonConverterService.convert(action.payload.data, ScheduledGong);
+        const scheduledGongsArray = this.jsonConverterService.convert<ScheduledGong>(
+          action.payload.data, 'ScheduledGong');
         next(
           setManualGongsList(scheduledGongsArray)
         );
@@ -121,7 +123,8 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${BASIC_DATA_FEATURE} ${API_SUCCESS}`:
-        const basicServerData = this.jsonConverterService.convertOneObject(action.payload.data, BasicServerData);
+        const basicServerData = this.jsonConverterService.convertOneObject<BasicServerData>(
+          action.payload.data, 'BasicServerData');
         next(
           setBasicServerData(basicServerData)
         );
@@ -153,12 +156,14 @@ export class GeneralMiddlewareService {
         const courseSchedule = this.jsonConverterService.convertToJson(action.payload);
         const stringedifiedCourseScheduleJson = JSON.stringify(courseSchedule);
         next(
-          apiRequest(stringedifiedCourseScheduleJson, 'POST', ADD_COURSE_SCHEDULE_URL, SCHEDULE_COURSE_FEATURE, action.payload)
+          apiRequest(stringedifiedCourseScheduleJson, 'POST',
+            ADD_COURSE_SCHEDULE_URL, SCHEDULE_COURSE_FEATURE, action.payload)
         );
         break;
       case `${SCHEDULE_COURSE_FEATURE} ${API_SUCCESS}`:
         const oldCourseSchedule = action.data as CourseSchedule;
-        const addedCourseSchedule = this.jsonConverterService.convertOneObject(action.payload.data, CourseSchedule);
+        const addedCourseSchedule = this.jsonConverterService.convertOneObject<CourseSchedule>(
+          action.payload.data, 'CourseSchedule');
         addedCourseSchedule.tmpId = oldCourseSchedule.tmpId;
         addedCourseSchedule.updateStatus = UpdateStatusEnum.SUCCESS;
         next(
@@ -232,7 +237,7 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${PLAY_GONG_FEATURE} ${API_SUCCESS}`:
-        console.log('11111', action.payload);
+        this.messagesService.gongPlayedSuccessfully();
         break;
     }
 
