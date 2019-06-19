@@ -17,7 +17,7 @@ export class MainPageComponent implements OnInit {
 
   ngOnInit() {
     if (!this.authService.loggedIn) {
-      this.router.navigate(['login']);
+      this.router.navigate(['loginPage']);
     } else {
       this.storeService.readToStore();
     }

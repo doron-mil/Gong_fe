@@ -12,6 +12,7 @@ import {StoreService} from '../../services/store.service';
 import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialog/schedule-course-dialog.component';
 import {TranslateService} from '@ngx-translate/core';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
+import {DateFormat} from '../../model/dateFormat';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -35,6 +36,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   waitToScroll: boolean = false;
 
+  dateFormat: DateFormat;
+
   constructor(private ngRedux: NgRedux<any>,
               private dialog: MatDialog,
               private translate: TranslateService,
@@ -42,6 +45,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
+
     const mergedObservable =
       combineLatest(
         this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule']),

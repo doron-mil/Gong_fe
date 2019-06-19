@@ -7,6 +7,7 @@ import {ScheduledGong} from '../../model/ScheduledGong';
 import {BasicServerData} from '../../model/basicServerData';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {Gong} from '../../model/gong';
+import {DateFormat} from '../../model/dateFormat';
 
 export const BASIC_DATA_FEATURE = '[BASIC_DATA]';
 export const GONG_TYPES_FEATURE = '[GONG_TYPES]';
@@ -20,6 +21,7 @@ export const SCHEDULED_COURSE_REMOVE_FEATURE = '[SCHEDULED_COURSE_REMOVE]';
 export const TOGGLE_SCHEDULED_GONG_FEATURE = '[TOGGLE_SCHEDULED_GONG]';
 export const REMOVE_MANUAL_GONG_FEATURE = '[REMOVE_MANUAL_GONG]';
 export const PLAY_GONG_FEATURE = '[PLAY_GONG_FEATURE]';
+export const DATE_FORMAT_FEATURE = '[DATE_FORMAT_FEATURE]';
 
 
 export const READ_TO_STORE_DATA = 'READ_TO_STORE_DATA';
@@ -38,6 +40,7 @@ export const SCHEDULED_COURSE_REMOVE = 'SCHEDULED_COURSE_REMOVE';
 export const TOGGLE_SCHEDULED_GONG = 'TOGGLE_SCHEDULED_GONG';
 export const REMOVE_MANUAL_GONG = 'REMOVE_MANUAL_GONG';
 export const PLAY_GONG = 'PLAY_GONG';
+export const SET_DATE_FORMAT = 'SET_DATE_FORMAT';
 
 export interface AppAction extends Action {
   payload: any;
@@ -134,4 +137,10 @@ export const playGong = (aGong: Gong) => ({
   type: PLAY_GONG,
   payload: aGong,
   meta: {feature: PLAY_GONG_FEATURE}
+});
+
+export const setDateFormat = (aDateFormat: DateFormat) => ({
+  type: SET_DATE_FORMAT,
+  payload: aDateFormat,
+  meta: {feature: DATE_FORMAT_FEATURE}
 });

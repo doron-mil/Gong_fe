@@ -64,6 +64,11 @@
           "en": "אנגלית"
         }
       },
+      "dateFormat":{
+        "main": "פורמט תאריך",
+        "delimiter": "מפריד"
+      },
+      "dateFormat": "",
       "logout": "יציאה"
     }
   },

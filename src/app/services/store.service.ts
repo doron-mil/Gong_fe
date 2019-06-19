@@ -11,7 +11,7 @@ import {
   getBasicData, playGong,
   readToStoreData,
   removeScheduleCourse, removeScheduledGong,
-  scheduleCourse,
+  scheduleCourse, setDateFormat,
   toggleScheduledGong
 } from '../store/actions/action';
 import {ScheduledGong} from '../model/ScheduledGong';
@@ -20,6 +20,7 @@ import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 import {filter, first, map, tap} from 'rxjs/operators';
 import {toPromise} from 'rxjs-compat/operator/toPromise';
 import {Gong} from '../model/gong';
+import {DateFormat} from '../model/dateFormat';
 
 @Injectable({
   providedIn: 'root'
@@ -192,6 +193,15 @@ export class StoreService implements OnInit, OnDestroy {
       this.isCourseScheduleArrayEnhanced = true;
     }
   }
+
+  getDateFormat(): Observable<DateFormat> {
+    return this.ngRedux.select<DateFormat>([StoreDataTypeEnum.INNER_DATA, 'dateFormat']);
+  }
+
+  setDateFormat(aDateFormat: DateFormat) {
+    this.ngRedux.dispatch(setDateFormat(aDateFormat));
+  }
+
 
   playGong(aGongToPlay: Gong) {
     this.ngRedux.dispatch(playGong(aGongToPlay));

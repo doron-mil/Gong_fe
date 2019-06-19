@@ -8,6 +8,7 @@ import {Course} from '../../model/course';
 import {GongType} from '../../model/gongType';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {Gong} from '../../model/gong';
+import {DateFormat} from '../../model/dateFormat';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -100,5 +101,6 @@ export default {
     {className: 'CourseSchedule', clazz: CourseSchedule},
     {className: 'ScheduledGong', clazz: ScheduledGong},
     {className: 'Gong', clazz: Gong},
+    {className: 'DateFormat', clazz: DateFormat},
     ] as ClassMapEntry[]
 };

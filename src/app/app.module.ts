@@ -34,6 +34,7 @@ import {MomentModule} from 'ngx-moment';
 import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/schedule-course-dialog.component';
 import {MatIconRegistry} from '@angular/material';
 import {MaxDirective, MinDirective} from './shared/min-max.directive';
+import {innerReducer} from './store/reducers/inner.data.reducer';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -127,6 +128,7 @@ export class AppModule {
       [StoreDataTypeEnum.GENERAL]: generalReducer,
       [StoreDataTypeEnum.STATIC_DATA]: staticDataReducer,
       [StoreDataTypeEnum.DYNAMIC_DATA]: dynamicDataReducer,
+      [StoreDataTypeEnum.INNER_DATA]: innerReducer,
     });
 
     // ************* Store Creation ******************

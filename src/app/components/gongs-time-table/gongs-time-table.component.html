@@ -23,7 +23,7 @@
         [attr.rowspan]="element.span"
         [style.display]="element.span > 0 ? '' : 'none'">
       <span [ngClass]="{'nextGong' : element.isTheNextGong}">
-        {{ element.date | date:'dd-MM-yyyy'}}
+        {{ element.date | date: dateFormat.delimited }}
       </span>
     </td>
   </ng-container>

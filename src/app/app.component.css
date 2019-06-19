@@ -24,6 +24,14 @@
   background-color: lightcyan;
 }
 
+.selected-date-format {
+  background-color: lightcyan;
+}
+
+.selected-delimiter {
+  background-color: lightcyan;
+}
+
 ::ng-deep .matTabGroupClass .mat-tab-header {
   background-color: #e3f2fd;
   /*height: 100%;*/

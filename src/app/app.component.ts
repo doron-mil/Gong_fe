@@ -10,6 +10,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from './services/auth.service';
+import {DateFormat} from './model/dateFormat';
+
 
 @Component({
   selector: 'app-root',
@@ -23,6 +25,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   supportedLanguagesArray: string[];
   currentLanguage: string = 'en';
+
+  dateFormatOptions: DateFormat[];
+  currentDateFormat: DateFormat;
+  delimitersOptions: string[];
 
   storeSubscription: Subscription;
   timerSubscription: Subscription;
@@ -57,6 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.listenToStore();
     this.getSupportedLanguages();
     this.getBasicData();
+    this.initDateFormatOptions();
   }
 
   private listenToStore() {
@@ -86,6 +93,24 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
+  initDateFormatOptions(): void {
+
+    this.delimitersOptions = [];
+    this.delimitersOptions.push('-');
+    this.delimitersOptions.push('/');
+
+    this.dateFormatOptions = [];
+    this.dateFormatOptions.push(new DateFormat('DD/MM/YYYY', '/'));
+    this.dateFormatOptions.push(new DateFormat('MM/DD/YYYY', '/'));
+    this.dateFormatOptions.push(new DateFormat('YYYY/MM/DD', '/'));
+    this.dateFormatOptions.push(new DateFormat('YYYY/DD/MM', '/'));
+
+    this.storeService.getDateFormat().subscribe((dateFormat: DateFormat) => {
+      this.currentDateFormat = dateFormat;
+      this.delimiterChanged();
+    });
+  }
+
   getBasicData(): void {
     this.storeService.getBasicData();
   }
@@ -109,6 +134,20 @@ export class AppComponent implements OnInit, OnDestroy {
   setLanguage(lang: string) {
     this.currentLanguage = lang;
     this.translate.use(lang);
+  }
+
+  setDateFormat(aDateFormat: DateFormat) {
+    this.currentDateFormat = aDateFormat;
+    this.storeService.setDateFormat(this.currentDateFormat);
+  }
+
+  setDelimiter(aDelimiter: string) {
+    this.currentDateFormat.delimiter = aDelimiter;
+    this.storeService.setDateFormat(this.currentDateFormat);
+  }
+
+  delimiterChanged() {
+    this.dateFormatOptions.forEach(dateFormat => dateFormat.changeDelimited(this.currentDateFormat.delimiter));
   }
 
   logout() {

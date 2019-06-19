@@ -12,13 +12,14 @@ import {
   ViewChildren
 } from '@angular/core';
 import {MatCheckbox, MatTableDataSource} from '@angular/material';
-import {Subscription, timer} from 'rxjs';
+import {Observable, Subscription, timer} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import Swal, {SweetAlertResult} from 'sweetalert2';
 import * as moment from 'moment';
 
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreService} from '../../services/store.service';
+import {DateFormat} from '../../model/dateFormat';
 
 enum Translation_Enum {
   CONFIRM_DEGONG_TITLE_DISABLE,
@@ -52,6 +53,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   set displayDate(aNewValue: boolean) {
     this._displayDate = aNewValue;
   }
+
   get displayDate(): boolean {
     return this._displayDate;
   }
@@ -83,6 +85,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
 
   dataSourceWasChanged: boolean;
 
+  dateFormat: DateFormat;
+
   constructor(private storeService: StoreService,
               private translate: TranslateService) {
   }
@@ -93,6 +97,8 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
     this.resetDisplayedColumnse();
 
     this.translate.onLangChange.subscribe(() => this.translateNeededText());
+
+    this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
   }
 
   private resetDisplayedColumnse() {

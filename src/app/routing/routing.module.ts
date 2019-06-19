@@ -9,8 +9,8 @@ import {LoginComponent} from '../pages/login/login.component';
 import {MainPageComponent} from '../pages/main-page/main-page.component';
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'login'},
-  {path: 'login', component: LoginComponent},
+  {path: '', pathMatch: 'full', redirectTo: 'loginPage'},
+  {path: 'loginPage', component: LoginComponent},
   {
     path: 'mainPage', component: MainPageComponent,
     canActivate: [AuthGuard], data: {
@@ -27,16 +27,6 @@ const routes: Routes = [
     path: 'automaticActivation', component: AutomaticActivationComponent,
     canActivate: [AuthGuard], data: {
       name: 'Automatic Activation'
-    }
-  },
-  {
-    path: 'pageNo1', component: TestPage1Component, data: {
-      name: 'page no 1'
-    }
-  },
-  {
-    path: 'pageNo2', component: TestPage2Component, data: {
-      name: 'page no 2'
     }
   },
 ];

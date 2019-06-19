@@ -18,11 +18,11 @@ import {
   SCHEDULE_COURSE_ADD,
   SCHEDULE_COURSE_FEATURE,
   SCHEDULED_COURSE_REMOVE,
-  SCHEDULED_COURSE_REMOVE_FEATURE,
+  SCHEDULED_COURSE_REMOVE_FEATURE, SET_DATE_FORMAT,
   setAreas,
   setBasicServerData,
   setCourses,
-  setCoursesSchedule,
+  setCoursesSchedule, setDateFormat,
   setGongTypes,
   setManualGongsList,
   TOGGLE_SCHEDULED_GONG,
@@ -42,6 +42,7 @@ import {ScheduledGong} from '../../../model/ScheduledGong';
 import {BasicServerData} from '../../../model/basicServerData';
 import {ScheduledCourseGong} from '../../../model/ScheduledCourseGong';
 import {MessagesService} from '../../../services/messages.service';
+import {DateFormat} from '../../../model/dateFormat';
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -121,6 +122,15 @@ export class GeneralMiddlewareService {
         next(
           apiRequest(null, 'GET', GET_BASIC_DATA_URL, BASIC_DATA_FEATURE, null)
         );
+        const localStorageDateFormatStrigified = localStorage.getItem('date_format');
+        if (localStorageDateFormatStrigified) {
+          const localStorageDateFormatParsed = JSON.parse(localStorageDateFormatStrigified);
+          const localStorageDateFormat =
+            this.jsonConverterService.convertOneObject<DateFormat>(localStorageDateFormatParsed, 'DateFormat');
+          next(
+            setDateFormat(localStorageDateFormat)
+          );
+        }
         break;
       case `${BASIC_DATA_FEATURE} ${API_SUCCESS}`:
         const basicServerData = this.jsonConverterService.convertOneObject<BasicServerData>(
@@ -238,6 +248,9 @@ export class GeneralMiddlewareService {
         break;
       case `${PLAY_GONG_FEATURE} ${API_SUCCESS}`:
         this.messagesService.gongPlayedSuccessfully();
+        break;
+      case SET_DATE_FORMAT:
+        localStorage.setItem('date_format', JSON.stringify(action.payload));
         break;
     }
 
