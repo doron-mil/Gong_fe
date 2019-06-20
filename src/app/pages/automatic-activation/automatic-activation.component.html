@@ -46,7 +46,7 @@
             {{ 'automaticActivation.scheduleTable.headers.daysCount' | translate }}
           </mat-header-cell>
           <mat-cell *matCellDef="let element" class="td-center-content">
-            <ng-container *ngIf="element.startFromDay >= 0">
+            <ng-container *ngIf="element.startFromDay > 0">
               {{element.startFromDay}} /
             </ng-container>
             {{element.daysCount}}
