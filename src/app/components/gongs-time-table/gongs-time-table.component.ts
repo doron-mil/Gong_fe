@@ -94,14 +94,14 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   ngOnInit() {
     this.translateNeededText();
 
-    this.resetDisplayedColumnse();
+    this.resetDisplayedColumns();
 
     this.translate.onLangChange.subscribe(() => this.translateNeededText());
 
     this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
   }
 
-  private resetDisplayedColumnse() {
+  private resetDisplayedColumns() {
     this.displayedColumns = this.displayedColumnsOptions.filter((colItemName: string) => {
       const isFieldNoDisplay = (!this.displayDay && colItemName === 'day') || (!this._displayDate && colItemName === 'date');
       return !isFieldNoDisplay;
@@ -190,7 +190,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.displayDate) {
-      this.resetDisplayedColumnse();
+      this.resetDisplayedColumns();
     } else if (changes.scheduledGongsArray) {
       this.createDataSource();
     }
@@ -236,13 +236,13 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
             scheduledGong.isTheNextGong = false;
           }
         });
-        this.dataSource = new MatTableDataSource<ScheduledGong>(this._scheduledGongsArray);
-        this.dataSourceWasChanged = true;
-
       });
 
       this.timerToChangeNextGong(nextGongIndex);
     }
+
+    this.dataSource = new MatTableDataSource<ScheduledGong>(this._scheduledGongsArray);
+    this.dataSourceWasChanged = true;
   }
 
   private timerToChangeNextGong(aNextGongIndex: number) {

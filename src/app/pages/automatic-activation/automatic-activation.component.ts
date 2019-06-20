@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
 import {MatDialog, MatTableDataSource} from '@angular/material';
 import {combineLatest, Subscription} from 'rxjs';
+import * as moment from 'moment';
 import Swal from 'sweetalert2';
 
 import {CourseSchedule} from '../../model/courseSchedule';
@@ -118,7 +119,6 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         });
       });
       newSelectedCourseRoutineArray.sort((a, b) => a.exactMoment.valueOf() - b.exactMoment.valueOf());
-      // console.log('22222', newSelectedCourseRoutineArray);
       this.selectedCourseRoutineArray = newSelectedCourseRoutineArray;
     } else {
       console.error('couldn\'t find course name : ' + selectedCourseName);
@@ -137,6 +137,8 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((aCourseSchedule: CourseSchedule) => {
       if (aCourseSchedule) {
         this.storeService.scheduleCourse(aCourseSchedule);
+        this.selectedCourseScheduled = aCourseSchedule.clone();
+        this.selectedCourseScheduled.id = moment(aCourseSchedule.date).startOf('d').valueOf();
       }
     });
   }
