@@ -43,6 +43,8 @@ import {BasicServerData} from '../../../model/basicServerData';
 import {ScheduledCourseGong} from '../../../model/ScheduledCourseGong';
 import {MessagesService} from '../../../services/messages.service';
 import {DateFormat} from '../../../model/dateFormat';
+import {Router} from '@angular/router';
+import {AuthService} from '../../../services/auth.service';
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -61,6 +63,8 @@ export const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
 @Injectable()
 export class GeneralMiddlewareService {
   constructor(private jsonConverterService: JsonConverterService,
+              private authService: AuthService,
+              private router: Router,
               private messagesService: MessagesService) {
   }
 
@@ -255,7 +259,15 @@ export class GeneralMiddlewareService {
     }
 
     if (action.type.includes(API_ERROR)) {
-      console.error('Error in  processing API middleware : ', action);
+
+      if (action.payload && action.payload.error && action.payload.error.message &&
+        (action.payload.error.message as string).includes('invalid token')) {
+        console.error('Logged In expired');
+        this.authService.logout();
+        this.router.navigate(['loginPage']);
+      } else {
+        console.error('Error in  processing API middleware : ', action);
+      }
     }
   };
 }
