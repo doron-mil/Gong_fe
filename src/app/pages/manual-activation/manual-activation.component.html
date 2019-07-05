@@ -17,7 +17,7 @@
         </md2-datepicker>
       </div>
 
-      <button mat-fab color="accent" (click)="playGong()" class="manualButton">
+      <button mat-fab color="accent" (click)="playGong()" class="manualButton" [disabled]="!playGongEnabled">
         <mat-icon svgIcon="play"></mat-icon>
       </button>
       <button mat-raised-button color="primary" (click)="scheduleGong()" class="manualButton"

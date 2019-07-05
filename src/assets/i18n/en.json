@@ -35,7 +35,8 @@
     "messages": {
       "couldNotDeleteScheduledGong": "Could not delete Gong dated :%s",
       "couldNotScheduleObsoleteGong": "Have to pick future time",
-      "gongPlayedSuccessfully": "Gong Played Successfully"
+      "gongPlayedSuccessfully": "Gong Played Successfully",
+      "gongPlayedFailed": "Gong Play Request failed"
     }
   },
   "main": {

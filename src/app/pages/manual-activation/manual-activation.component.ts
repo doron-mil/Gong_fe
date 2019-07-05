@@ -38,6 +38,8 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
 
   timerSubscription: Subscription;
 
+  playGongEnabled: boolean;
+
   private isGongTypesArrayReady: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private ngRedux: NgRedux<any>,
@@ -52,6 +54,8 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
     this.setOnScheduledGongsArrayChange();
 
     this.setOnAreasSelectionChange();
+
+    this.setOnPlayGongEnabledChange();
 
     this.constructGongTypesArray();
     this.constructAreasArray();
@@ -81,6 +85,10 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  private setOnPlayGongEnabledChange() {
+    this.storeService.getPlayGongEnabled().subscribe((aIsEnabled) => this.playGongEnabled = aIsEnabled);
   }
 
   private constructGongTypesArray() {

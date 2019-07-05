@@ -41,6 +41,7 @@ export const TOGGLE_SCHEDULED_GONG = 'TOGGLE_SCHEDULED_GONG';
 export const REMOVE_MANUAL_GONG = 'REMOVE_MANUAL_GONG';
 export const PLAY_GONG = 'PLAY_GONG';
 export const SET_DATE_FORMAT = 'SET_DATE_FORMAT';
+export const SET_PLAY_GONG_ENABLED = 'SET_PLAY_GONG_ENABLED';
 
 export interface AppAction extends Action {
   payload: any;
@@ -143,4 +144,9 @@ export const setDateFormat = (aDateFormat: DateFormat) => ({
   type: SET_DATE_FORMAT,
   payload: aDateFormat,
   meta: {feature: DATE_FORMAT_FEATURE}
+});
+
+export const setPlayGongEnabled = (aIsPlayGongEnabled: boolean) => ({
+  type: SET_PLAY_GONG_ENABLED,
+  payload: aIsPlayGongEnabled,
 });

@@ -34,12 +34,13 @@
         "area": "מקום",
         "volume": "עוצמה"
       }
+    },
+    "messages": {
+      "couldNotDeleteScheduledGong": " %s לא הצליחה מחיקת הגונג שמתוארך ל:",
+      "couldNotScheduleObsoleteGong": "יש לבחור זמן עתידי",
+      "gongPlayedSuccessfully": "גונג נוגן בהצלחה",
+      "gongPlayedFailed": "נכשלה בקשה לניגון גונג"
     }
-  },
-  "messages": {
-    "couldNotDeleteScheduledGong": " %s לא הצליחה מחיקת הגונג שמתוארך ל:",
-    "couldNotScheduleObsoleteGong": "יש לבחור זמן עתידי",
-    "gongPlayedSuccessfully": "גונג נוגן בהצלחה"
   },
   "main": {
     "labels": {
@@ -64,7 +65,7 @@
           "en": "אנגלית"
         }
       },
-      "dateFormat":{
+      "dateFormat": {
         "main": "פורמט תאריך",
         "delimiter": "מפריד"
       },

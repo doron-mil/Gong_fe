@@ -24,7 +24,7 @@ import {
   setCourses,
   setCoursesSchedule, setDateFormat,
   setGongTypes,
-  setManualGongsList,
+  setManualGongsList, setPlayGongEnabled,
   TOGGLE_SCHEDULED_GONG,
   TOGGLE_SCHEDULED_GONG_FEATURE,
   updateCourseSchedule,
@@ -243,6 +243,7 @@ export class GeneralMiddlewareService {
         );
         break;
       case PLAY_GONG:
+        next(setPlayGongEnabled(false));
         const toBPlayedGongJson = this.jsonConverterService.convertToJson(action.payload);
         const stringedified2PlayedGongJson = JSON.stringify(toBPlayedGongJson);
         next(
@@ -251,7 +252,8 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${PLAY_GONG_FEATURE} ${API_SUCCESS}`:
-        this.messagesService.gongPlayedSuccessfully();
+        next(setPlayGongEnabled(true));
+        this.messagesService.gongPlayedResult(action.payload.gongSuccessPlay);
         break;
       case SET_DATE_FORMAT:
         localStorage.setItem('date_format', JSON.stringify(action.payload));

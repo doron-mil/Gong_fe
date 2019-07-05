@@ -202,6 +202,10 @@ export class StoreService implements OnInit, OnDestroy {
     this.ngRedux.dispatch(setDateFormat(aDateFormat));
   }
 
+  getPlayGongEnabled(): Observable<boolean> {
+    return this.ngRedux.select<boolean>([StoreDataTypeEnum.INNER_DATA, 'gongPlayEnabled']);
+  }
+
 
   playGong(aGongToPlay: Gong) {
     this.ngRedux.dispatch(playGong(aGongToPlay));

@@ -10,6 +10,7 @@ enum MessagesTranslationEnum {
   CANNOT_DELETE_SCHEDULED_GONG = 'couldNotDeleteScheduledGong',
   CANNOT_SCHEDULE_OBSOLETE_GONG = 'couldNotScheduleObsoleteGong',
   GONG_PLAYED_SUCCESSFULLY = 'gongPlayedSuccessfully',
+  GONG_PLAYED_FAILED = 'gongPlayedFailed',
 }
 
 @Injectable({
@@ -67,8 +68,10 @@ export class MessagesService {
     });
   }
 
-  gongPlayedSuccessfully() {
-    const messageTrans = this.getTranlation(MessagesTranslationEnum.GONG_PLAYED_SUCCESSFULLY);
+  gongPlayedResult(aWasSuccessfully) {
+    const transKey = aWasSuccessfully ? MessagesTranslationEnum.GONG_PLAYED_SUCCESSFULLY :
+      MessagesTranslationEnum.GONG_PLAYED_FAILED;
+    const messageTrans = this.getTranlation(transKey);
     this.snackBar.open(messageTrans, null, {
       duration: 5000,
       panelClass: 'snackBarClass',
