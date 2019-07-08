@@ -31,7 +31,6 @@ import {
   updateManualGong
 } from '../../actions/action';
 import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
-import {JsonConverterService} from '../../../utils/json-converter/json-converter.service';
 import {Injectable} from '@angular/core';
 import {Area} from '../../../model/area';
 import {CourseSchedule} from '../../../model/courseSchedule';
@@ -45,6 +44,7 @@ import {MessagesService} from '../../../services/messages.service';
 import {DateFormat} from '../../../model/dateFormat';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../services/auth.service';
+import {AngularJsonClassConverterService} from 'angular-json-class-converter';
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -62,7 +62,7 @@ export const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
 
 @Injectable()
 export class GeneralMiddlewareService {
-  constructor(private jsonConverterService: JsonConverterService,
+  constructor(private jsonConverterService: AngularJsonClassConverterService,
               private authService: AuthService,
               private router: Router,
               private messagesService: MessagesService) {

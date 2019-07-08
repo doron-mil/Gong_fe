@@ -16,13 +16,11 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RoutingModule} from './routing/routing.module';
-import {TestPage1Component} from './pages/test-page1/test-page1.component';
-import {TestPage2Component} from './pages/test-page2/test-page2.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ManualActivationComponent} from './pages/manual-activation/manual-activation.component';
 import {MaterialModule} from './material/material.module';
 import {AutomaticActivationComponent} from './pages/automatic-activation/automatic-activation.component';
-import {JsonConverterModule} from './utils/json-converter/json-converter.module';
+import {AngularJsonClassConverterModule} from 'angular-json-class-converter';
 import {default as jsonConvConfigUtil} from './utils/json-converter-config/jsonConvConfigUtil';
 import {SelectedAreasComponent} from './components/selected-areas/selected-areas.component';
 import {dynamicDataReducer} from './store/reducers/dynamic.data.reducer';
@@ -61,8 +59,6 @@ const jsonConverterConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    TestPage1Component,
-    TestPage2Component,
     ManualActivationComponent,
     AutomaticActivationComponent,
     SelectedAreasComponent,
@@ -84,7 +80,7 @@ const jsonConverterConfig = {
     TranslateModule.forRoot(translationRoot),
     RoutingModule,
     MomentModule,
-    JsonConverterModule.forRoot(jsonConverterConfig),
+    AngularJsonClassConverterModule.forRoot(jsonConverterConfig),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

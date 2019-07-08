@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import {ScheduledGong} from '../../model/ScheduledGong';
-import {ClassMapEntry, MethodMapEntry} from '../json-converter/json-converter.service';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {BasicServerData} from '../../model/basicServerData';
 import {Area} from '../../model/area';
@@ -9,6 +8,7 @@ import {GongType} from '../../model/gongType';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {Gong} from '../../model/gong';
 import {DateFormat} from '../../model/dateFormat';
+import {ClassMapEntry, MethodMapEntry} from 'angular-json-class-converter';
 
 const dateFormat = 'YYYY-MM-DD';
 
