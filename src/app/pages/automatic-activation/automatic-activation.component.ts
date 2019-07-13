@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
 import {MatDialog, MatTableDataSource} from '@angular/material';
 import {combineLatest, Subscription} from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import {CourseSchedule} from '../../model/courseSchedule';

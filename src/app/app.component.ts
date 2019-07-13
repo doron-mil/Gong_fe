@@ -5,7 +5,7 @@ import {StoreService} from './services/store.service';
 import {StoreDataTypeEnum} from './store/storeDataTypeEnum';
 import {BasicServerData} from './model/basicServerData';
 import {Subscription, timer} from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';

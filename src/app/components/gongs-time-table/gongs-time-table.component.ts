@@ -15,7 +15,7 @@ import {MatCheckbox, MatTableDataSource} from '@angular/material';
 import {Observable, Subscription, timer} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import Swal, {SweetAlertResult} from 'sweetalert2';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreService} from '../../services/store.service';

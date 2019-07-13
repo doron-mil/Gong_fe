@@ -3,7 +3,7 @@ import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar} fr
 import {TranslateService} from '@ngx-translate/core';
 import {NgRedux} from '@angular-redux/store';
 import {BehaviorSubject, Subscription, timer} from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import {GongType} from '../../model/gongType';
 import {Area} from '../../model/area';

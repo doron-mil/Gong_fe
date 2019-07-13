@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import {ScheduledGong} from '../../model/ScheduledGong';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {BasicServerData} from '../../model/basicServerData';

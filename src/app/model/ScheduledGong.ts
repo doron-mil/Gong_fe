@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import {UpdateStatusEnum} from './updateStatusEnum';
 import {HoursRange} from './hoursRange';
 

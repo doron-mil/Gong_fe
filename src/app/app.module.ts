@@ -20,7 +20,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ManualActivationComponent} from './pages/manual-activation/manual-activation.component';
 import {MaterialModule} from './material/material.module';
 import {AutomaticActivationComponent} from './pages/automatic-activation/automatic-activation.component';
-import {AngularJsonClassConverterModule} from 'angular-json-class-converter';
+import {AngularJsonClassConverterModule, JsonConverterConfigurationInterface} from 'angular-json-class-converter';
 import {default as jsonConvConfigUtil} from './utils/json-converter-config/jsonConvConfigUtil';
 import {SelectedAreasComponent} from './components/selected-areas/selected-areas.component';
 import {dynamicDataReducer} from './store/reducers/dynamic.data.reducer';
@@ -33,6 +33,8 @@ import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/sc
 import {MatIconRegistry} from '@angular/material';
 import {MaxDirective, MinDirective} from './shared/min-max.directive';
 import {innerReducer} from './store/reducers/inner.data.reducer';
+
+import localConversionSchema from './utils/json-converter-config/gong-conversion-schema.json';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -50,8 +52,8 @@ export const translationRoot = {
   }
 };
 
-const jsonConverterConfig = {
-  configurationFilePath: 'app/utils/json-converter-config/gong-conversion-schema.json',
+const jsonConverterConfig: JsonConverterConfigurationInterface = {
+  conversionSchema: localConversionSchema,
   conversionFunctionsMapArray: jsonConvConfigUtil.functionsMapArray,
   classesMapArray: jsonConvConfigUtil.classesMapArray
 };
