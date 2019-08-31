@@ -35,6 +35,7 @@ import {MaxDirective, MinDirective} from './shared/min-max.directive';
 import {innerReducer} from './store/reducers/inner.data.reducer';
 
 import localConversionSchema from './utils/json-converter-config/gong-conversion-schema.json';
+import {JsonEditorModule} from './json-editor/json-editor.module';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -90,6 +91,7 @@ const jsonConverterConfig: JsonConverterConfigurationInterface = {
         blacklistedRoutes: ['api/login', 'api/nextgong']
       }
     }),
+    JsonEditorModule,
   ],
   entryComponents: [ScheduleCourseDialogComponent],
   providers: [ApiMiddlewareService, GeneralMiddlewareService],

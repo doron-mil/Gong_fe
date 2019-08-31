@@ -7,7 +7,7 @@ import {
   MatInputModule, MatListModule, MatMenuModule, MatProgressSpinnerModule,
   MatSelectModule,
   MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatTableModule, MatTabsModule,
-  MatToolbarModule, MatTooltipModule
+  MatToolbarModule, MatTooltipModule, MatTreeModule
 } from '@angular/material';
 import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
 
@@ -34,6 +34,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatMenuModule,
     MatIconModule,
     MatDialogModule,
+    MatTreeModule,
   ],
   exports: [
     MatToolbarModule,
@@ -55,6 +56,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatMenuModule,
     MatIconModule,
     MatDialogModule,
+    MatTreeModule,
   ],
 })
 export class MaterialModule {

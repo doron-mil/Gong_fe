@@ -1,0 +1,152 @@
+<div class="main-json-editor-container">
+
+  <div class="main-controls-container">
+    <button mat-raised-button color="primary" (click)="expandAll()">
+      Expand All
+    </button>
+    <button mat-raised-button color="warn" (click)="collapseAll()">
+      Collapse All
+    </button>
+
+    <mat-select [(value)]="searchBy" (selectionChange)="onSearchBySelectedChange()" class="search-by_select">
+      <mat-option [value]="searchByOptions.PROBLEM" selected>By Problem</mat-option>
+      <mat-option [value]="searchByOptions.TEXT">By Text</mat-option>
+    </mat-select>
+
+    <input type="text" #searchTextInput [value]="searchText" *ngIf="searchBy === searchByOptions.TEXT"
+           (keyup)="searchTextChanged(searchTextInput.value)">
+
+    <button mat-raised-button color="primary" (click)="searchBy2()">
+      Next
+    </button>
+
+    <button mat-raised-button color="warn" (click)="searchBy2(false)">
+      Prev
+    </button>
+
+
+  </div>
+
+  <div class="tree-container">
+
+    <mat-tree fxFlex="1 1 20%" fxLayout="row" #tree [dataSource]="dataSource" [treeControl]="treeControl"
+              class="lang-tree">
+
+      <!-- This is the tree node template for leaf nodes -->
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+        <li class="mat-tree-node">
+          <div class="trans-row-icon-container">
+            <button mat-icon-button [class.problem-detected]="node.problemType !== problemType.NONE "
+                    [class.problem-detected]="node.problemType !== problemType.NONE "
+                    [matTooltip]="getProblemText(node.problemType)" matTooltipClass="problem-detected-tooltip">
+              <mat-icon class="mat-icon-rtl-mirror" svgIcon="arrow-right-drop-circle-outline"></mat-icon>
+            </button>
+          </div>
+          <div class="edit-trans-row">
+            <div class="trans-key-container">
+              <span class="trans-key-label" [style.width]="getMaxLabelWidth( node )"
+                    [matTooltip]="node.fullPath" matTooltipClass="key-tooltip" >
+                {{node.key}}
+              </span>
+            </div>
+            <div class="trans-container">
+              <ng-container *ngFor="let langData of languages4EditingArray">
+                <div class="trans-lang-container">
+                  <input type="text" [value]="node.value[langData.lang] ? node.value[langData.lang] : ''"
+                         class="input-trans"
+                         [ngClass]="{'not-found-trans': !node.value[langData.lang] }"
+                         [style.direction]="langData.isRtl ? 'rtl' :''"
+                         [placeholder]="!node.value[langData.lang] ? 'undefined !!!!' : ''">
+                  <span class="lang-label">
+                    {{langData.lang}}
+                  </span>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </li>
+      </mat-tree-node>
+
+      <!-- This is the tree node template for expandable nodes -->
+      <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
+        <li>
+          <div class="mat-tree-node">
+            <button mat-icon-button matTreeNodeToggle
+                    [class.problem-detected]="node.problemType !== problemType.NONE "
+                    [matTooltip]="getProblemText(node.problemType)" matTooltipClass="problem-detected-tooltip">
+              <mat-icon class="mat-icon-rtl-mirror"
+                        [svgIcon]="treeControl.isExpanded(node) ?'chevron-down':'chevron-right'"></mat-icon>
+
+            </button>
+            <span [matTooltip]="node.fullPath" matTooltipClass="key-tooltip" >
+              {{node.key}}
+            </span>
+            <button mat-icon-button class="options-button"
+                    [matMenuTriggerFor]="JsonNodeOptionsMenu" [matMenuTriggerData]="{node:node}"
+                    (click)="$event.stopPropagation() ">
+              <mat-icon class="mat-icon-rtl-mirror"
+                        svgIcon="dots-vertical"></mat-icon>
+
+            </button>
+
+          </div>
+          <ul [class.lang-tree-invisible]="!treeControl.isExpanded(node)">
+            <ng-container matTreeNodeOutlet></ng-container>
+          </ul>
+        </li>
+      </mat-nested-tree-node>
+
+    </mat-tree>
+
+    <mat-menu #JsonNodeOptionsMenu="matMenu">
+      <ng-template matMenuContent let-node="node">
+        <button mat-menu-item (click)="editNodeName(node)">
+          <mat-icon svgIcon="pencil"></mat-icon>
+          <span>
+            Edit Name
+          </span>
+        </button>
+
+        <button mat-menu-item (click)="editNodePath(node)">
+          <mat-icon svgIcon="tournament"></mat-icon>
+          <span>
+            Edit Path
+          </span>
+        </button>
+
+        <button mat-menu-item [matMenuTriggerFor]="addMenu" [matMenuTriggerData]="{node:node}">
+          <mat-icon svgIcon="plus-box"></mat-icon>
+          <span>
+            Add Child
+          </span>
+        </button>
+
+        <button mat-menu-item (click)="deletNode(node)">
+          <mat-icon svgIcon="trash-can-outline"></mat-icon>
+          <span>
+            Delete record
+          </span>
+        </button>
+      </ng-template>
+    </mat-menu>
+
+    <mat-menu #addMenu="matMenu">
+      <ng-template matMenuContent let-node="node">
+        <button mat-menu-item (click)="addChildNode(node,false)">
+          <mat-icon svgIcon="translate"></mat-icon>
+          <span>
+            Translation
+          </span>
+        </button>
+        <button mat-menu-item (click)="addChildNode(node)">
+          <mat-icon svgIcon="group"></mat-icon>
+          <span>
+            Container
+          </span>
+        </button>
+      </ng-template>
+    </mat-menu>
+
+  </div>
+
+</div>
