@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatDialog, MatTreeNestedDataSource} from '@angular/material';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import * as _ from 'lodash';
@@ -7,6 +7,9 @@ import staticJsonImport from '../../../../assets/i18n/en.json';
 import staticJsonImport2 from '../../../../assets/i18n/he.json';
 import {lang} from 'moment';
 import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-dialog.component';
+import {NotificationTypesEnum} from '../../model/data.model';
+import {fromEvent} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
 
 // https://www.google.com/search?q=json+representation+in+typescript&oq=json+representation+in+ty&aqs=chrome.1.69i57j33l2.21951j0j7&sourceid=chrome&ie=UTF-8
 
@@ -21,8 +24,8 @@ import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-
 const MAX_NO_LANGUAGES_4_EDITING = 2;
 
 enum SearchByEnum {
-  PROBLEM,
-  TEXT,
+  PROBLEM = 'PROBLEM',
+  TEXT = 'TEXT',
 }
 
 enum ProblemType {
@@ -33,6 +36,7 @@ enum ProblemType {
 }
 
 class JsonNode {
+  id: string;
   key: string;
   value: { [key: string]: string } | JsonNode[];
   hasChildren: boolean;
@@ -51,6 +55,8 @@ class JsonNode {
 })
 export class JsonEditorComponent implements OnInit {
 
+  @ViewChild('searchTextInput') searchTextInput: ElementRef;
+
   treeControl = new NestedTreeControl<JsonNode>(node => node.children());
   dataSource = new MatTreeNestedDataSource<JsonNode>();
   data: JsonNode[];
@@ -59,11 +65,15 @@ export class JsonEditorComponent implements OnInit {
   languages4EditingArray: { lang: string, isRtl?: boolean }[];
 
   problemType = ProblemType;
-  problemsSearchCounter: number;
 
+  searchCounter: number = -1;
   searchByOptions = SearchByEnum;
   searchBy: SearchByEnum = SearchByEnum.PROBLEM;
   searchText: string = '';
+  searchBufferObjectMap: { [key: string]: Array<JsonNode> } = {};  // Only one item representing
+  foundObjectID: string;
+
+  // current search
 
   constructor(private dialog: MatDialog) {
   }
@@ -72,29 +82,49 @@ export class JsonEditorComponent implements OnInit {
     // this.languages4EditingArray = [{lang: 'en'}, {lang: 'he', isRtl: true}, {lang: 'fr'}];
     this.languages4EditingArray = [{lang: 'en'}, {lang: 'he', isRtl: true}];
 
-    this.data = this.convertJsonIntoJsonNode(staticJsonImport, '', 'en');
+    this.data = this.convertJsonIntoJsonNode(staticJsonImport, 'en');
     this.loadAnotherLanguage(this.data, staticJsonImport2, 'he');
 
     this.search4AdditionalProblems(this.data);
 
     this.dataSource.data = this.data;
     this.treeControl.dataNodes = this.data;
+
+    this.listenToSearchTextChange();
+
   }
 
   hasChild = (_: number, node: JsonNode) => !!node.hasChildren;
 
+  private listenToSearchTextChange() {
+    fromEvent(this.searchTextInput.nativeElement, 'keyup').pipe(
+      // get value
+      map((event: any) => {
+        return event.target.value;
+      })
+      // if character length greater then 2
+      , filter(res => res.length > 2)
+      // Time in milliseconds between key events
+      , debounceTime(1000)
+      // If previous query is diffent from current
+      , distinctUntilChanged()
+      // subscription for response
+    ).subscribe((newSearchText: string) => {
+      this.searchTextChanged(newSearchText);
+    });
+  }
+
   private convertJsonIntoJsonNode(aJsonObj: { [key: string]: string | any },
-                                  aPrevPath: string,
                                   aLang: string,
                                   aParent: JsonNode = null): JsonNode[] {
     const retJsonNodeArray: JsonNode[] = [];
     let maxKeyLen = 0;
-    Object.entries(aJsonObj).forEach((objectItem: Array<any>) => {
+    Object.entries(aJsonObj).forEach((objectItem: Array<any>, index) => {
 
       const key = objectItem[0] as string;
       const value = objectItem[1];
 
-      const newJsonNode = this.createJsonNodeFromKeyValue(key, value, aPrevPath, aLang, aParent);
+      const newJsonNode = this.createJsonNodeFromKeyValue(index, key, value, aLang, aParent);
       maxKeyLen = !newJsonNode.hasChildren ? Math.max(maxKeyLen, key.length) : maxKeyLen;
 
       retJsonNodeArray.push(newJsonNode);
@@ -104,15 +134,17 @@ export class JsonEditorComponent implements OnInit {
   }
 
 
-  private createJsonNodeFromKeyValue(aKey: string, aValue: string | any, aPrevPath, aLang: string, aParent: JsonNode = null): JsonNode {
+  private createJsonNodeFromKeyValue(
+    aIndex: number, aKey: string, aValue: string | any, aLang: string, aParent: JsonNode = null): JsonNode {
     const newJsonNode = new JsonNode();
 
     newJsonNode.key = aKey;
-    newJsonNode.fullPath = `${aPrevPath}${aPrevPath ? '.' : ''}${aKey}`;
+    newJsonNode.id = `${aParent ? aParent.id + '.' : ''}${aIndex}`;
+    newJsonNode.fullPath = `${aParent ? aParent.fullPath + '.' : ''}${aKey}`;
     const hasChildren = !_.isString(aValue);
     newJsonNode.hasChildren = hasChildren;
     newJsonNode.parent = aParent;
-    newJsonNode.value = (!hasChildren) ? {[aLang]: aValue} : this.convertJsonIntoJsonNode(aValue, newJsonNode.fullPath, aLang, newJsonNode);
+    newJsonNode.value = (!hasChildren) ? {[aLang]: aValue} : this.convertJsonIntoJsonNode(aValue, aLang, newJsonNode);
 
     return newJsonNode;
   }
@@ -137,18 +169,15 @@ export class JsonEditorComponent implements OnInit {
 
         } else {
           foundJsonNode.problemType = ProblemType.MISS_MATCH_PROBLEM;
-          console.log('Error A', foundJsonNode.fullPath);
         }
       } else {
         const currentFirstItem = aBaseDataModelArray[0];
         const currentFirstItemPath = currentFirstItem.fullPath;
         const currentFirstItemParent = currentFirstItem.parent;
         const lastPointIndex = currentFirstItemPath.lastIndexOf('.');
-        const prevPath = currentFirstItemPath.substring(0, lastPointIndex);
-        const newJsonNode = this.createJsonNodeFromKeyValue(key, value, prevPath, aLang, currentFirstItemParent);
+        const newJsonNode = this.createJsonNodeFromKeyValue(aBaseDataModelArray.length, key, value, aLang, currentFirstItemParent);
         newJsonNode.problemType = ProblemType.NOT_EXIST_ON_EN;
         aBaseDataModelArray.push(newJsonNode);
-        console.log('Error B', key, prevPath, newJsonNode);
       }
     });
   }
@@ -238,46 +267,55 @@ export class JsonEditorComponent implements OnInit {
 
   onSearchBySelectedChange() {
     this.searchText = '';
-    console.log('11111', this.searchBy);
+    this.foundObjectID = '';
+    this.searchCounter = -1;
   }
 
-  searchBy2(aIsNext: boolean = true) {
-    if (this.searchBy === SearchByEnum.PROBLEM) {
-      this.searchProblem(aIsNext);
-    } else {
-      this.search4Text(aIsNext);
+  searchNextOrPrev(aIsNext: boolean = true) {
+    if (this.searchBy === SearchByEnum.PROBLEM && this.searchCounter < 0) {
+      this.getSearchBufferForProblem();
     }
+
+    this.recalculateSearchCounter(aIsNext);
+    this.scrollNode2View(aIsNext);
   }
 
-  searchProblem(aIsNext: boolean = true) {
-    this.expandAll();
-    setTimeout(() => {
-      const elArray = document.getElementsByClassName('problem-detected');
-      const problemsCount = elArray ? elArray.length : 0;
-      if (problemsCount) {
-        const step = aIsNext ? 1 : -1;
-        this.problemsSearchCounter = _.isNil(this.problemsSearchCounter) ? 0 : this.problemsSearchCounter + step;
-        const isInRange = _.inRange(this.problemsSearchCounter, 0, problemsCount);
-        this.problemsSearchCounter = isInRange ? this.problemsSearchCounter :
-          (this.problemsSearchCounter < 0 ? problemsCount - 1 : 0);
-        // console.log('1111', problemsCount , this.problemsSearchCounter);
-        elArray[this.problemsSearchCounter].scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
-      }
-    }, 0);
+  private recalculateSearchCounter(aIsNext: boolean) {
+    const valuesArray = Object.values(this.searchBufferObjectMap);
+    const searchCount = (valuesArray && valuesArray.length > 0) ? valuesArray[0].length : 0;
+
+    if (searchCount > 0) {
+      const step = aIsNext ? 1 : -1;
+      this.searchCounter += step;
+      const isInRange = _.inRange(this.searchCounter, 0, searchCount);
+      this.searchCounter = isInRange ? this.searchCounter : (this.searchCounter < 0 ? searchCount - 1 : 0);
+    } else {
+      this.searchCounter = -1;
+    }
   }
 
   searchTextChanged(aSearchText: string) {
     this.searchText = aSearchText;
-    console.log('2222', aSearchText, this.searchText);
-    this.search4Text();
+    this.searchCounter = 0;
+    const searchBufferForText = this.getSearchBufferForText();
+    this.scrollNode2View();
 
   }
 
-  search4Text(aIsNext: boolean = true) {
-    const foundNode = this.getNodeForText(this.data);
-    if (foundNode) {
-      this.expandNode(foundNode);
-      console.log('33333', foundNode);
+  scrollNode2View(aIsNext: boolean = true) {
+    const searchBufferForText = Object.values(this.searchBufferObjectMap)[0];
+    if (searchBufferForText && searchBufferForText.length > 0) {
+      const nodeToFocusOn = searchBufferForText[this.searchCounter];
+      this.expandNode(nodeToFocusOn);
+      setTimeout(() => {
+        const el = document.getElementById(nodeToFocusOn.id);
+        if (el) {
+          el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+          this.foundObjectID = nodeToFocusOn.id;
+        }
+      }, 0);
+    } else {
+      this.notifyParent(NotificationTypesEnum.NOT_FOUND_SEARCH_OBJECT);
     }
   }
 
@@ -288,27 +326,58 @@ export class JsonEditorComponent implements OnInit {
     this.treeControl.expand(aJsonNode);
   }
 
-  private getNodeForText(aData: JsonNode[]) {
-    let foundNode: JsonNode = null;
+  private getSearchBufferForProblem(): JsonNode[] {
+    return this.getSearchBuffer(SearchByEnum.PROBLEM, (jsonNode: JsonNode) => jsonNode.problemType !== ProblemType.NONE);
+  }
+
+  private getSearchBufferForText(): JsonNode[] {
+    return this.getSearchBuffer(this.searchText, this.checkForText.bind(this));
+  }
+
+  private getSearchBuffer(aBufferId: string, aCheckFunc: (JsonNode) => boolean): JsonNode[] {
+    let searchBuffer = this.searchBufferObjectMap[aBufferId] as JsonNode[];
+    if (!searchBuffer) {
+      this.searchBufferObjectMap = {};
+      searchBuffer = new Array<JsonNode>();
+      this.accumulateFoundNodes(this.data, searchBuffer, aCheckFunc);
+      this.searchBufferObjectMap[aBufferId] = searchBuffer;
+    }
+    return searchBuffer;
+  }
+
+
+  private accumulateFoundNodes(aData: JsonNode[], aFoundNodesArray: JsonNode[], aCheckFunc: (JsonNode) => boolean) {
     _.forEach(aData, (jsonNodeObject: JsonNode) => {
-      if (jsonNodeObject.key.indexOf(this.searchText) >= 0) {
-        foundNode = jsonNodeObject;
-      } else if (!jsonNodeObject.hasChildren) {
-        _.forEach(this.languages4EditingArray, (langObj: { lang: string }) => {
-          const value = jsonNodeObject.value[langObj.lang] as string;
-          if (value && value.indexOf(this.searchText) >= 0) {
-            foundNode = jsonNodeObject;
-            return false;
-          }
-        });
-      } else {
-        foundNode = this.getNodeForText(jsonNodeObject.children());
+      const checkFuncReyValue = aCheckFunc(jsonNodeObject);
+      if (checkFuncReyValue) {
+        aFoundNodesArray.push(jsonNodeObject);
       }
 
-      if (foundNode) {
-        return false;
+      if (jsonNodeObject.hasChildren) {
+        this.accumulateFoundNodes(jsonNodeObject.children(), aFoundNodesArray, aCheckFunc);
       }
     });
-    return foundNode;
+  }
+
+  private checkForText(aJsonNode: JsonNode): boolean {
+    let retIsValid4Search = false;
+    if (aJsonNode.key.indexOf(this.searchText) >= 0) {
+      retIsValid4Search = true;
+    } else if (!aJsonNode.hasChildren) {
+      retIsValid4Search = this.languages4EditingArray.some((langObj: { lang: string }) => {
+        const value = aJsonNode.value[langObj.lang] as string;
+        return (value && value.indexOf(this.searchText) >= 0);
+      });
+    }
+    return retIsValid4Search;
+  }
+
+  private notifyParent(aNotificationTypesEnum: NotificationTypesEnum) {
+    // TO DO
+    console.error('NOTIfication : ', aNotificationTypesEnum);
+  }
+
+  upload() {
+
   }
 }

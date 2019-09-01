@@ -1,30 +1,109 @@
 <div class="main-json-editor-container">
 
   <div class="main-controls-container">
-    <button mat-raised-button color="primary" (click)="expandAll()">
-      Expand All
-    </button>
-    <button mat-raised-button color="warn" (click)="collapseAll()">
-      Collapse All
-    </button>
 
-    <mat-select [(value)]="searchBy" (selectionChange)="onSearchBySelectedChange()" class="search-by_select">
-      <mat-option [value]="searchByOptions.PROBLEM" selected>By Problem</mat-option>
-      <mat-option [value]="searchByOptions.TEXT">By Text</mat-option>
-    </mat-select>
+    <div class="control-buttons-container">
+      <button mat-icon-button class="main-menu-button"
+              [matMenuTriggerFor]="mainMenu"
+              (click)="$event.stopPropagation() ">
+        <mat-icon class="mat-icon-rtl-mirror"
+                  svgIcon="dots-vertical"></mat-icon>
 
-    <input type="text" #searchTextInput [value]="searchText" *ngIf="searchBy === searchByOptions.TEXT"
-           (keyup)="searchTextChanged(searchTextInput.value)">
+      </button>
 
-    <button mat-raised-button color="primary" (click)="searchBy2()">
-      Next
-    </button>
+      <mat-menu #mainMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
+          <mat-icon svgIcon="web"></mat-icon>
+          <span>
+            Language
+          </span>
+        </button>
 
-    <button mat-raised-button color="warn" (click)="searchBy2(false)">
-      Prev
-    </button>
+        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
+          <mat-icon svgIcon="translate"></mat-icon>
+          <span>
+            Translate
+          </span>
+        </button>
+
+        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
+          <mat-icon svgIcon="content-copy"></mat-icon>
+          <span>
+            Copy En
+          </span>
+        </button>
+
+        <button mat-menu-item (click)="upload()">
+          <mat-icon svgIcon="upload"></mat-icon>
+          <span>
+            Upload
+          </span>
+        </button>
+      </mat-menu>
+
+      <mat-menu #langManagementMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="langSelectMenu">
+          <mat-icon svgIcon="plus-box"></mat-icon>
+          <span>
+            Lang\Add
+          </span>
+        </button>
+
+        <button mat-menu-item (click)="upload()">
+          <mat-icon svgIcon="multiplication"></mat-icon>
+          <span>
+            Lang\Select
+          </span>
+        </button>
+      </mat-menu>
+
+      <mat-menu #langSelectMenu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
+          <mat-icon svgIcon="plus-box"></mat-icon>
+          <span>
+            1111 Lang\Add
+          </span>
+        </button>
+
+      </mat-menu>
 
 
+      <div class="collapse-expand-buttons-container">
+        <button mat-icon-button (click)="expandAll()"
+                matTooltip="Expand All" matTooltipClass="key-tooltip">
+          <mat-icon svgIcon="unfold-more-horizontal"></mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="collapseAll()"
+                matTooltip="Collapse All" matTooltipClass="key-tooltip">
+          <mat-icon svgIcon="unfold-less-horizontal"></mat-icon>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="search-container">
+      <span class="search-label">Search By:</span>
+      <mat-form-field>
+        <mat-select [(value)]="searchBy" (selectionChange)="onSearchBySelectedChange()" class="search-by_select">
+          <mat-option [value]="searchByOptions.PROBLEM" selected>Problem</mat-option>
+          <mat-option [value]="searchByOptions.TEXT">Text</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <input type="text" #searchTextInput [value]="searchText" class="search-text"
+             [class.search-text-invisible]="searchBy !== searchByOptions.TEXT">
+
+      <button mat-icon-button (click)="searchNextOrPrev(false)"
+              matTooltip="Prev" matTooltipClass="key-tooltip">
+        <mat-icon svgIcon="chevron-up"></mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="searchNextOrPrev()"
+              matTooltip="Next" matTooltipClass="key-tooltip">
+        <mat-icon svgIcon="chevron-down"></mat-icon>
+      </button>
+    </div>
   </div>
 
   <div class="tree-container">
@@ -34,9 +113,9 @@
 
       <!-- This is the tree node template for leaf nodes -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-        <li class="mat-tree-node">
+        <li class="mat-tree-node" [id]="node.id" [class.focused-found-element]="node.id === foundObjectID">
           <div class="trans-row-icon-container">
-            <button mat-icon-button [class.problem-detected]="node.problemType !== problemType.NONE "
+            <button mat-icon-button
                     [class.problem-detected]="node.problemType !== problemType.NONE "
                     [matTooltip]="getProblemText(node.problemType)" matTooltipClass="problem-detected-tooltip">
               <mat-icon class="mat-icon-rtl-mirror" svgIcon="arrow-right-drop-circle-outline"></mat-icon>
@@ -45,7 +124,7 @@
           <div class="edit-trans-row">
             <div class="trans-key-container">
               <span class="trans-key-label" [style.width]="getMaxLabelWidth( node )"
-                    [matTooltip]="node.fullPath" matTooltipClass="key-tooltip" >
+                    [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
                 {{node.key}}
               </span>
             </div>
@@ -70,7 +149,7 @@
       <!-- This is the tree node template for expandable nodes -->
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
         <li>
-          <div class="mat-tree-node">
+          <div class="mat-tree-node" [id]="node.id" [class.focused-found-element]="node.id === foundObjectID">
             <button mat-icon-button matTreeNodeToggle
                     [class.problem-detected]="node.problemType !== problemType.NONE "
                     [matTooltip]="getProblemText(node.problemType)" matTooltipClass="problem-detected-tooltip">
@@ -78,7 +157,7 @@
                         [svgIcon]="treeControl.isExpanded(node) ?'chevron-down':'chevron-right'"></mat-icon>
 
             </button>
-            <span [matTooltip]="node.fullPath" matTooltipClass="key-tooltip" >
+            <span [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
               {{node.key}}
             </span>
             <button mat-icon-button class="options-button"
