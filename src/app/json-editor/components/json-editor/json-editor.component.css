@@ -4,6 +4,19 @@
   flex-direction: column;
 }
 
+.main-json-editor-container-not-ok {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-ok-message{
+  color: red;
+  font-size: x-large;
+  font-weight: bolder;
+}
+
 .main-controls-container {
   height: 6vh;
   border-bottom: 1px solid purple;
@@ -13,7 +26,7 @@
   justify-content: space-between;
 }
 
-.search-container , .collapse-expand-buttons-container{
+.search-container, .collapse-expand-buttons-container {
   border: deepskyblue 1px solid;
   margin: 5px 0;
   padding: 0 1vw;
@@ -44,7 +57,7 @@
   padding-bottom: .9em;
 }
 
-.main-menu-button{
+.main-menu-button {
   padding-right: 2vw;
 }
 
@@ -147,3 +160,26 @@
 .focused-found-element {
   border: black 2px dashed;
 }
+
+::ng-deep .my-full-width-menu {
+  min-width: 60vw !important;
+  max-width: 60vw !important;
+  margin-left: -8px;
+  margin-top: 24px;
+}
+
+::ng-deep .my-full-width-menu .mat-menu-content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+::ng-deep .my-full-width-menu .mat-menu-content .lang-item {
+  width: 120px;
+  padding-left: 15px;
+}
+
+::ng-deep  .lang-item .mat-checkbox-label {
+  color: unset;
+}
+
+

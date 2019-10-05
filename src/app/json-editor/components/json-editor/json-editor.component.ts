@@ -1,15 +1,13 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {MatDialog, MatTreeNestedDataSource} from '@angular/material';
 import {NestedTreeControl} from '@angular/cdk/tree';
-import * as _ from 'lodash';
-
-import staticJsonImport from '../../../../assets/i18n/en.json';
-import staticJsonImport2 from '../../../../assets/i18n/he.json';
-import {lang} from 'moment';
-import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-dialog.component';
-import {NotificationTypesEnum} from '../../model/data.model';
 import {fromEvent} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
+import * as _ from 'lodash';
+
+import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-dialog.component';
+import {NotificationTypesEnum} from '../../model/data.model';
+import {langPropsArray as knownLanguages} from './known-languages';
 
 // https://www.google.com/search?q=json+representation+in+typescript&oq=json+representation+in+ty&aqs=chrome.1.69i57j33l2.21951j0j7&sourceid=chrome&ie=UTF-8
 
@@ -23,6 +21,8 @@ import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
 
 const MAX_NO_LANGUAGES_4_EDITING = 2;
 
+const KNOWN_LANGS_ABBR_ARRAY = [''];
+
 enum SearchByEnum {
   PROBLEM = 'PROBLEM',
   TEXT = 'TEXT',
@@ -33,6 +33,22 @@ enum ProblemType {
   MISS_MATCH_PROBLEM,
   NOT_EXIST_ON_EN,
   NOT_EXIST_ON_OTHER_LANG,
+}
+
+class LanguageProperties {
+  name: string;
+  lang: string;
+  isRtl: boolean;
+  isPreLoaded = false;
+  isAdded = false;
+  isDisplayed = false;
+  isCustomized = false;
+
+  constructor(name: string, abbreviation: string, isRtl: boolean = false) {
+    this.name = name;
+    this.lang = abbreviation;
+    this.isRtl = isRtl;
+  }
 }
 
 class JsonNode {
@@ -53,45 +69,82 @@ class JsonNode {
   templateUrl: './json-editor.component.html',
   styleUrls: ['./json-editor.component.css']
 })
-export class JsonEditorComponent implements OnInit {
+export class JsonEditorComponent implements OnInit, AfterViewInit {
+
+  @Input() languagesMap: Map<string, any>;
 
   @ViewChild('searchTextInput') searchTextInput: ElementRef;
+
+  wasLangLoadedOk: boolean;
 
   treeControl = new NestedTreeControl<JsonNode>(node => node.children());
   dataSource = new MatTreeNestedDataSource<JsonNode>();
   data: JsonNode[];
 
   maxNoLanguages4Editing = MAX_NO_LANGUAGES_4_EDITING;
-  languages4EditingArray: { lang: string, isRtl?: boolean }[];
+  knownLangsArray: Array<LanguageProperties>;
+  languages4EditingArray: Array<LanguageProperties>;
 
   problemType = ProblemType;
 
-  searchCounter: number = -1;
+  searchCounter = -1;
   searchByOptions = SearchByEnum;
   searchBy: SearchByEnum = SearchByEnum.PROBLEM;
-  searchText: string = '';
+  searchText = '';
   searchBufferObjectMap: { [key: string]: Array<JsonNode> } = {};  // Only one item representing
   foundObjectID: string;
 
   // current search
 
   constructor(private dialog: MatDialog) {
+    this.constructKnownLangsArray();
   }
 
   ngOnInit() {
-    // this.languages4EditingArray = [{lang: 'en'}, {lang: 'he', isRtl: true}, {lang: 'fr'}];
-    this.languages4EditingArray = [{lang: 'en'}, {lang: 'he', isRtl: true}];
-
-    this.data = this.convertJsonIntoJsonNode(staticJsonImport, 'en');
-    this.loadAnotherLanguage(this.data, staticJsonImport2, 'he');
-
-    this.search4AdditionalProblems(this.data);
+    this.wasLangLoadedOk = this.constructLanguagesDataStructure();
 
     this.dataSource.data = this.data;
     this.treeControl.dataNodes = this.data;
+  }
 
+  ngAfterViewInit() {
     this.listenToSearchTextChange();
+  }
 
+  private constructLanguagesDataStructure(): boolean {
+    this.languages4EditingArray = [];
+
+    const englishJson = this.languagesMap.get('en');
+    if (!englishJson) {
+      return false;
+    }
+
+    // First load the english
+    this.data = this.convertJsonIntoJsonNode(englishJson, 'en');
+    let langProperty = this.knownLangsArray.find(languageProperties => languageProperties.lang === 'en');
+    langProperty.isPreLoaded = true;
+    langProperty.isDisplayed = true;
+    this.languages4EditingArray.push(langProperty);
+
+    // Now load the other languages
+    this.languagesMap.forEach((langJson: any, lang: string) => {
+      if (lang !== 'en') {
+        this.loadAnotherLanguage(this.data, langJson, lang);
+        langProperty = this.knownLangsArray.find(languageProperties => languageProperties.lang === lang);
+        if (!langProperty) {
+          langProperty = new LanguageProperties('Customized', lang);
+          langProperty.isCustomized = true;
+          this.knownLangsArray.push(langProperty);
+        }
+        langProperty.isPreLoaded = true;
+        langProperty.isDisplayed = true;
+        this.languages4EditingArray.push(langProperty);
+      }
+    });
+
+    this.search4AdditionalProblems(this.data);
+
+    return true;
   }
 
   hasChild = (_: number, node: JsonNode) => !!node.hasChildren;
@@ -248,8 +301,6 @@ export class JsonEditorComponent implements OnInit {
         aNode.key = aNewKeyName;
       }
     });
-
-    // console.log('1111', aNode);
   }
 
   editNodePath(aNode: JsonNode) {
@@ -378,6 +429,27 @@ export class JsonEditorComponent implements OnInit {
   }
 
   upload() {
+    console.log('11111', this.languages4EditingArray);
+  }
 
+  private constructKnownLangsArray() {
+    this.knownLangsArray = knownLanguages.sort((a, b) => a.abbreviation.localeCompare(b.abbreviation)).map(jsonItem =>
+      new LanguageProperties(jsonItem.name, jsonItem.abbreviation, jsonItem.isRtl));
+  }
+
+  selectLangChange(aLanguageProperties: LanguageProperties, aIsChecked: boolean) {
+    aLanguageProperties.isAdded = aIsChecked;
+    if (aIsChecked) {
+      aLanguageProperties.isDisplayed = true;
+      this.languages4EditingArray.push(aLanguageProperties);
+
+    } else {
+      aLanguageProperties.isDisplayed = false;
+      _.remove(this.languages4EditingArray, langProperties => langProperties.lang === aLanguageProperties.lang);
+    }
+  }
+
+  copyEnTo(aLanguageProperties: LanguageProperties) {
+    this.data
   }
 }

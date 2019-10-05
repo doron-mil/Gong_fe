@@ -1,4 +1,9 @@
-<div class="main-json-editor-container">
+<div class="main-json-editor-container-not-ok" *ngIf="!wasLangLoadedOk">
+  <div class="not-ok-message">
+    Languages were NOT loaded or English is missing
+  </div>
+</div>
+<div class="main-json-editor-container" *ngIf="wasLangLoadedOk">
 
   <div class="main-controls-container">
 
@@ -26,7 +31,7 @@
           </span>
         </button>
 
-        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
+        <button mat-menu-item [matMenuTriggerFor]="copyEnToLangMenu">
           <mat-icon svgIcon="content-copy"></mat-icon>
           <span>
             Copy En
@@ -45,28 +50,66 @@
         <button mat-menu-item [matMenuTriggerFor]="langSelectMenu">
           <mat-icon svgIcon="plus-box"></mat-icon>
           <span>
-            Lang\Add
+            Add \ Remove
           </span>
         </button>
 
-        <button mat-menu-item (click)="upload()">
+        <button mat-menu-item [matMenuTriggerFor]="langDisplayedMenu">
           <mat-icon svgIcon="multiplication"></mat-icon>
           <span>
-            Lang\Select
+            Displayed
           </span>
         </button>
       </mat-menu>
 
-      <mat-menu #langSelectMenu="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
-          <mat-icon svgIcon="plus-box"></mat-icon>
+      <mat-menu #langSelectMenu="matMenu" class="my-full-width-menu">
+        <button mat-menu-item>
           <span>
-            1111 Lang\Add
+            Custom ...
           </span>
         </button>
 
+        <mat-checkbox #selectLangCheck *ngFor="let lang of knownLangsArray" class="lang-item" [matTooltip]="lang.name"
+                      [disabled]="lang.isPreLoaded"
+                      [checked]="lang.isPreLoaded"
+                      (change)="selectLangChange(lang, selectLangCheck.checked)"
+                      (click)="$event.stopPropagation()">
+          <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
+          <span class="no-disabled-markings">
+            {{lang.lang}}
+          </span>
+        </mat-checkbox>
+
       </mat-menu>
 
+      <mat-menu #langDisplayedMenu="matMenu" class="my-full-width-menu">
+
+        <mat-checkbox #displayLangCheck *ngFor="let lang of languages4EditingArray" class="lang-item"
+                      [matTooltip]="lang.name"
+                      [disabled]="lang.lang === 'en'"
+                      [checked]="lang.isDisplayed"
+                      (change)="lang.isDisplayed = displayLangCheck.checked"
+                      (click)="$event.stopPropagation()">
+          <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
+          <span>
+            {{lang.lang}}
+          </span>
+        </mat-checkbox>
+
+      </mat-menu>
+
+      <mat-menu #copyEnToLangMenu="matMenu" class="my-full-width-menu">
+
+        <ng-container *ngFor="let lang of languages4EditingArray">
+          <button mat-menu-item (click)="copyEnTo(lang)" *ngIf="lang.lang !== 'en'">
+            <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
+            <span>
+              to {{lang.name}}
+            </span>
+          </button>
+        </ng-container>
+
+      </mat-menu>
 
       <div class="collapse-expand-buttons-container">
         <button mat-icon-button (click)="expandAll()"
@@ -130,7 +173,7 @@
             </div>
             <div class="trans-container">
               <ng-container *ngFor="let langData of languages4EditingArray">
-                <div class="trans-lang-container">
+                <div class="trans-lang-container" *ngIf="langData.isDisplayed">
                   <input type="text" [value]="node.value[langData.lang] ? node.value[langData.lang] : ''"
                          class="input-trans"
                          [ngClass]="{'not-found-trans': !node.value[langData.lang] }"
