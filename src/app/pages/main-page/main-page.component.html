@@ -1,12 +1,16 @@
-<mat-tab-group mat-align-tabs="center" class="matTabGroupClass" backgroundColor="disabled" color="accent" >
+<mat-tab-group mat-align-tabs="center" class="matTabGroupClass" backgroundColor="disabled" color="accent">
   <mat-tab>
     <ng-template mat-tab-label>
       Json editor
     </ng-template>
-    <app-json-editor [languagesMap]="languagesMap"></app-json-editor>
+    <app-json-editor [languagesMap]="languagesMap"
+                     [translateMethod]="copyEnToIterator"
+                     (languagesMapOutput)="languagesMapUpdateReceived($event)"
+                     (outputMessages)="jsonEditorMessageReceived($event)">
+    </app-json-editor>
   </mat-tab>
 
-  <mat-tab >
+  <mat-tab>
     <ng-template mat-tab-label>
       {{ 'main.tabs.manual' | translate }}
     </ng-template>

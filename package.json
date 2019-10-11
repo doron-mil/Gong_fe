@@ -52,6 +52,7 @@
     "@angular/language-service": "^7.2.15",
     "@types/jasmine": "^2.8.16",
     "@types/jasminewd2": "^2.0.6",
+    "@types/lodash": "^4.14.144",
     "@types/node": "~8.9.4",
     "babel-preset-env": "^1.7.0",
     "codelyzer": "~4.2.1",

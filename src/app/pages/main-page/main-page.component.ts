@@ -6,6 +6,7 @@ import {AuthService} from '../../services/auth.service';
 
 import staticEnJsonImport from '../../../assets/i18n/en.json';
 import staticHeJsonImport from '../../../assets/i18n/he.json';
+import {NotificationTypesEnum} from '../../json-editor/model/data.model';
 
 
 @Component({
@@ -33,4 +34,18 @@ export class MainPageComponent implements OnInit {
     }
   }
 
+  copyEnToIterator(aSourceStrings: Array<string>, aTargetLang: string): Promise<Array<string>> {
+    const retValue = aSourceStrings.map(sourceString => sourceString + '_' + aTargetLang);
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(retValue), 50);
+    });
+  }
+
+  languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
+    console.log('languagesMapUpdateReceived ', aReceivedLangMap);
+  }
+
+  jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {
+    console.log(`jsonEditorMessageReceived was activated with value ${aMessagesEnum}`);
+  }
 }

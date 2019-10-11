@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {MatDialog, MatTreeNestedDataSource} from '@angular/material';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {MatCheckbox, MatDialog, MatMenuTrigger, MatTreeNestedDataSource} from '@angular/material';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {fromEvent} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
@@ -22,6 +22,8 @@ import {langPropsArray as knownLanguages} from './known-languages';
 const MAX_NO_LANGUAGES_4_EDITING = 2;
 
 const KNOWN_LANGS_ABBR_ARRAY = [''];
+
+const ENGLISH_CODE = 'en';
 
 enum SearchByEnum {
   PROBLEM = 'PROBLEM',
@@ -72,6 +74,12 @@ class JsonNode {
 export class JsonEditorComponent implements OnInit, AfterViewInit {
 
   @Input() languagesMap: Map<string, any>;
+
+  @Input() translateMethod: (sourceStrings: Array<string>, targetLang: string) => (Promise<Array<string>>);
+
+  @Output() outputMessages = new EventEmitter<NotificationTypesEnum>();
+
+  @Output() languagesMapOutput = new EventEmitter<Map<string, any>>();
 
   @ViewChild('searchTextInput') searchTextInput: ElementRef;
 
@@ -424,12 +432,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
   }
 
   private notifyParent(aNotificationTypesEnum: NotificationTypesEnum) {
-    // TO DO
-    console.error('NOTIfication : ', aNotificationTypesEnum);
-  }
-
-  upload() {
-    console.log('11111', this.languages4EditingArray);
+    this.outputMessages.emit(aNotificationTypesEnum);
   }
 
   private constructKnownLangsArray() {
@@ -449,7 +452,95 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getTranslationMethod() {
+    return this.translateEnTo.bind(this);
+  }
+
+  getCopyMethod() {
+    return this.copyEnTo.bind(this);
+  }
+
+  translateEnTo(aLanguageProperties: LanguageProperties) {
+    this.convertEn(this.data, aLanguageProperties, NotificationTypesEnum.TRANSLATION_COMPLETE, this.translateMethod);
+  }
+
   copyEnTo(aLanguageProperties: LanguageProperties) {
-    this.data
+    const copyMethod = (sourceStrings: Array<string>, lang: string): Promise<Array<string>> => {
+      const copiedValues = sourceStrings.map(sourceString => sourceString);
+      return new Promise<Array<string>>((resolve, reject) => {
+        resolve(copiedValues);
+      });
+    };
+    this.convertEn(this.data, aLanguageProperties, NotificationTypesEnum.ENGLISH_COPY_COMPLETE, copyMethod);
+  }
+
+  private convertEn(aData: JsonNode[], aLanguageProperties: LanguageProperties, aMessagesEnum: NotificationTypesEnum,
+                    aConversionMethod: (sourceStrings: Array<string>, targetLang: string) => Promise<Array<string>>) {
+    const nodesForConversionArray = [];
+    this.getNodesForConversion(this.data, aLanguageProperties, nodesForConversionArray);
+
+    const englishValuesArray = nodesForConversionArray.map(jsonNode => jsonNode.value[ENGLISH_CODE]);
+
+    aConversionMethod(englishValuesArray, aLanguageProperties.lang).then(retValuesArray => {
+      let counter = 0;
+      nodesForConversionArray.forEach(jsonNode => {
+        jsonNode.value[aLanguageProperties.lang] = retValuesArray[counter];
+        counter += 1;
+      });
+      this.notifyParent(aMessagesEnum);
+    });
+  }
+
+  private getNodesForConversion(aData: JsonNode[], aLanguageProperties: LanguageProperties, aNodesForConversionArray: JsonNode[]) {
+    aData.forEach(jsonNode => {
+      if (jsonNode.hasChildren) {
+        this.getNodesForConversion(jsonNode.children(), aLanguageProperties, aNodesForConversionArray);
+      } else {
+        if (_.isNil(jsonNode.value[aLanguageProperties.lang])) {
+          aNodesForConversionArray.push(jsonNode);
+        }
+      }
+    });
+  }
+
+  refreshProblems() {
+
+  }
+
+  upload() {
+    const languagesMap = new Map<string, any>();
+    const languagesUtilsObjectMap: { [key: string]: any } = {};
+
+    this.languages4EditingArray.forEach((langProperties: LanguageProperties) => {
+      const newJson4Lang = {};
+      languagesMap.set(langProperties.lang, newJson4Lang);
+      languagesUtilsObjectMap[langProperties.lang] = newJson4Lang;
+    });
+
+    this.convertDataToJsonObjects(this.data, languagesUtilsObjectMap);
+
+    this.languagesMapOutput.emit(languagesMap);
+  }
+
+  private convertDataToJsonObjects(aSourceJsonNodeArray: JsonNode[], aLangObjectMap: { [key: string]: any }) {
+    aSourceJsonNodeArray.forEach(jsonNode => {
+      const key = jsonNode.key;
+      if (jsonNode.hasChildren) {
+        this.convertDataToJsonObjects(jsonNode.children(), aLangObjectMap);
+      } else {
+        this.languages4EditingArray.forEach((langProperties: LanguageProperties) => {
+          const lang = langProperties.lang;
+          _.set(aLangObjectMap[lang], jsonNode.fullPath, jsonNode.value[lang]);
+        });
+      }
+    });
+  }
+
+  handleLangSelectMenuChange( aMatCheckBox: MatCheckbox, aLangSelectTrigger: MatMenuTrigger) {
+    // console.log(aMatCheckBox.checked, aMatCheckBox, aLangSelectTrigger);
+    // if (aMatCheckBox.checked) {
+    // } else {
+    //   setTimeout(() => aLangSelectTrigger.closeMenu(), 500);
+    // }
   }
 }

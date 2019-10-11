@@ -1,3 +1,5 @@
 export enum NotificationTypesEnum {
   NOT_FOUND_SEARCH_OBJECT,
+  TRANSLATION_COMPLETE,
+  ENGLISH_COPY_COMPLETE,
 }

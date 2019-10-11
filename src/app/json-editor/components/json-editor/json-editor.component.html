@@ -24,17 +24,27 @@
           </span>
         </button>
 
-        <button mat-menu-item [matMenuTriggerFor]="langManagementMenu">
+        <button mat-menu-item [matMenuTriggerFor]="otherLangManipulationMenu"
+                *ngIf="translateMethod"
+                [matMenuTriggerData]="{langMethod: getTranslationMethod()}">
           <mat-icon svgIcon="translate"></mat-icon>
           <span>
             Translate
           </span>
         </button>
 
-        <button mat-menu-item [matMenuTriggerFor]="copyEnToLangMenu">
+        <button mat-menu-item [matMenuTriggerFor]="otherLangManipulationMenu"
+                [matMenuTriggerData]="{langMethod: getCopyMethod()}">
           <mat-icon svgIcon="content-copy"></mat-icon>
           <span>
             Copy En
+          </span>
+        </button>
+
+       <button mat-menu-item (click)="refreshProblems()">
+          <mat-icon svgIcon="refresh"></mat-icon>
+          <span>
+            Recalculate problems
           </span>
         </button>
 
@@ -47,7 +57,7 @@
       </mat-menu>
 
       <mat-menu #langManagementMenu="matMenu">
-        <button mat-menu-item [matMenuTriggerFor]="langSelectMenu">
+        <button mat-menu-item #langSelectMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="langSelectMenu">
           <mat-icon svgIcon="plus-box"></mat-icon>
           <span>
             Add \ Remove
@@ -73,7 +83,7 @@
                       [disabled]="lang.isPreLoaded"
                       [checked]="lang.isPreLoaded"
                       (change)="selectLangChange(lang, selectLangCheck.checked)"
-                      (click)="$event.stopPropagation()">
+                      (click)="$event.stopPropagation();handleLangSelectMenuChange(selectLangCheck,langSelectMenuTrigger);">
           <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
           <span class="no-disabled-markings">
             {{lang.lang}}
@@ -98,16 +108,18 @@
 
       </mat-menu>
 
-      <mat-menu #copyEnToLangMenu="matMenu" class="my-full-width-menu">
-
-        <ng-container *ngFor="let lang of languages4EditingArray">
-          <button mat-menu-item (click)="copyEnTo(lang)" *ngIf="lang.lang !== 'en'">
-            <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
-            <span>
-              to {{lang.name}}
-            </span>
-          </button>
-        </ng-container>
+      <mat-menu #otherLangManipulationMenu="matMenu" class="my-full-width-menu">
+        <ng-template matMenuContent let-langMethod="langMethod">
+          <ng-container *ngFor="let lang of languages4EditingArray">
+            <button mat-menu-item (click)="langMethod(lang)"
+                    *ngIf="lang.lang !== 'en'">
+              <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
+              <span>
+                to {{lang.name}}
+              </span>
+            </button>
+          </ng-container>
+        </ng-template>
 
       </mat-menu>
 
