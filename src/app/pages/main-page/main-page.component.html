@@ -4,7 +4,7 @@
       Json editor
     </ng-template>
     <app-json-editor [languagesMap]="languagesMap"
-                     [translateMethod]="copyEnToIterator"
+                     [translateMethod]="getTranslateMethod()"
                      (languagesMapOutput)="languagesMapUpdateReceived($event)"
                      (outputMessages)="jsonEditorMessageReceived($event)">
     </app-json-editor>
