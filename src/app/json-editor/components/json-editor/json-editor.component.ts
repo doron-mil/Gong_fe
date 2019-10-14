@@ -1,13 +1,15 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MatCheckbox, MatDialog, MatMenuTrigger, MatTreeNestedDataSource} from '@angular/material';
+import {MatBottomSheet, MatCheckbox, MatDialog, MatMenuTrigger, MatTree, MatTreeNestedDataSource} from '@angular/material';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {fromEvent} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-dialog.component';
-import {NotificationTypesEnum} from '../../model/data.model';
+import {LanguageProperties, NotificationTypesEnum} from '../../model/data.model';
 import {langPropsArray as knownLanguages} from './known-languages';
+import {MessagesComponent} from '../../dialogs/messages/messages.component';
+import {BasicNode, NewNodeDialogComponent} from '../../dialogs/new-node-dialog/new-node-dialog.component';
 
 // https://www.google.com/search?q=json+representation+in+typescript&oq=json+representation+in+ty&aqs=chrome.1.69i57j33l2.21951j0j7&sourceid=chrome&ie=UTF-8
 
@@ -35,22 +37,6 @@ enum ProblemType {
   MISS_MATCH_PROBLEM,
   NOT_EXIST_ON_EN,
   NOT_EXIST_ON_OTHER_LANG,
-}
-
-class LanguageProperties {
-  name: string;
-  lang: string;
-  isRtl: boolean;
-  isPreLoaded = false;
-  isAdded = false;
-  isDisplayed = false;
-  isCustomized = false;
-
-  constructor(name: string, abbreviation: string, isRtl: boolean = false) {
-    this.name = name;
-    this.lang = abbreviation;
-    this.isRtl = isRtl;
-  }
 }
 
 class JsonNode {
@@ -83,6 +69,8 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
 
   @ViewChild('searchTextInput') searchTextInput: ElementRef;
 
+  @ViewChild('tree') tree: MatTree<JsonNode>;
+
   wasLangLoadedOk: boolean;
 
   treeControl = new NestedTreeControl<JsonNode>(node => node.children());
@@ -104,7 +92,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
 
   // current search
 
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private bottomSheet: MatBottomSheet) {
     this.constructKnownLangsArray();
   }
 
@@ -307,21 +295,90 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((aNewKeyName: string) => {
       if (aNewKeyName) {
         aNode.key = aNewKeyName;
+        this.setNodeFullPath(aNode);
       }
     });
+
+    this.reRenderTree();
   }
 
   editNodePath(aNode: JsonNode) {
     console.log('1111', aNode);
   }
 
-  deletNode(aNode: JsonNode) {
-    console.log('1111', aNode);
+  deleteNode(aNode: JsonNode) {
+    const bottomSheetRef = this.bottomSheet.open(MessagesComponent, {
+      data: {message: `Aru you sure about deleting ${aNode.key} node?`, submitText: 'Delete', cancelText: 'Cancel'}
+    });
+    bottomSheetRef.afterDismissed().subscribe(dialogResult => {
+      if (dialogResult) {
+        const parentChildrenArray = aNode.parent ? aNode.parent.children() : this.data;
+        const res = _.remove(parentChildrenArray, (jsonNode: JsonNode) => jsonNode.id === aNode.id);
+
+        this.reRenderTree();
+      }
+    });
 
   }
 
   addChildNode(aNode: JsonNode, aIsContainer: boolean = true) {
-    this.treeControl.expand(aNode);
+    const siblingsKeyNamesArray = aNode.children().map((jsonNode: JsonNode) => jsonNode.key);
+    const dialogRef = this.dialog.open(NewNodeDialogComponent, {
+      height: '80vh',
+      width: '50vw',
+      data: {siblingsKeyNamesArray, handledLang: aIsContainer ? null : this.languages4EditingArray},
+    });
+
+    dialogRef.afterClosed().subscribe((aNewNodeBasicData: BasicNode) => {
+      if (aNewNodeBasicData) {
+        const newJsonNode = new JsonNode();
+        newJsonNode.key = aNewNodeBasicData.key;
+        newJsonNode.hasChildren = aIsContainer;
+        if (aIsContainer) {
+          newJsonNode.value = [];
+        } else {
+          newJsonNode.value = aNewNodeBasicData.value;
+        }
+
+        newJsonNode.parent = aNode;
+        this.setNodeFullPath(newJsonNode);
+        this.setNewNodeId(newJsonNode);
+        aNode.children().push(newJsonNode);
+
+        this.treeControl.expand(aNode);
+        this.reRenderTree();
+      }
+    });
+  }
+
+  private reRenderTree() {
+    this.dataSource.data = null;
+    this.dataSource.data = this.data;
+  }
+
+  private setNodeFullPath(aNode: JsonNode) {
+    if (aNode.parent) {
+      aNode.fullPath = `${aNode.parent.fullPath}.${aNode.key}`;
+    } else {
+      aNode.fullPath = aNode.key;
+    }
+
+    if (aNode.hasChildren) {
+      aNode.children().forEach((jsonNode: JsonNode) => this.setNodeFullPath(jsonNode));
+    }
+  }
+
+  // TO DO - tie loose hands for Id
+  private setNewNodeId(aNode: JsonNode) {
+    if (aNode.parent) {
+      aNode.id = `${aNode.parent.id}.1`;
+    } else {
+      aNode.id = '111'; // TO DO **************
+    }
+
+    if (aNode.hasChildren) {
+      aNode.children().forEach((jsonNode: JsonNode) => this.setNewNodeId(jsonNode));
+    }
   }
 
   onSearchBySelectedChange() {
@@ -536,7 +593,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
     });
   }
 
-  handleLangSelectMenuChange( aMatCheckBox: MatCheckbox, aLangSelectTrigger: MatMenuTrigger) {
+  handleLangSelectMenuChange(aMatCheckBox: MatCheckbox, aLangSelectTrigger: MatMenuTrigger) {
     // console.log(aMatCheckBox.checked, aMatCheckBox, aLangSelectTrigger);
     // if (aMatCheckBox.checked) {
     // } else {

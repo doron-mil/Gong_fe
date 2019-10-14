@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
+  MatBottomSheetModule,
   MatButtonModule, MatCardModule,
   MatCheckboxModule, MatDialogModule,
   MatFormFieldModule, MatIconModule,
@@ -35,6 +36,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatIconModule,
     MatDialogModule,
     MatTreeModule,
+    MatBottomSheetModule,
   ],
   exports: [
     MatToolbarModule,
@@ -57,6 +59,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'md2';
     MatIconModule,
     MatDialogModule,
     MatTreeModule,
+    MatBottomSheetModule,
   ],
 })
 export class MaterialModule {
