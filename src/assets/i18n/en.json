@@ -13,10 +13,14 @@
       "areas": {
         "values": {
           "all": "All",
-          "workers": "Workers",
-          "hall": "Hall",
-          "dining": "Dining",
-          "outside": "Outside"
+          "area1": "Workers",
+          "area2": "Hall",
+          "area3": "Dining",
+          "area4": "Outside",
+          "area5": "area 5",
+          "area6": "area 6",
+          "area7": "area 7",
+          "area8": "area 8"
         }
       }
     },
@@ -85,10 +89,14 @@
         "label": "Areas",
         "values": {
           "all": "All",
-          "workers": "Workers",
-          "hall": "Hall",
-          "dining": "Dining",
-          "outside": "Outside"
+          "area1": "Workers",
+          "area2": "Hall",
+          "area3": "Dining",
+          "area4": "Outside",
+          "area5": "area 5",
+          "area6": "area 6",
+          "area7": "area 7",
+          "area8": "area 8"
         }
       }
     },
