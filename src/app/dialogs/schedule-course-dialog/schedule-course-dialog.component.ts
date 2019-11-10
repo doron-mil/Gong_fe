@@ -37,7 +37,7 @@ class MomentRange {
 @Component({
   selector: 'app-schedule-course-dialog',
   templateUrl: './schedule-course-dialog.component.html',
-  styleUrls: ['./schedule-course-dialog.component.css']
+  styleUrls: ['./schedule-course-dialog.component.scss']
 })
 export class ScheduleCourseDialogComponent implements OnInit {
   isNew: boolean = true;

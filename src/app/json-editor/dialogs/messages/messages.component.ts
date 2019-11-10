@@ -4,7 +4,7 @@ import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.css']
+  styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit {
 

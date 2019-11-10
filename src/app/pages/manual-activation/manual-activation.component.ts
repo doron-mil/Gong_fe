@@ -18,7 +18,7 @@ import {Gong} from '../../model/gong';
 @Component({
   selector: 'app-manual-activation',
   templateUrl: './manual-activation.component.html',
-  styleUrls: ['./manual-activation.component.css']
+  styleUrls: ['./manual-activation.component.scss']
 })
 export class ManualActivationComponent implements OnInit, OnDestroy {
 

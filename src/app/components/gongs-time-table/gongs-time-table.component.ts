@@ -34,7 +34,7 @@ enum Translation_Enum {
 @Component({
   selector: 'app-gongs-time-table',
   templateUrl: './gongs-time-table.component.html',
-  styleUrls: ['./gongs-time-table.component.css']
+  styleUrls: ['./gongs-time-table.component.scss']
 })
 export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, OnChanges, AfterViewChecked {
 

@@ -7,7 +7,7 @@ import {StoreService} from '../../services/store.service';
 @Component({
   selector: 'app-selected-areas',
   templateUrl: './selected-areas.component.html',
-  styleUrls: ['./selected-areas.component.css']
+  styleUrls: ['./selected-areas.component.scss']
 })
 export class SelectedAreasComponent implements OnInit, OnChanges {
 

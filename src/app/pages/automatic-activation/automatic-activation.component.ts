@@ -20,7 +20,7 @@ import {AuthService} from '../../services/auth.service';
 @Component({
   selector: 'app-automatic-activation',
   templateUrl: './automatic-activation.component.html',
-  styleUrls: ['./automatic-activation.component.css']
+  styleUrls: ['./automatic-activation.component.scss']
 })
 export class AutomaticActivationComponent implements OnInit, OnDestroy {
 

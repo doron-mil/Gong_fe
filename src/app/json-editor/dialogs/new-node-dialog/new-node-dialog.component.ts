@@ -12,7 +12,7 @@ export class BasicNode {
 @Component({
   selector: 'app-new-node-dialog',
   templateUrl: './new-node-dialog.component.html',
-  styleUrls: ['./new-node-dialog.component.css']
+  styleUrls: ['./new-node-dialog.component.scss']
 })
 export class NewNodeDialogComponent implements OnInit {
 
