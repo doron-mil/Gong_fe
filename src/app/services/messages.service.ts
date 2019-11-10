@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ScheduledGong} from '../model/ScheduledGong';
 import {EnumUtils} from '../utils/enumUtils';
 import {sprintf} from 'sprintf-js';

@@ -7,7 +7,7 @@ import {BasicServerData} from './model/basicServerData';
 import {Subscription, timer} from 'rxjs';
 import moment from 'moment';
 import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material';
+import {MatIconRegistry} from '@angular/material/icon';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from './services/auth.service';
 import {DateFormat} from './model/dateFormat';

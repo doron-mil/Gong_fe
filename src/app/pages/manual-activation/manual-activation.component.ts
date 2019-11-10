@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatListOption, MatSelectionList, MatSelectionListChange, MatSnackBar} from '@angular/material';
+import {MatListOption, MatSelectionList, MatSelectionListChange} from '@angular/material/list';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslateService} from '@ngx-translate/core';
 import {NgRedux} from '@angular-redux/store';
 import {BehaviorSubject, Subscription, timer} from 'rxjs';
@@ -21,8 +22,8 @@ import {Gong} from '../../model/gong';
 })
 export class ManualActivationComponent implements OnInit, OnDestroy {
 
-  @ViewChild('allAreasSelectionCtrl') allSelectedOptionCtrl: MatListOption;
-  @ViewChild('areasSelectionCtrl') areasSelectionCtrl: MatSelectionList;
+  @ViewChild('allAreasSelectionCtrl', {static: true}) allSelectedOptionCtrl: MatListOption;
+  @ViewChild('areasSelectionCtrl', {static: true}) areasSelectionCtrl: MatSelectionList;
 
   gongToPlay: ScheduledGong = new ScheduledGong();
   gongTypes: GongType[];

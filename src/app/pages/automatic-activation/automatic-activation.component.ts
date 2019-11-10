@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
-import {MatDialog, MatTableDataSource} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
 import {combineLatest, Subscription} from 'rxjs';
 import moment from 'moment';
 import Swal from 'sweetalert2';

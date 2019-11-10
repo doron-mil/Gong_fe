@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialogRef} from '@angular/material';
+import {MatDialogRef} from '@angular/material/dialog';
 import moment from 'moment';
 import {Course} from '../../model/course';
 import {StoreService} from '../../services/store.service';

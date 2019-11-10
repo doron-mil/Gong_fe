@@ -11,7 +11,8 @@ import {
   SimpleChanges,
   ViewChildren
 } from '@angular/core';
-import {MatCheckbox, MatTableDataSource} from '@angular/material';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatTableDataSource} from '@angular/material/table';
 import {Observable, Subscription, timer} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import Swal, {SweetAlertResult} from 'sweetalert2';

@@ -34,7 +34,7 @@ import {LoginComponent} from './pages/login/login.component';
 import {MainPageComponent} from './pages/main-page/main-page.component';
 import {MomentModule} from 'ngx-moment';
 import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/schedule-course-dialog.component';
-import {MatIconRegistry} from '@angular/material';
+import {MatIconRegistry} from '@angular/material/icon';
 import {MaxDirective, MinDirective} from './shared/min-max.directive';
 import {innerReducer} from './store/reducers/inner.data.reducer';
 

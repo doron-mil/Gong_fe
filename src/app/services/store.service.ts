@@ -18,7 +18,6 @@ import {ScheduledGong} from '../model/ScheduledGong';
 import {CourseSchedule} from '../model/courseSchedule';
 import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 import {filter, first, map, tap} from 'rxjs/operators';
-import {toPromise} from 'rxjs-compat/operator/toPromise';
 import {Gong} from '../model/gong';
 import {DateFormat} from '../model/dateFormat';
 

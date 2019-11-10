@@ -1,5 +1,9 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MatBottomSheet, MatCheckbox, MatDialog, MatMenuTrigger, MatTree, MatTreeNestedDataSource} from '@angular/material';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatDialog} from '@angular/material/dialog';
+import {MatMenuTrigger} from '@angular/material/menu';
+import {MatTree, MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {fromEvent} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
@@ -67,9 +71,9 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
 
   @Output() languagesMapOutput = new EventEmitter<Map<string, any>>();
 
-  @ViewChild('searchTextInput') searchTextInput: ElementRef;
+  @ViewChild('searchTextInput', {static: true}) searchTextInput: ElementRef;
 
-  @ViewChild('tree') tree: MatTree<JsonNode>;
+  @ViewChild('tree', {static: true}) tree: MatTree<JsonNode>;
 
   wasLangLoadedOk: boolean;
 
