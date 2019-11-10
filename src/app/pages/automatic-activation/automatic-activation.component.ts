@@ -15,6 +15,7 @@ import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialo
 import {TranslateService} from '@ngx-translate/core';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {DateFormat} from '../../model/dateFormat';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -40,13 +41,18 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   dateFormat: DateFormat;
 
+  loggedInRole: string;
+
   constructor(private ngRedux: NgRedux<any>,
+              private authService: AuthService,
               private dialog: MatDialog,
               private translate: TranslateService,
               private storeService: StoreService) {
   }
 
   ngOnInit() {
+    this.loggedInRole = this.authService.getRole();
+
     this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
 
     const mergedObservable =
@@ -230,5 +236,9 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  isRoleForEdit() {
+    return ['admin', 'super-user'].includes(this.loggedInRole);
   }
 }

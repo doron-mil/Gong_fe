@@ -10,6 +10,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 export class AuthService {
 
   jwtHelper = new JwtHelperService();
+  private role: string;
 
   constructor(private http: HttpClient) {
   }
@@ -18,7 +19,9 @@ export class AuthService {
     return this.http.post<{ data: { token: string } }>('/api/login', {username: username, password: password})
       .pipe(
         map(result => {
-          localStorage.setItem('access_token', result.data.token);
+          const token = result.data.token;
+          this.setRole(token);
+          localStorage.setItem('access_token', token);
           return true;
         })
       );
@@ -34,6 +37,24 @@ export class AuthService {
       token = null;
       this.logout();
     }
+    this.setRole(token);
     return (!!token);
+  }
+
+  getRole() {
+    let role = null;
+    if (this.role || this.loggedIn) {
+      role = this.role;
+    }
+    return role;
+  }
+
+  private setRole(aToken: string) {
+    if (aToken) {
+      const {role} = this.jwtHelper.decodeToken(aToken);
+      this.role = role;
+    } else {
+      this.role = null;
+    }
   }
 }

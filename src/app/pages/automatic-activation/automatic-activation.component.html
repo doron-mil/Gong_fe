@@ -1,11 +1,12 @@
 <div class="automaticActivationContainer">
   <div class="btn-group top-controls-container">
     <div class="btn-group-left-side">
-      <button mat-raised-button color="primary" (click)="scheduleCourse()">
+      <button mat-raised-button color="primary" (click)="scheduleCourse()"
+              [disabled]="!isRoleForEdit()">
         {{ 'automaticActivation.buttons.scheduleCourse' | translate }}
       </button>
       <button mat-raised-button color="accent" (click)="removeScheduledCourse()"
-              [disabled]="!selectedCourseScheduled">
+              [disabled]="!selectedCourseScheduled || !isRoleForEdit() ">
         {{ 'automaticActivation.buttons.removeCourse' | translate }}
       </button>
     </div>
@@ -73,9 +74,10 @@
       </mat-table>
     </div>
 
-    <div class="selected-course-display-container mat-elevation-z8" >
+    <div class="selected-course-display-container mat-elevation-z8">
       <app-gongs-time-table [scheduledGongs]="selectedCourseRoutineArray" [displayDate]="displayDate"
                             (gongActiveToggleEvent)="onGongActiveToggle($event)"
+                            [isDisableToggle]="!isRoleForEdit()"
                             [computeNextGong]="true"
                             [isFindNext]="selectedCourseScheduled === coursesData[0]"
                             (gongsTableDataChangedEvent)="onGongsTableDataChangedEvent()">

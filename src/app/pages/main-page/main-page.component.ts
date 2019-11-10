@@ -22,6 +22,8 @@ export class MainPageComponent implements OnInit {
 
   languagesMap: Map<string, any>;
 
+  loggedInRole: string;
+
   apiKey = '';
   url = 'https://translation.googleapis.com/language/translate/v2/';
 
@@ -38,6 +40,7 @@ export class MainPageComponent implements OnInit {
     if (!this.authService.loggedIn) {
       this.router.navigate(['loginPage']);
     } else {
+      this.loggedInRole = this.authService.getRole();
       this.storeService.readToStore();
     }
   }

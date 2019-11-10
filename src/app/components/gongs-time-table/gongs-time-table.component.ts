@@ -48,6 +48,9 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   isDeleteButton: boolean = false;
 
   @Input()
+  isDisableToggle: boolean = false;
+
+  @Input()
   isFindNext: boolean = false;
 
   @Input('displayDate')
