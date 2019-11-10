@@ -25,7 +25,6 @@ export class LoginComponent implements OnInit {
     if (!environment.production) {
       this.http.get('assets/p-env/p_config.json')
         .subscribe((pConfig: { username: string, password: string }) => {
-            console.log('aaaa', pConfig);
             const {username, password} = pConfig;
             this.username = username;
             this.password = password;
