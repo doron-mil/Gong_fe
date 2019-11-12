@@ -7,7 +7,8 @@
           "long": "Long",
           "short": "short",
           "single": "Single",
-          "chanting": "Chanting"
+          "chanting": "Chanting",
+          "bells": "Bells"
         }
       },
       "areas": {
@@ -67,7 +68,7 @@
           "en": "English"
         }
       },
-      "dateFormat":{
+      "dateFormat": {
         "main": "Date Format",
         "delimiter": "Delimiter"
       },
