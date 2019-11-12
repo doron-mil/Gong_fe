@@ -104,7 +104,12 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     const newSelectedCourseRoutineArray: ScheduledGong[] = [];
     if (foundCourse) {
       foundCourse.routine.forEach(scheduledGong => {
-        const copiedScheduledGong = scheduledGong.cloneForUi(selectedCourseStartDate);
+        // If start the course from day other than 0 -> disregarding this record
+        if (aSelectedCourseScheduled.startFromDay > scheduledGong.dayNumber) {
+          return;
+        }
+
+        const copiedScheduledGong = scheduledGong.cloneForUi(selectedCourseStartDate, aSelectedCourseScheduled.startFromDay);
         let scheduledGongArray = Array.of(copiedScheduledGong);
         if (foundCourse.isTest) {
           scheduledGongArray = copiedScheduledGong.cloneAsTestToArray(aSelectedCourseScheduled.testHoursRange);

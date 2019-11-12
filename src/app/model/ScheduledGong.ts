@@ -43,11 +43,11 @@ export class ScheduledGong {
     return clonedObject;
   }
 
-  cloneForUi(courseStartDate?: Date): ScheduledGong {
+  cloneForUi(courseStartDate?: Date, aOffsetDaysToReduce = 0): ScheduledGong {
     const clonedObject = this.clone();
 
     if (!clonedObject.date) { // Setting the exact date - used mostly for courses
-      clonedObject.exactMoment = moment(courseStartDate).add(clonedObject.dayNumber, 'd');
+      clonedObject.exactMoment = moment(courseStartDate).add(clonedObject.dayNumber - aOffsetDaysToReduce, 'd');
       clonedObject.date = clonedObject.exactMoment.toDate();
       clonedObject.exactMoment.add(clonedObject.time, 'ms');
     } else if (!clonedObject.time) {  // If there is a date and no time -

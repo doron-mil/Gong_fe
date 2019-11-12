@@ -35,7 +35,7 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let element">
             {{ 'automaticActivation.scheduleTable.courseName.' +
-            element.name | translate }}
+          element.name | translate }}
           </mat-cell>
         </ng-container>
 
@@ -48,7 +48,7 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let element" class="td-center-content">
             <ng-container *ngIf="element.startFromDay > 0">
-              {{element.startFromDay}} /
+              {{element.startFromDay + 1}} /
             </ng-container>
             {{element.daysCount}}
           </mat-cell>
