@@ -22,7 +22,7 @@ import {Gong} from '../../model/gong';
 })
 export class ManualActivationComponent implements OnInit, OnDestroy {
 
-  @ViewChild('allAreasSelectionCtrl', {static: true}) allSelectedOptionCtrl: MatListOption;
+  @ViewChild('allAreasSelectionCtrl', {static: false}) allSelectedOptionCtrl: MatListOption;
   @ViewChild('areasSelectionCtrl', {static: true}) areasSelectionCtrl: MatSelectionList;
 
   gongToPlay: ScheduledGong = new ScheduledGong();
@@ -111,10 +111,14 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
         this.areas.forEach((area: Area) => {
           this.areasMap[area.id] = area;
         });
-        if (!this.changeDetectorRef['destroyed']) {
-          this.changeDetectorRef.detectChanges();
+        try {
+          if (!this.changeDetectorRef['destroyed']) {
+            this.changeDetectorRef.detectChanges();
+          }
+          this.areasSelectionCtrl.selectAll();
+        } catch (e) {
+
         }
-        this.areasSelectionCtrl.selectAll();
       }
     });
   }

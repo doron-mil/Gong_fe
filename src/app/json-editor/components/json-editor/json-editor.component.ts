@@ -71,7 +71,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
 
   @Output() languagesMapOutput = new EventEmitter<Map<string, any>>();
 
-  @ViewChild('searchTextInput', {static: true}) searchTextInput: ElementRef;
+  @ViewChild('searchTextInput', {static: false}) searchTextInput: ElementRef;
 
   @ViewChild('tree', {static: true}) tree: MatTree<JsonNode>;
 
