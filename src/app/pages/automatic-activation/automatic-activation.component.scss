@@ -8,11 +8,6 @@ body {
   height: 98%;
 }
 
-.highlight {
-  color: white;
-  background: #e3f2fd;
-}
-
 .btn-group {
   margin: 10px;
 }
@@ -72,4 +67,20 @@ mat-header-cell:last-of-type {
 
 .date-cell-container {
   min-width: 80px;
+}
+
+.courses-table {
+  .highlight {
+    color: white;
+    background: #e3f2fd;
+  }
+
+  .mat-row:not(.highlight){
+    cursor: pointer;
+
+
+    &:hover {
+      border: 1px solid blue;
+    }
+  }
 }
