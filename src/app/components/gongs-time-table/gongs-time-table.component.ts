@@ -142,6 +142,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, On
   }
 
   async gongToggle(aEvent, aId) {
+    console.log('11111', moment(aId).format('YY-MM-DD HH:mm'));
     const foundItem = this.customComponentChildren.find((item: MatCheckbox) => +item.id === aId);
 
     if (foundItem) {

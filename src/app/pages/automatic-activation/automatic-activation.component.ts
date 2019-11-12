@@ -131,6 +131,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         });
       });
       newSelectedCourseRoutineArray.sort((a, b) => a.exactMoment.valueOf() - b.exactMoment.valueOf());
+      // this.debugLogForRoutineArray(newSelectedCourseRoutineArray);
       this.selectedCourseRoutineArray = newSelectedCourseRoutineArray;
     } else {
       console.error('couldn\'t find course name : ' + selectedCourseName);
@@ -245,5 +246,11 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   isRoleForEdit() {
     return ['admin', 'super-user'].includes(this.loggedInRole);
+  }
+
+  private debugLogForRoutineArray(aRoutineArray: ScheduledGong[]) {
+    aRoutineArray.forEach((scheduledGong) => {
+      console.log(scheduledGong.dayNumber, scheduledGong.exactMoment.format('YY-MM-DD HH:mm'));
+    });
   }
 }

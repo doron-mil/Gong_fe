@@ -94,7 +94,7 @@
       <ng-container *ngIf="!isDeleteButton">
         <mat-checkbox #cmd id="{{element.exactMoment.valueOf()}}"
                       (click)=" element.isAfterNextGong && !isDisableToggle && gongToggle($event,element.exactMoment.valueOf())"
-                      [class.toggle-gong-check]="element.isAfterNextGong"
+                      [class.toggle-gong-check]="isDisableToggle && element.isAfterNextGong"
                       [disabled]="!element.isAfterNextGong || isDisableToggle" [checked]="element.isActive">
         </mat-checkbox>
 
