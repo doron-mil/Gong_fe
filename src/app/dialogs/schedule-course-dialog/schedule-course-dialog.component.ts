@@ -67,7 +67,7 @@ export class ScheduleCourseDialogComponent implements OnInit {
   async ngOnInit() {
     this.coursesMap = await this.storeService.getCoursesMapPromise();
     this.coursesMap.forEach(course => {
-      if (this.data.role === 'admin' || !course.isTest) {
+      if (this.data.role === 'admin' || (!course.isTest && !course.name.toLowerCase().includes('test'))) {
         this.courses.push(course);
       }
     });

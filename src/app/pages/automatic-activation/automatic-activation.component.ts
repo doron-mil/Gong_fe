@@ -162,7 +162,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       Swal.fire({
         title: transResult[translationKeyTitle],
         text: transResult[translationKeyText],
-        type: 'warning',
+        icon: 'warning',
         confirmButtonText: transResult[translationKeyConfirm],
         showCancelButton: true,
         cancelButtonText: transResult[translationKeyCancel],
