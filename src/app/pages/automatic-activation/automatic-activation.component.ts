@@ -138,7 +138,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       width: '70vw',
       panelClass: 'schedule-course-dialog',
       position: {top: '15vh'},
-      data: {}
+      data: {role: this.loggedInRole}
     });
 
     dialogRef.afterClosed().subscribe((aCourseSchedule: CourseSchedule) => {

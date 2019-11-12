@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialogRef} from '@angular/material/dialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import moment from 'moment';
 import {Course} from '../../model/course';
 import {StoreService} from '../../services/store.service';
@@ -60,12 +60,17 @@ export class ScheduleCourseDialogComponent implements OnInit {
   testHoursRangeEnd: number;
 
   constructor(public dialogRef: MatDialogRef<any>,
+              @Inject(MAT_DIALOG_DATA) public data: { role: string },
               private storeService: StoreService) {
   }
 
   async ngOnInit() {
     this.coursesMap = await this.storeService.getCoursesMapPromise();
-    this.coursesMap.forEach(value => this.courses.push(value));
+    this.coursesMap.forEach(course => {
+      if (this.data.role === 'admin' || !course.isTest) {
+        this.courses.push(course);
+      }
+    });
 
     const courseScheduleArray = this.storeService.getCourseScheduleArraySync();
     courseScheduleArray.forEach((courseSchedule: CourseSchedule) => {
