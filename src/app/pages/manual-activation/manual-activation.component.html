@@ -17,11 +17,12 @@
         </md2-datepicker>
       </div>
 
-      <button mat-fab color="accent" (click)="playGong()" class="manualButton" [disabled]="!playGongEnabled">
+      <button mat-fab color="accent" (click)="playGong()" class="manualButton"
+              [disabled]="!playGongEnabled || gongToPlay.areas.length <= 0">
         <mat-icon svgIcon="play"></mat-icon>
       </button>
       <button mat-raised-button color="primary" (click)="scheduleGong()" class="manualButton"
-              [disabled]="">
+              [disabled]="gongToPlay.areas.length <= 0">
         {{ 'manualActivation.buttons.schedulePlay' | translate }}
       </button>
     </div><!--End of btnGroup-->
