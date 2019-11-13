@@ -1,16 +1,104 @@
-.manualMainContainer {
+.manual-main-container {
   height: 95%;
 }
 
-.manualMainContainer {
+.manual-main-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.manualControlsContainer {
+.manual-controls-container {
+  height: 105%;
   display: flex;
   flex-direction: column;
+
+  .btnGroup {
+    height: 40px;
+    min-height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 25vw;
+    padding-top: 2vh;
+
+    .manual-button {
+      margin: 1vw 1vh;
+      //cursor: pointer;
+    }
+
+    .schedule-button {
+      height: 50px;
+    }
+  }
+
+  .gongs-features-controls-container {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    .gong-type-selection-container, .area-selection-container, .volume-selection-container {
+      .ctrl-content-container {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+
+        .mat-list-base {
+          display: unset;
+        }
+      }
+    }
+
+    .gong-type-selection-container, .area-selection-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      width: 25vw;
+      border-left: 9px groove white;
+      margin-top: 3vh;
+    }
+
+    .gong-type-selection-container {
+      height: 30%;
+      min-height: 70px;
+    }
+
+    .area-selection-container {
+      height: 45%;
+      min-height: 70px;
+      overflow-y: unset;
+
+      .ctrl-content-container {
+        overflow-y: unset;
+
+        .mat-selection-list {
+          display: flex;
+        }
+
+        .others-area-options {
+          height: 100%;
+          overflow-y: auto;
+        }
+      }
+    }
+
+    .volume-selection-container {
+      height: 25%;
+      min-height: 70px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 25vw;
+      border-left: 9px groove white;
+      margin-top: 3vh;
+      align-items: center;
+      adding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+  }
 }
 
 .manualScheduledTableContainer {
@@ -18,40 +106,6 @@
   width: 100%;
   margin: 1vw;
   overflow-y: auto;
-}
-
-.gongs-features-controls-container {
-  height: 100%;
-  overflow-y: scroll;
-}
-
-.gongTypeSelectionContainer, .areaSelectionContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 25vw;
-  border-left: 9px groove white;
-  margin-top: 3vh;
-}
-
-.gongTypeSelectionContainer {
-  min-height: 100px;
-}
-
-.areaSelectionContainer {
-  min-height: 140px;
-}
-
-.volume-selection-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 25vw;
-  border-left: 9px groove white;
-  margin-top: 3vh;
-  align-items: center;
-  min-height: 70px;
 }
 
 .volume-container-header {
@@ -71,10 +125,6 @@
 .sliderClass {
   width: 90%;
   height: 7vh;
-}
-
-.ctrlContentContainer {
-  width: 100%;
 }
 
 .mat-list-base {
@@ -100,21 +150,9 @@
   width: 10%;
 }
 
-.btnGroup {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 25vw;
-  padding-top: 2vh;
-}
-
 .listItemClass {
   height: unset !important;
   padding: 0.5vw 0px !important;
-}
-
-.manualButton {
-  margin: 1vw 1vh;
 }
 
 .datePickerContainer {
