@@ -50,43 +50,36 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
               private storeService: StoreService) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.loggedInRole = this.authService.getRole();
 
     this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
 
-    const mergedObservable =
-      combineLatest(
-        this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule']),
-        this.storeService.getCoursesMap()
-      );
+    this.coursesMap = await this.storeService.getCoursesMapPromise();
 
-    this.subscription = mergedObservable.subscribe(mergedResult => {
-      const coursesSchedule: CourseSchedule[] = mergedResult[0];
-      this.coursesMap = mergedResult[1];
-      if (coursesSchedule && this.coursesMap) {
-        coursesSchedule.sort(((a, b) => a.date.getTime() - b.date.getTime()));
-        this.coursesData = [];
-        coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
-          const course = this.coursesMap.get(courseSchedule.name);
-          if (course) {
-            const clonedCourseSchedule = courseSchedule.clone();
-            clonedCourseSchedule.daysCount = course.days;
-            this.coursesData.push(clonedCourseSchedule);
-          }
-        });
-        if (this.coursesData.length > 0) {
+    this.subscription = this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule'])
+      .subscribe((coursesSchedule: CourseSchedule[]) => {
+        if (coursesSchedule && this.coursesMap) {
+          coursesSchedule.sort(((a, b) => a.date.getTime() - b.date.getTime()));
+          this.coursesData = [];
+          coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
+            const course = this.coursesMap.get(courseSchedule.name);
+            if (course) {
+              const clonedCourseSchedule = courseSchedule.clone();
+              clonedCourseSchedule.daysCount = course.days;
+              this.coursesData.push(clonedCourseSchedule);
+            }
+          });
           this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
-        }
-        if (this.selectedCourseScheduled) {
-          this.selectedCourseScheduled = this.coursesData.find(
-            (courseSchedule: CourseSchedule) => courseSchedule.id === this.selectedCourseScheduled.id);
           if (this.selectedCourseScheduled) {
-            this.getCourseRoutine(this.selectedCourseScheduled);
+            this.selectedCourseScheduled = this.coursesData.find(
+              (courseSchedule: CourseSchedule) => courseSchedule.id === this.selectedCourseScheduled.id);
+            if (this.selectedCourseScheduled) {
+              this.getCourseRoutine(this.selectedCourseScheduled);
+            }
           }
         }
-      }
-    });
+      });
   }
 
   onRowClick(row): void {
