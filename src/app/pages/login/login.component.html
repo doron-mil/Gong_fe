@@ -3,7 +3,7 @@
     <mat-card>
       <mat-card-title>Login</mat-card-title>
       <mat-card-content>
-        <form>
+        <form #loginForm (ngSubmit)="$event.stopPropagation();login()">
           <p>
             <mat-form-field>
               <input type="text" matInput
@@ -28,8 +28,7 @@
 
           <div class="button">
             <button type="submit" color="primary" mat-raised-button
-                    [disabled]="usernameId.value ==='' || passwordId.value ===''"
-                    (click)="login()">
+                    [disabled]="usernameId.value ==='' || passwordId.value ===''" >
               Login
             </button>
           </div>
