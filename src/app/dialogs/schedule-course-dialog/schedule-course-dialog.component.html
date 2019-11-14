@@ -53,7 +53,9 @@
           <md2-datepicker
             [isOpen]="datePickerIsOpened"
             (onClose)="datePickerIsOpened = false"
-            [(ngModel)]="selectedStartDate"
+            (change)="changed()"
+            [startAt]="selectedStartDate"
+            [(ngModel)]="selectedDateInPopup"
             [disabled]="!selectedCourse"
             [touchUi]="true"
             [dateFilter]="dateFilter"

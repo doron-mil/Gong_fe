@@ -50,6 +50,7 @@ export class ScheduleCourseDialogComponent implements OnInit {
   selectedStartFromDay: number;
 
   selectedStartDate: Date;
+  selectedDateInPopup: Date;
   minStartDate: Date;
 
   coursesMomentRangeArray: MomentRange[] = [];
@@ -123,6 +124,11 @@ export class ScheduleCourseDialogComponent implements OnInit {
 
   openDatePicker() {
     this.datePickerIsOpened = true;
+    this.selectedDateInPopup = null;
+  }
+
+  changed() {
+    this.selectedStartDate = this.selectedDateInPopup;
   }
 
   dateFilter = (aDate: Date | moment.Moment, isLog: boolean = false): boolean => {

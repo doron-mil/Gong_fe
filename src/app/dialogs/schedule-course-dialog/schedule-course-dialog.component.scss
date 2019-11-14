@@ -54,6 +54,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: default;
+}
+
+.start-date-display:not(.start-date-display-disabled) {
+  cursor: pointer;
 }
 
 .start-date-display-disabled {
