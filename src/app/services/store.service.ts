@@ -1,23 +1,19 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
-import {Area} from '../model/area';
-import {TranslateService} from '@ngx-translate/core';
-import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
+
+import {filter, first} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
+
+import {ActionGenerator} from '../store/actions/action';
+
+import {Area} from '../model/area';
+import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
 import {GongType} from '../model/gongType';
 import {Course} from '../model/course';
-import {
-  addManualGong,
-  getBasicData, playGong,
-  readToStoreData,
-  removeScheduleCourse, removeScheduledGong,
-  scheduleCourse, setDateFormat,
-  toggleScheduledGong
-} from '../store/actions/action';
 import {ScheduledGong} from '../model/ScheduledGong';
 import {CourseSchedule} from '../model/courseSchedule';
 import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
-import {filter, first, map, tap} from 'rxjs/operators';
 import {Gong} from '../model/gong';
 import {DateFormat} from '../model/dateFormat';
 
@@ -118,7 +114,7 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   readToStore() {
-    this.ngRedux.dispatch(readToStoreData());
+    this.ngRedux.dispatch(ActionGenerator.readToStoreData());
   }
 
   getAreasMap(): Observable<Area[]> {
@@ -161,27 +157,27 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   addManualGong(gongToPlay: ScheduledGong) {
-    this.ngRedux.dispatch(addManualGong(gongToPlay));
+    this.ngRedux.dispatch(ActionGenerator.addManualGong(gongToPlay));
   }
 
   getBasicData() {
-    this.ngRedux.dispatch(getBasicData());
+    this.ngRedux.dispatch(ActionGenerator.getBasicData());
   }
 
   scheduleCourse(aCourseSchedule: CourseSchedule) {
-    this.ngRedux.dispatch(scheduleCourse(aCourseSchedule));
+    this.ngRedux.dispatch(ActionGenerator.scheduleCourse(aCourseSchedule));
   }
 
   removeScheduledCourse(aCourseScheduledToRemove: CourseSchedule) {
-    this.ngRedux.dispatch(removeScheduleCourse(aCourseScheduledToRemove));
+    this.ngRedux.dispatch(ActionGenerator.removeScheduleCourse(aCourseScheduledToRemove));
   }
 
   toggleScheduledGong(aScheduledCourseGong: ScheduledCourseGong) {
-    this.ngRedux.dispatch(toggleScheduledGong(aScheduledCourseGong));
+    this.ngRedux.dispatch(ActionGenerator.toggleScheduledGong(aScheduledCourseGong));
   }
 
   removeScheduledGong(a2BRemovedScheduledGong: ScheduledGong) {
-    this.ngRedux.dispatch(removeScheduledGong(a2BRemovedScheduledGong));
+    this.ngRedux.dispatch(ActionGenerator.removeScheduledGong(a2BRemovedScheduledGong));
   }
 
   private enhanceCourseScheduleArray() {
@@ -198,7 +194,7 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   setDateFormat(aDateFormat: DateFormat) {
-    this.ngRedux.dispatch(setDateFormat(aDateFormat));
+    this.ngRedux.dispatch(ActionGenerator.setDateFormat(aDateFormat));
   }
 
   getPlayGongEnabled(): Observable<boolean> {
@@ -207,7 +203,7 @@ export class StoreService implements OnInit, OnDestroy {
 
 
   playGong(aGongToPlay: Gong) {
-    this.ngRedux.dispatch(playGong(aGongToPlay));
+    this.ngRedux.dispatch(ActionGenerator.playGong(aGongToPlay));
   }
 
   ngOnDestroy(): void {

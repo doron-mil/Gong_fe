@@ -1,37 +1,12 @@
-import moment from 'moment';
-import {
-  ADD_MANUAL_GONG,
-  AREA_FEATURE,
-  BASIC_DATA_FEATURE,
-  COURSES_FEATURE,
-  COURSES_SCHEDULE_FEATURE,
-  GET_BASIC_DATA,
-  getBasicData,
-  GONG_TYPES_FEATURE,
-  MANUAL_GONG_ADD_FEATURE,
-  MANUAL_GONGS_LIST_FEATURE,
-  PLAY_GONG,
-  PLAY_GONG_FEATURE,
-  READ_TO_STORE_DATA,
-  REMOVE_MANUAL_GONG,
-  REMOVE_MANUAL_GONG_FEATURE,
-  SCHEDULE_COURSE_ADD,
-  SCHEDULE_COURSE_FEATURE,
-  SCHEDULED_COURSE_REMOVE,
-  SCHEDULED_COURSE_REMOVE_FEATURE, SET_DATE_FORMAT,
-  setAreas,
-  setBasicServerData,
-  setCourses,
-  setCoursesSchedule, setDateFormat,
-  setGongTypes,
-  setManualGongsList, setPlayGongEnabled,
-  TOGGLE_SCHEDULED_GONG,
-  TOGGLE_SCHEDULED_GONG_FEATURE,
-  updateCourseSchedule,
-  updateManualGong
-} from '../../actions/action';
-import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+
+import moment from 'moment';
+
+import {AngularJsonClassConverterService} from 'angular-json-class-converter';
+import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
+
+import {ActionFeaturesEnum, ActionGenerator, ActionTypesEnum} from '../../actions/action';
 import {Area} from '../../../model/area';
 import {CourseSchedule} from '../../../model/courseSchedule';
 import {Course} from '../../../model/course';
@@ -42,9 +17,8 @@ import {BasicServerData} from '../../../model/basicServerData';
 import {ScheduledCourseGong} from '../../../model/ScheduledCourseGong';
 import {MessagesService} from '../../../services/messages.service';
 import {DateFormat} from '../../../model/dateFormat';
-import {Router} from '@angular/router';
 import {AuthService} from '../../../services/auth.service';
-import {AngularJsonClassConverterService} from 'angular-json-class-converter';
+
 
 export const BASIC_URL = 'api/';
 export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
@@ -73,58 +47,58 @@ export class GeneralMiddlewareService {
     next(action);
 
     switch (action.type) {
-      case READ_TO_STORE_DATA:
+      case ActionTypesEnum.READ_TO_STORE_DATA:
         next(
-          apiRequest(null, 'GET', GONG_TYPES_URL, GONG_TYPES_FEATURE, null)
+          apiRequest(null, 'GET', GONG_TYPES_URL, ActionFeaturesEnum.GONG_TYPES_FEATURE, null)
         );
         next(
-          apiRequest(null, 'GET', AREA_URL, AREA_FEATURE, null)
+          apiRequest(null, 'GET', AREA_URL, ActionFeaturesEnum.AREA_FEATURE, null)
         );
         next(
-          apiRequest(null, 'GET', COURSES_URL, COURSES_FEATURE, null)
+          apiRequest(null, 'GET', COURSES_URL, ActionFeaturesEnum.COURSES_FEATURE, null)
         );
         next(
-          apiRequest(null, 'GET', COURSES_SCHEDULE_URL, COURSES_SCHEDULE_FEATURE, null)
+          apiRequest(null, 'GET', COURSES_SCHEDULE_URL, ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE, null)
         );
         next(
-          apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
+          apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, ActionFeaturesEnum.MANUAL_GONGS_LIST_FEATURE, null)
         );
         break;
-      case `${GONG_TYPES_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.GONG_TYPES_FEATURE} ${API_SUCCESS}`:
         const gongsTypesArray = this.jsonConverterService.convert<GongType>(action.payload.data, 'GongType');
         next(
-          setGongTypes(gongsTypesArray)
+          ActionGenerator.setGongTypes(gongsTypesArray)
         );
         break;
-      case `${AREA_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.AREA_FEATURE} ${API_SUCCESS}`:
         const areasArray = this.jsonConverterService.convert<Area>(action.payload.data, 'Area');
         next(
-          setAreas(areasArray)
+          ActionGenerator.setAreas(areasArray)
         );
         break;
-      case `${COURSES_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.COURSES_FEATURE} ${API_SUCCESS}`:
         const coursesArray = this.jsonConverterService.convert<Course>(action.payload.data, 'Course');
         next(
-          setCourses(coursesArray)
+          ActionGenerator.setCourses(coursesArray)
         );
         break;
-      case `${COURSES_SCHEDULE_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE} ${API_SUCCESS}`:
         const courseScheduleArray = this.jsonConverterService.convert<CourseSchedule>(
           action.payload.data, 'CourseSchedule');
         next(
-          setCoursesSchedule(courseScheduleArray)
+          ActionGenerator.setCoursesSchedule(courseScheduleArray)
         );
         break;
-      case `${MANUAL_GONGS_LIST_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.MANUAL_GONGS_LIST_FEATURE} ${API_SUCCESS}`:
         const scheduledGongsArray = this.jsonConverterService.convert<ScheduledGong>(
           action.payload.data, 'ScheduledGong');
         next(
-          setManualGongsList(scheduledGongsArray)
+          ActionGenerator.setManualGongsList(scheduledGongsArray)
         );
         break;
-      case GET_BASIC_DATA:
+      case ActionTypesEnum.GET_BASIC_DATA:
         next(
-          apiRequest(null, 'GET', GET_BASIC_DATA_URL, BASIC_DATA_FEATURE, null)
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE, null)
         );
         const localStorageDateFormatStrigified = localStorage.getItem('date_format');
         if (localStorageDateFormatStrigified) {
@@ -132,85 +106,86 @@ export class GeneralMiddlewareService {
           const localStorageDateFormat =
             this.jsonConverterService.convertOneObject<DateFormat>(localStorageDateFormatParsed, 'DateFormat');
           next(
-            setDateFormat(localStorageDateFormat)
+            ActionGenerator.setDateFormat(localStorageDateFormat)
           );
         }
         break;
-      case `${BASIC_DATA_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.BASIC_DATA_FEATURE} ${API_SUCCESS}`:
         const basicServerData = this.jsonConverterService.convertOneObject<BasicServerData>(
           action.payload.data, 'BasicServerData');
         next(
-          setBasicServerData(basicServerData)
+          ActionGenerator.setBasicServerData(basicServerData)
         );
         break;
-      case ADD_MANUAL_GONG:
+      case ActionTypesEnum.ADD_MANUAL_GONG:
         const manualGongJson = this.jsonConverterService.convertToJson(action.payload);
         const stringedifiedManualGongJson = JSON.stringify(manualGongJson);
         next(
-          apiRequest(stringedifiedManualGongJson, 'POST', ADD_MANUAL_GONG_URL, MANUAL_GONG_ADD_FEATURE, action.payload)
+          apiRequest(stringedifiedManualGongJson, 'POST', ADD_MANUAL_GONG_URL,
+            ActionFeaturesEnum.MANUAL_GONG_ADD_FEATURE, action.payload)
         );
         break;
-      case `${MANUAL_GONG_ADD_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.MANUAL_GONG_ADD_FEATURE} ${API_SUCCESS}`:
         (action.data as ScheduledGong).updateStatus =
           action.payload.data === 'SUCCESS' ? UpdateStatusEnum.SUCCESS : UpdateStatusEnum.FAILED;
         next(
-          updateManualGong(action.data)
+          ActionGenerator.updateManualGong(action.data)
         );
         dispatch(
-          apiRequest(null, 'GET', GET_BASIC_DATA_URL, BASIC_DATA_FEATURE, null)
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE, null)
         );
         break;
-      case `${MANUAL_GONG_ADD_FEATURE} ${API_ERROR}`:
+      case `${ActionFeaturesEnum.MANUAL_GONG_ADD_FEATURE} ${API_ERROR}`:
         (action.data as ScheduledGong).updateStatus = UpdateStatusEnum.FAILED;
         next(
-          updateManualGong(action.data)
+          ActionGenerator.updateManualGong(action.data)
         );
         break;
-      case SCHEDULE_COURSE_ADD:
+      case ActionTypesEnum.SCHEDULE_COURSE_ADD:
         const courseSchedule = this.jsonConverterService.convertToJson(action.payload);
         const stringedifiedCourseScheduleJson = JSON.stringify(courseSchedule);
         next(
           apiRequest(stringedifiedCourseScheduleJson, 'POST',
-            ADD_COURSE_SCHEDULE_URL, SCHEDULE_COURSE_FEATURE, action.payload)
+            ADD_COURSE_SCHEDULE_URL, ActionFeaturesEnum.SCHEDULE_COURSE_FEATURE, action.payload)
         );
         break;
-      case `${SCHEDULE_COURSE_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.SCHEDULE_COURSE_FEATURE} ${API_SUCCESS}`:
         const oldCourseSchedule = action.data as CourseSchedule;
         const addedCourseSchedule = this.jsonConverterService.convertOneObject<CourseSchedule>(
           action.payload.data, 'CourseSchedule');
         addedCourseSchedule.tmpId = oldCourseSchedule.tmpId;
         addedCourseSchedule.updateStatus = UpdateStatusEnum.SUCCESS;
         next(
-          updateCourseSchedule(addedCourseSchedule)
+          ActionGenerator.updateCourseSchedule(addedCourseSchedule)
         );
         break;
-      case `${SCHEDULE_COURSE_FEATURE} ${API_ERROR}`:
+      case `${ActionFeaturesEnum.SCHEDULE_COURSE_FEATURE} ${API_ERROR}`:
         const newCourseSchedule = (action.data as CourseSchedule).clone();
         newCourseSchedule.updateStatus = UpdateStatusEnum.FAILED;
         next(
-          updateCourseSchedule(newCourseSchedule)
+          ActionGenerator.updateCourseSchedule(newCourseSchedule)
         );
         break;
-      case SCHEDULED_COURSE_REMOVE:
+      case ActionTypesEnum.SCHEDULED_COURSE_REMOVE:
         const courseScheduleForRemoval = this.jsonConverterService.convertToJson(action.payload);
         const stringedifiedCourseScheduleForRemovalJson = JSON.stringify(courseScheduleForRemoval);
         next(
           apiRequest(stringedifiedCourseScheduleForRemovalJson, 'DELETE', REMOVE_COURSE_SCHEDULE_URL,
-            SCHEDULED_COURSE_REMOVE_FEATURE, action.payload)
+            ActionFeaturesEnum.SCHEDULED_COURSE_REMOVE_FEATURE, action.payload)
         );
         break;
-      case TOGGLE_SCHEDULED_GONG:
+      case ActionTypesEnum.TOGGLE_SCHEDULED_GONG:
         const scheduledCourseGongJson = this.jsonConverterService.convertToJson(action.payload);
         const stringedifiedScheduledCourseGongJsonJson = JSON.stringify(scheduledCourseGongJson);
         next(
           apiRequest(stringedifiedScheduledCourseGongJsonJson, 'POST', TOGGLE_SCHEDULED_GONG_URL,
-            TOGGLE_SCHEDULED_GONG_FEATURE, action.payload)
+            ActionFeaturesEnum.TOGGLE_SCHEDULED_GONG_FEATURE, action.payload)
         );
         break;
-      case `${TOGGLE_SCHEDULED_GONG_FEATURE} ${API_SUCCESS}`:
+      case `${ActionFeaturesEnum.TOGGLE_SCHEDULED_GONG_FEATURE} ${API_SUCCESS}`:
         const aToggledScheduledCourseGong = action.data as ScheduledCourseGong;
         next(
-          apiRequest(null, 'GET', COURSES_SCHEDULE_URL, COURSES_SCHEDULE_FEATURE, null)
+          apiRequest(null, 'GET', COURSES_SCHEDULE_URL, ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE, null)
         );
         const currentState = getState();
         const foundCourseSchedule = currentState.dynamic_data.coursesSchedule.find(
@@ -220,42 +195,42 @@ export class GeneralMiddlewareService {
           computedMomentOfGong.add(aToggledScheduledCourseGong.dayNumber, 'd');
           computedMomentOfGong.add(aToggledScheduledCourseGong.time, 'ms');
           if (computedMomentOfGong.isSame(currentState.dynamic_data.basicServerData.nextScheduledJobTime)) {
-            dispatch(getBasicData());
+            dispatch(ActionGenerator.getBasicData());
           }
         } else {
-          console.error(`GeneralMiddlewareService:${TOGGLE_SCHEDULED_GONG_FEATURE} ${API_SUCCESS}` + '' +
+          console.error(`GeneralMiddlewareService:${ActionFeaturesEnum.TOGGLE_SCHEDULED_GONG_FEATURE} ${API_SUCCESS}` + '' +
             'Error in  processing API middleware : ', action);
 
         }
         break;
-      case REMOVE_MANUAL_GONG:
+      case ActionTypesEnum.REMOVE_MANUAL_GONG:
         const toBRemovedScheduledGongJson = this.jsonConverterService.convertToJson(action.payload);
         const stringedified2BRemovedScheduledGongJson = JSON.stringify(toBRemovedScheduledGongJson);
         next(
           apiRequest(stringedified2BRemovedScheduledGongJson, 'POST', REMOVE_SCHEDULED_GONG_URL,
-            REMOVE_MANUAL_GONG_FEATURE, action.payload)
+            ActionFeaturesEnum.REMOVE_MANUAL_GONG_FEATURE, action.payload)
         );
         break;
-      case `${REMOVE_MANUAL_GONG_FEATURE} ${API_ERROR}`:
+      case `${ActionFeaturesEnum.REMOVE_MANUAL_GONG_FEATURE} ${API_ERROR}`:
         this.messagesService.cannotDeleteRecord(action.data);
         dispatch(
-          apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, MANUAL_GONGS_LIST_FEATURE, null)
+          apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, ActionFeaturesEnum.MANUAL_GONGS_LIST_FEATURE, null)
         );
         break;
-      case PLAY_GONG:
-        next(setPlayGongEnabled(false));
+      case ActionTypesEnum.PLAY_GONG:
+        next(ActionGenerator.setPlayGongEnabled(false));
         const toBPlayedGongJson = this.jsonConverterService.convertToJson(action.payload);
         const stringedified2PlayedGongJson = JSON.stringify(toBPlayedGongJson);
         next(
           apiRequest(stringedified2PlayedGongJson, 'POST', PLAY_GONG_URL,
-            PLAY_GONG_FEATURE, action.payload)
+            ActionFeaturesEnum.PLAY_GONG_FEATURE, action.payload)
         );
         break;
-      case `${PLAY_GONG_FEATURE} ${API_SUCCESS}`:
-        next(setPlayGongEnabled(true));
+      case `${ActionFeaturesEnum.PLAY_GONG_FEATURE} ${API_SUCCESS}`:
+        next(ActionGenerator.setPlayGongEnabled(true));
         this.messagesService.gongPlayedResult(action.payload.gongSuccessPlay);
         break;
-      case SET_DATE_FORMAT:
+      case ActionTypesEnum.SET_DATE_FORMAT:
         localStorage.setItem('date_format', JSON.stringify(action.payload));
         break;
     }

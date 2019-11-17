@@ -9,144 +9,149 @@ import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {Gong} from '../../model/gong';
 import {DateFormat} from '../../model/dateFormat';
 
-export const BASIC_DATA_FEATURE = '[BASIC_DATA]';
-export const GONG_TYPES_FEATURE = '[GONG_TYPES]';
-export const AREA_FEATURE = '[AREA]';
-export const COURSES_FEATURE = '[COURSES]';
-export const COURSES_SCHEDULE_FEATURE = '[COURSES_SCHEDULE]';
-export const MANUAL_GONGS_LIST_FEATURE = '[MANUAL_GONGS_LIST]';
-export const MANUAL_GONG_ADD_FEATURE = '[MANUAL_GONG_ADD]';
-export const SCHEDULE_COURSE_FEATURE = '[SCHEDULE_COURSE_ADD]';
-export const SCHEDULED_COURSE_REMOVE_FEATURE = '[SCHEDULED_COURSE_REMOVE]';
-export const TOGGLE_SCHEDULED_GONG_FEATURE = '[TOGGLE_SCHEDULED_GONG]';
-export const REMOVE_MANUAL_GONG_FEATURE = '[REMOVE_MANUAL_GONG]';
-export const PLAY_GONG_FEATURE = '[PLAY_GONG_FEATURE]';
-export const DATE_FORMAT_FEATURE = '[DATE_FORMAT_FEATURE]';
+export enum ActionFeaturesEnum {
+  BASIC_DATA_FEATURE = '[BASIC_DATA]',
+  GONG_TYPES_FEATURE = '[GONG_TYPES]',
+  AREA_FEATURE = '[AREA]',
+  COURSES_FEATURE = '[COURSES]',
+  COURSES_SCHEDULE_FEATURE = '[COURSES_SCHEDULE]',
+  MANUAL_GONGS_LIST_FEATURE = '[MANUAL_GONGS_LIST]',
+  MANUAL_GONG_ADD_FEATURE = '[MANUAL_GONG_ADD]',
+  SCHEDULE_COURSE_FEATURE = '[SCHEDULE_COURSE_ADD]',
+  SCHEDULED_COURSE_REMOVE_FEATURE = '[SCHEDULED_COURSE_REMOVE]',
+  TOGGLE_SCHEDULED_GONG_FEATURE = '[TOGGLE_SCHEDULED_GONG]',
+  REMOVE_MANUAL_GONG_FEATURE = '[REMOVE_MANUAL_GONG]',
+  PLAY_GONG_FEATURE = '[PLAY_GONG_FEATURE]',
+  DATE_FORMAT_FEATURE = '[DATE_FORMAT_FEATURE]',
+}
 
-
-export const READ_TO_STORE_DATA = 'READ_TO_STORE_DATA';
-export const GET_BASIC_DATA = 'GET_BASIC_DATA';
-export const SET_BASIC_DATA = 'SET_BASIC_DATA';
-export const SET_GONG_TYPES = 'SET_GONG_TYPES';
-export const SET_AREAS = 'SET_AREAS';
-export const SET_COURSES = 'SET_COURSES';
-export const SET_COURSES_SCHEDULE = 'SET_COURSES_SCHEDULE';
-export const SET_MANUAL_GONGS_LIST = 'SET_MANUAL_GONGS_LIST';
-export const ADD_MANUAL_GONG = 'ADD_MANUAL_GONG';
-export const UPDATE_MANUAL_GONG = 'UPDATE_MANUAL_GONG';
-export const SCHEDULE_COURSE_ADD = 'SCHEDULE_COURSE_ADD';
-export const SCHEDULED_COURSE_UPDATE = 'SCHEDULED_COURSE_UPDATE';
-export const SCHEDULED_COURSE_REMOVE = 'SCHEDULED_COURSE_REMOVE';
-export const TOGGLE_SCHEDULED_GONG = 'TOGGLE_SCHEDULED_GONG';
-export const REMOVE_MANUAL_GONG = 'REMOVE_MANUAL_GONG';
-export const PLAY_GONG = 'PLAY_GONG';
-export const SET_DATE_FORMAT = 'SET_DATE_FORMAT';
-export const SET_PLAY_GONG_ENABLED = 'SET_PLAY_GONG_ENABLED';
+export enum ActionTypesEnum {
+  READ_TO_STORE_DATA = 'READ_TO_STORE_DATA',
+  GET_BASIC_DATA = 'GET_BASIC_DATA',
+  SET_BASIC_DATA = 'SET_BASIC_DATA',
+  SET_GONG_TYPES = 'SET_GONG_TYPES',
+  SET_AREAS = 'SET_AREAS',
+  SET_COURSES = 'SET_COURSES',
+  SET_COURSES_SCHEDULE = 'SET_COURSES_SCHEDULE',
+  SET_MANUAL_GONGS_LIST = 'SET_MANUAL_GONGS_LIST',
+  ADD_MANUAL_GONG = 'ADD_MANUAL_GONG',
+  UPDATE_MANUAL_GONG = 'UPDATE_MANUAL_GONG',
+  SCHEDULE_COURSE_ADD = 'SCHEDULE_COURSE_ADD',
+  SCHEDULED_COURSE_UPDATE = 'SCHEDULED_COURSE_UPDATE',
+  SCHEDULED_COURSE_REMOVE = 'SCHEDULED_COURSE_REMOVE',
+  TOGGLE_SCHEDULED_GONG = 'TOGGLE_SCHEDULED_GONG',
+  REMOVE_MANUAL_GONG = 'REMOVE_MANUAL_GONG',
+  PLAY_GONG = 'PLAY_GONG',
+  SET_DATE_FORMAT = 'SET_DATE_FORMAT',
+  SET_PLAY_GONG_ENABLED = 'SET_PLAY_GONG_ENABLED',
+}
 
 export interface AppAction extends Action {
   payload: any;
 }
 
 // action creators
-export const readToStoreData = () => ({
-  type: READ_TO_STORE_DATA
-});
+export class ActionGenerator {
+  static readToStoreData = () => ({
+    type: ActionTypesEnum.READ_TO_STORE_DATA
+  });
 
-export const getBasicData = () => ({
-  type: GET_BASIC_DATA
-});
+  static getBasicData = () => ({
+    type: ActionTypesEnum.GET_BASIC_DATA
+  });
 
-export const setBasicServerData = (basicServerData: BasicServerData) => ({
-  type: SET_BASIC_DATA,
-  payload: basicServerData,
-  meta: {feature: BASIC_DATA_FEATURE}
-});
+  static setBasicServerData = (basicServerData: BasicServerData) => ({
+    type: ActionTypesEnum.SET_BASIC_DATA,
+    payload: basicServerData,
+    meta: {feature: ActionFeaturesEnum.BASIC_DATA_FEATURE}
+  });
 
-export const setGongTypes = (gongTypes: GongType[]) => ({
-  type: SET_GONG_TYPES,
-  payload: gongTypes,
-  meta: {feature: GONG_TYPES_FEATURE}
-});
+  static setGongTypes = (gongTypes: GongType[]) => ({
+    type: ActionTypesEnum.SET_GONG_TYPES,
+    payload: gongTypes,
+    meta: {feature: ActionFeaturesEnum.GONG_TYPES_FEATURE}
+  });
 
-export const setAreas = (areas: Area[]) => ({
-  type: SET_AREAS,
-  payload: areas,
-  meta: {feature: AREA_FEATURE}
-});
+  static setAreas = (areas: Area[]) => ({
+    type: ActionTypesEnum.SET_AREAS,
+    payload: areas,
+    meta: {feature: ActionFeaturesEnum.AREA_FEATURE}
+  });
 
-export const setCourses = (courses: Course[]) => ({
-  type: SET_COURSES,
-  payload: courses,
-  meta: {feature: COURSES_FEATURE}
-});
+  static setCourses = (courses: Course[]) => ({
+    type: ActionTypesEnum.SET_COURSES,
+    payload: courses,
+    meta: {feature: ActionFeaturesEnum.COURSES_FEATURE}
+  });
 
-export const setCoursesSchedule = (coursesSchedule: CourseSchedule[]) => ({
-  type: SET_COURSES_SCHEDULE,
-  payload: coursesSchedule,
-  meta: {feature: COURSES_SCHEDULE_FEATURE}
-});
+  static setCoursesSchedule = (coursesSchedule: CourseSchedule[]) => ({
+    type: ActionTypesEnum.SET_COURSES_SCHEDULE,
+    payload: coursesSchedule,
+    meta: {feature: ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE}
+  });
 
-export const setManualGongsList = (scheduledGongsArray: ScheduledGong[]) => ({
-  type: SET_MANUAL_GONGS_LIST,
-  payload: scheduledGongsArray,
-  meta: {feature: MANUAL_GONGS_LIST_FEATURE}
-});
+  static setManualGongsList = (scheduledGongsArray: ScheduledGong[]) => ({
+    type: ActionTypesEnum.SET_MANUAL_GONGS_LIST,
+    payload: scheduledGongsArray,
+    meta: {feature: ActionFeaturesEnum.MANUAL_GONGS_LIST_FEATURE}
+  });
 
-export const addManualGong = (manualGong: ScheduledGong) => ({
-  type: ADD_MANUAL_GONG,
-  payload: manualGong,
-  meta: {feature: MANUAL_GONG_ADD_FEATURE}
-});
+  static addManualGong = (manualGong: ScheduledGong) => ({
+    type: ActionTypesEnum.ADD_MANUAL_GONG,
+    payload: manualGong,
+    meta: {feature: ActionFeaturesEnum.MANUAL_GONG_ADD_FEATURE}
+  });
 
-export const updateManualGong = (manualGong: ScheduledGong) => ({
-  type: UPDATE_MANUAL_GONG,
-  payload: manualGong,
-  meta: {feature: MANUAL_GONG_ADD_FEATURE}
-});
+  static updateManualGong = (manualGong: ScheduledGong) => ({
+    type: ActionTypesEnum.UPDATE_MANUAL_GONG,
+    payload: manualGong,
+    meta: {feature: ActionFeaturesEnum.MANUAL_GONG_ADD_FEATURE}
+  });
 
-export const scheduleCourse = (aCourseSchedule: CourseSchedule) => ({
-  type: SCHEDULE_COURSE_ADD,
-  payload: aCourseSchedule,
-  meta: {feature: SCHEDULE_COURSE_FEATURE}
-});
+  static scheduleCourse = (aCourseSchedule: CourseSchedule) => ({
+    type: ActionTypesEnum.SCHEDULE_COURSE_ADD,
+    payload: aCourseSchedule,
+    meta: {feature: ActionFeaturesEnum.SCHEDULE_COURSE_FEATURE}
+  });
 
-export const updateCourseSchedule = (aCourseSchedule: CourseSchedule) => ({
-  type: SCHEDULED_COURSE_UPDATE,
-  payload: aCourseSchedule,
-  meta: {feature: SCHEDULE_COURSE_FEATURE}
-});
+  static updateCourseSchedule = (aCourseSchedule: CourseSchedule) => ({
+    type: ActionTypesEnum.SCHEDULED_COURSE_UPDATE,
+    payload: aCourseSchedule,
+    meta: {feature: ActionFeaturesEnum.SCHEDULE_COURSE_FEATURE}
+  });
 
-export const removeScheduleCourse = (aCourseScheduledToRemove: CourseSchedule) => ({
-  type: SCHEDULED_COURSE_REMOVE,
-  payload: aCourseScheduledToRemove,
-  meta: {feature: SCHEDULED_COURSE_REMOVE_FEATURE}
-});
+  static removeScheduleCourse = (aCourseScheduledToRemove: CourseSchedule) => ({
+    type: ActionTypesEnum.SCHEDULED_COURSE_REMOVE,
+    payload: aCourseScheduledToRemove,
+    meta: {feature: ActionFeaturesEnum.SCHEDULED_COURSE_REMOVE_FEATURE}
+  });
 
-export const toggleScheduledGong = (aToggledScheduledCourseGong: ScheduledCourseGong) => ({
-  type: TOGGLE_SCHEDULED_GONG,
-  payload: aToggledScheduledCourseGong,
-  meta: {feature: TOGGLE_SCHEDULED_GONG_FEATURE}
-});
+  static toggleScheduledGong = (aToggledScheduledCourseGong: ScheduledCourseGong) => ({
+    type: ActionTypesEnum.TOGGLE_SCHEDULED_GONG,
+    payload: aToggledScheduledCourseGong,
+    meta: {feature: ActionFeaturesEnum.TOGGLE_SCHEDULED_GONG_FEATURE}
+  });
 
-export const removeScheduledGong = (aRemovedScheduledGong: ScheduledGong) => ({
-  type: REMOVE_MANUAL_GONG,
-  payload: aRemovedScheduledGong,
-  meta: {feature: REMOVE_MANUAL_GONG_FEATURE}
-});
+  static removeScheduledGong = (aRemovedScheduledGong: ScheduledGong) => ({
+    type: ActionTypesEnum.REMOVE_MANUAL_GONG,
+    payload: aRemovedScheduledGong,
+    meta: {feature: ActionFeaturesEnum.REMOVE_MANUAL_GONG_FEATURE}
+  });
 
-export const playGong = (aGong: Gong) => ({
-  type: PLAY_GONG,
-  payload: aGong,
-  meta: {feature: PLAY_GONG_FEATURE}
-});
+  static playGong = (aGong: Gong) => ({
+    type: ActionTypesEnum.PLAY_GONG,
+    payload: aGong,
+    meta: {feature: ActionFeaturesEnum.PLAY_GONG_FEATURE}
+  });
 
-export const setDateFormat = (aDateFormat: DateFormat) => ({
-  type: SET_DATE_FORMAT,
-  payload: aDateFormat,
-  meta: {feature: DATE_FORMAT_FEATURE}
-});
+  static setDateFormat = (aDateFormat: DateFormat) => ({
+    type: ActionTypesEnum.SET_DATE_FORMAT,
+    payload: aDateFormat,
+    meta: {feature: ActionFeaturesEnum.DATE_FORMAT_FEATURE}
+  });
 
-export const setPlayGongEnabled = (aIsPlayGongEnabled: boolean) => ({
-  type: SET_PLAY_GONG_ENABLED,
-  payload: aIsPlayGongEnabled,
-});
+  static setPlayGongEnabled = (aIsPlayGongEnabled: boolean) => ({
+    type: ActionTypesEnum.SET_PLAY_GONG_ENABLED,
+    payload: aIsPlayGongEnabled,
+  });
+}
