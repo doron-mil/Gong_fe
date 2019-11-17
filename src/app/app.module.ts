@@ -40,6 +40,7 @@ import {innerReducer} from './store/reducers/inner.data.reducer';
 
 import localConversionSchema from './utils/json-converter-config/gong-conversion-schema.json';
 import {JsonEditorModule} from './json-editor/json-editor.module';
+import { HeaderComponent } from './components/header/header.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -79,6 +80,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     ScheduleCourseDialogComponent,
     MinDirective,
     MaxDirective,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

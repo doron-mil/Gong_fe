@@ -1,0 +1,94 @@
+<mat-toolbar style="background-color: #e3f2fd;" class="main-toolbar">
+
+  <section class="">
+    <button mat-icon-button [matMenuTriggerFor]="mainOptionsMenu">
+      <mat-icon svgIcon="apps" class="options"></mat-icon>
+    </button>
+
+    <mat-menu #mainOptionsMenu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="languagesMenu">
+        <mat-icon svgIcon="web"></mat-icon>
+        <span>
+          {{'main.menu.language.main' | translate}}
+        </span>
+      </button>
+      <button mat-menu-item [matMenuTriggerFor]="dateFormatMenu">
+        <mat-icon svgIcon="calendar-question"></mat-icon>
+        <span>
+          {{'main.menu.dateFormat.main' | translate}}
+        </span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon svgIcon="logout"></mat-icon>
+        <span>
+          {{'main.menu.logout' | translate}}
+        </span>
+      </button>
+    </mat-menu>
+
+    <mat-menu #languagesMenu="matMenu">
+      <button mat-menu-item *ngFor="let lang of supportedLanguagesArray"
+              (click)="setLanguage(lang)" [ngClass]="{selectedLangClass: lang === currentLanguage}">
+        <mat-icon svgIcon="lang_{{lang}}"></mat-icon>
+        <span>
+          {{'main.menu.language.subMenu.' + lang | translate}}
+        </span>
+      </button>
+
+    </mat-menu>
+
+    <mat-menu #dateFormatMenu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="delimiterMenu">
+        <span>
+          {{'main.menu.dateFormat.delimiter' | translate}}
+        </span>
+      </button>
+      <button mat-menu-item *ngFor="let dateFormat of dateFormatOptions"
+              (click)="setDateFormat(dateFormat)"
+              [ngClass]="{'selected-date-format': dateFormat.template === currentDateFormat.template}">
+        <mat-icon svgIcon="square-small"></mat-icon>
+        <span>
+          {{ dateFormat.delimited }}
+        </span>
+      </button>
+
+    </mat-menu>
+
+    <mat-menu #delimiterMenu="matMenu">
+      <button mat-menu-item *ngFor="let delimiter of delimitersOptions"
+              (click)="setDelimiter(delimiter)" [ngClass]="{'selected-delimiter': delimiter === currentDateFormat.delimiter}">
+        <mat-icon svgIcon="square-small"></mat-icon>
+        <span>
+          {{ delimiter }}
+        </span>
+      </button>
+
+    </mat-menu>
+
+  </section>
+
+  <section class="">
+    {{'main.labels.currentTime' | translate}} : {{ now | amDateFormat: 'HH:mm'}}
+  </section>
+
+  <section class="nextGongTimeContainer" [ngClass]="{langRtl: currentLanguage === 'he'}">
+    {{'main.labels.nextGong' | translate}} :
+    <div *ngIf="nextGongTime">
+      {{ nextGongTime | amDateFormat: currentDateFormat.delimited + ' HH:mm'}}
+      <span matTooltip="{{ 'main.tooltips.manual.' + isManual | translate}}"
+            matTooltipClass="manualTooltipClass" class="isManualSymbol mat-elevation-z8">
+        {{isManual ? 'M' : 'A'}}
+      </span>
+    </div>
+    <div *ngIf="!nextGongTime">
+      {{'main.labels.nextGongNotAvailable' | translate}}
+    </div>
+  </section>
+
+
+  <div class="logo-container">
+    <img width="40px" height="40px" alt="Custo, Logo" src="assets/icons/icon-72x72.png">
+  </div>
+
+
+</mat-toolbar>
