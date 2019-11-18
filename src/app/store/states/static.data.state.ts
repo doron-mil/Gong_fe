@@ -7,10 +7,12 @@ export interface StaticDataState {
   gongTypes: GongType[];
   areas: Area[];
   courses: Course[];
+  coursesRawData: string;
 }
 
 export const INITIAL_STATIC_DATA_STATE: StaticDataState = {
   gongTypes: [],
   areas: [],
   courses: [],
+  coursesRawData: '',
 };

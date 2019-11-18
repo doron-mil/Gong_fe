@@ -1,8 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NgRedux} from '@angular-redux/store';
 import {MatDialog} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
-import {combineLatest, Subscription} from 'rxjs';
+
+import {Subscription} from 'rxjs';
+import {first} from 'rxjs/operators';
+import {NgRedux} from '@angular-redux/store';
+import {TranslateService} from '@ngx-translate/core';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -12,7 +15,6 @@ import {ScheduledGong} from '../../model/ScheduledGong';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {StoreService} from '../../services/store.service';
 import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialog/schedule-course-dialog.component';
-import {TranslateService} from '@ngx-translate/core';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {DateFormat} from '../../model/dateFormat';
 import {AuthService} from '../../services/auth.service';
@@ -140,7 +142,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
       data: {role: this.loggedInRole}
     });
 
-    dialogRef.afterClosed().subscribe((aCourseSchedule: CourseSchedule) => {
+    dialogRef.afterClosed().pipe(first()).subscribe((aCourseSchedule: CourseSchedule) => {
       if (aCourseSchedule) {
         this.storeService.scheduleCourse(aCourseSchedule);
         this.selectedCourseScheduled = aCourseSchedule.clone();
@@ -238,7 +240,7 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   }
 
   isRoleForEdit() {
-    return ['admin', 'super-user'].includes(this.loggedInRole);
+    return ['admin', 'dev', 'super-user'].includes(this.loggedInRole);
   }
 
   private debugLogForRoutineArray(aRoutineArray: ScheduledGong[]) {

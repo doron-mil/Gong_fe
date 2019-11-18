@@ -12,7 +12,7 @@ import {applyMiddleware, combineReducers, createStore, Store} from 'redux';
 import {StoreDataTypeEnum} from './store/storeDataTypeEnum';
 import {generalReducer} from './store/reducers/general.reducer';
 import {composeWithDevTools} from 'redux-devtools-extension';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {MissingTranslationHandler, MissingTranslationHandlerParams, TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RoutingModule} from './routing/routing.module';
@@ -40,7 +40,8 @@ import {innerReducer} from './store/reducers/inner.data.reducer';
 
 import localConversionSchema from './utils/json-converter-config/gong-conversion-schema.json';
 import {JsonEditorModule} from './json-editor/json-editor.module';
-import { HeaderComponent } from './components/header/header.component';
+import {HeaderComponent} from './components/header/header.component';
+import {SelectCoursesDialogComponent} from './dialogs/select-courses-dialog/select-courses-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -50,12 +51,24 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 
+export class CustomMissingTranslationHandler implements MissingTranslationHandler {
+  handle(params: MissingTranslationHandlerParams) {
+    const lastDotIndex = params.key.lastIndexOf('.');
+    const retValue = params.key.substring(lastDotIndex + 1) + '˚˚®'; // Alt + k
+    return retValue;
+  }
+}
+
 export const translationRoot = {
   loader: {
     provide: TranslateLoader,
     useFactory: HttpLoaderFactory,
     deps: [HttpClient]
-  }
+  },
+  missingTranslationHandler: {
+    provide: MissingTranslationHandler,
+    useClass: CustomMissingTranslationHandler
+  },
 };
 
 export function getConfig(): JsonConverterConfigurationInterface {
@@ -81,6 +94,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     MinDirective,
     MaxDirective,
     HeaderComponent,
+    SelectCoursesDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -103,7 +117,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     }),
     JsonEditorModule,
   ],
-  entryComponents: [ScheduleCourseDialogComponent],
+  entryComponents: [ScheduleCourseDialogComponent, SelectCoursesDialogComponent],
   providers: [ApiMiddlewareService, GeneralMiddlewareService],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,23 @@
+@import "src/app/dialogs/shared/dialogs-common";
+
+.body-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  .courses-container {
+    width: 95%;
+    height: 90%;
+    overflow-y: auto;
+
+    .row-container {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+
+      .course-name{
+        padding-left: 1vw;
+      }
+    }
+  }
+}

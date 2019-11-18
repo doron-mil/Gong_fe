@@ -1,16 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {BaseComponent} from '../../shared/baseComponent';
-import moment from 'moment';
-import {DateFormat} from '../../model/dateFormat';
+import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material';
+
 import {Subscription, timer} from 'rxjs';
+import {first, takeUntil} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
+import {NgRedux} from '@angular-redux/store';
+
+import moment from 'moment';
+import {BaseComponent} from '../../shared/baseComponent';
+import {DateFormat} from '../../model/dateFormat';
 import {BasicServerData} from '../../model/basicServerData';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
-import {NgRedux} from '@angular-redux/store';
 import {StoreService} from '../../services/store.service';
 import {AuthService} from '../../services/auth.service';
-import {takeUntil} from 'rxjs/operators';
-import {Router} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
+import {SelectCoursesDialogComponent} from '../../dialogs/select-courses-dialog/select-courses-dialog.component';
 
 @Component({
   selector: 'app-header',
@@ -18,6 +22,11 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent extends BaseComponent {
+
+  @ViewChild('courseFile', {static: false}) file: ElementRef;
+
+  isLoggedIn = false;
+  currentRole: string;
 
   supportedLanguagesArray: string[];
   currentLanguage: string = 'en';
@@ -33,11 +42,13 @@ export class HeaderComponent extends BaseComponent {
   timerSubscription: Subscription;
   nextGongSubscription: Subscription;
 
+
   constructor(private ngRedux: NgRedux<any>,
               private storeService: StoreService,
               private authService: AuthService,
               private router: Router,
-              private translate: TranslateService,) {
+              private dialog: MatDialog,
+              private translate: TranslateService) {
     super();
 
     this.translate.addLangs(['en', 'he']);
@@ -85,6 +96,25 @@ export class HeaderComponent extends BaseComponent {
         this.currentDateFormat = dateFormat;
         this.delimiterChanged();
       });
+
+    this.ngRedux.select<number>([StoreDataTypeEnum.INNER_DATA, 'uploadCoursesFileEnded'])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((uploadCount) => {
+        if (this.file && this.file.nativeElement) {
+          this.file.nativeElement.value = '';
+        }
+      });
+
+    this.ngRedux.select<boolean>([StoreDataTypeEnum.INNER_DATA, 'isLoggedIn'])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((pIsLoggedIn) => {
+        this.isLoggedIn = pIsLoggedIn;
+        if (pIsLoggedIn) {
+          this.currentRole = this.authService.getRole();
+        } else {
+          this.currentRole = '';
+        }
+      });
   }
 
   initDateFormatOptions(): void {
@@ -101,11 +131,9 @@ export class HeaderComponent extends BaseComponent {
 
   }
 
-
   private getSupportedLanguages() {
     this.supportedLanguagesArray = this.translate.getLangs();
   }
-
 
   logout() {
     this.authService.logout();
@@ -132,7 +160,43 @@ export class HeaderComponent extends BaseComponent {
   }
 
   delimiterChanged() {
-    this.dateFormatOptions.forEach(dateFormat => dateFormat.changeDelimited(this.currentDateFormat.delimiter));
+    if (this.dateFormatOptions) {
+      this.dateFormatOptions.forEach(dateFormat => dateFormat.changeDelimited(this.currentDateFormat.delimiter));
+    }
   }
 
+  downloadFile() {
+    const coursesNames = this.storeService.getCoursesNames(this.currentRole);
+
+    const dialogRef = this.dialog.open(SelectCoursesDialogComponent, {
+      height: '70vh',
+      width: '70vw',
+      position: {top: '15vh'},
+      data: {availableCourses: coursesNames, forAction: 'download'}
+    });
+
+    dialogRef.afterClosed()
+      .pipe(first())
+      .subscribe((selectedCourses: string[]) => {
+        if (selectedCourses) {
+          this.storeService.downloadCourses(selectedCourses);
+        }
+      });
+  }
+
+  uploadCoursesFile() {
+    this.file.nativeElement.click();
+  }
+
+  onCoursesFileChange() {
+    const files = this.file.nativeElement.files;
+
+    if (files && files.length === 1) {
+      this.storeService.uploadCourseFile(files[0]);
+    }
+  }
+
+  isAdminRole() {
+    return ['admin', 'dev'].includes(this.currentRole);
+  }
 }

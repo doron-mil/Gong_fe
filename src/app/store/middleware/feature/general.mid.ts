@@ -20,19 +20,20 @@ import {DateFormat} from '../../../model/dateFormat';
 import {AuthService} from '../../../services/auth.service';
 
 
-export const BASIC_URL = 'api/';
-export const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
-export const AREA_URL = `${BASIC_URL}data/areas`;
-export const COURSES_URL = `${BASIC_URL}data/courses`;
-export const COURSES_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule`;
-export const ADD_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/add`;
-export const REMOVE_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/remove`;
-export const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
-export const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
-export const TOGGLE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/toggle`;
-export const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
-export const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
-export const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
+const BASIC_URL = 'api/';
+const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
+const AREA_URL = `${BASIC_URL}data/areas`;
+const COURSES_URL = `${BASIC_URL}data/courses`;
+const COURSES_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule`;
+const ADD_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/add`;
+const REMOVE_COURSE_SCHEDULE_URL = `${BASIC_URL}data/coursesSchedule/remove`;
+const GET_MANUAL_GONGS_URL = `${BASIC_URL}data/gongs/list`;
+const ADD_MANUAL_GONG_URL = `${BASIC_URL}data/gong/add`;
+const TOGGLE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/toggle`;
+const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
+const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
+const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
+const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -80,6 +81,9 @@ export class GeneralMiddlewareService {
         const coursesArray = this.jsonConverterService.convert<Course>(action.payload.data, 'Course');
         next(
           ActionGenerator.setCourses(coursesArray)
+        );
+        next(
+          ActionGenerator.setCoursesRawData(JSON.stringify(action.payload.data))
         );
         break;
       case `${ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE} ${API_SUCCESS}`:
@@ -232,6 +236,26 @@ export class GeneralMiddlewareService {
         break;
       case ActionTypesEnum.SET_DATE_FORMAT:
         localStorage.setItem('date_format', JSON.stringify(action.payload));
+        break;
+      case ActionTypesEnum.UPLOAD_COURSES_FILE:
+        const file = action.payload as File;
+        const formData: FormData = new FormData();
+        formData.append('file', file, file.name);
+        next(
+          apiRequest(formData, 'POST', UPLOAD_COURSES_URL,
+            ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE, action.payload)
+        );
+        break;
+      case `${ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE} ${API_SUCCESS}`:
+        next(
+          apiRequest(null, 'GET', COURSES_URL, ActionFeaturesEnum.COURSES_FEATURE, null)
+        );
+      // tslint:disable-next-line:no-switch-case-fall-through
+      case `${ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE} ${API_ERROR}`:
+        this.messagesService.coursesUploaded(action.payload.error && action.payload.error.additional_message);
+        next(
+          ActionGenerator.uploadCourseFileHasComplete()
+        );
         break;
     }
 

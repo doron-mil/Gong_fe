@@ -23,15 +23,18 @@ export enum ActionFeaturesEnum {
   REMOVE_MANUAL_GONG_FEATURE = '[REMOVE_MANUAL_GONG]',
   PLAY_GONG_FEATURE = '[PLAY_GONG_FEATURE]',
   DATE_FORMAT_FEATURE = '[DATE_FORMAT_FEATURE]',
+  UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE_FEATURE]',
 }
 
 export enum ActionTypesEnum {
+  SET_LOGGED_IN = 'SET_LOGGED_IN',
   READ_TO_STORE_DATA = 'READ_TO_STORE_DATA',
   GET_BASIC_DATA = 'GET_BASIC_DATA',
   SET_BASIC_DATA = 'SET_BASIC_DATA',
   SET_GONG_TYPES = 'SET_GONG_TYPES',
   SET_AREAS = 'SET_AREAS',
   SET_COURSES = 'SET_COURSES',
+  SET_COURSES_RAW_DATA = 'SET_COURSES_RAW_DATA',
   SET_COURSES_SCHEDULE = 'SET_COURSES_SCHEDULE',
   SET_MANUAL_GONGS_LIST = 'SET_MANUAL_GONGS_LIST',
   ADD_MANUAL_GONG = 'ADD_MANUAL_GONG',
@@ -44,6 +47,8 @@ export enum ActionTypesEnum {
   PLAY_GONG = 'PLAY_GONG',
   SET_DATE_FORMAT = 'SET_DATE_FORMAT',
   SET_PLAY_GONG_ENABLED = 'SET_PLAY_GONG_ENABLED',
+  UPLOAD_COURSES_FILE = 'UPLOAD_COURSE_FILE',
+  UPLOAD_COURSES_FILE_WAS_COMPLETED = 'UPLOAD_COURSES_FILE_WAS_COMPLETED',
 }
 
 export interface AppAction extends Action {
@@ -81,6 +86,12 @@ export class ActionGenerator {
   static setCourses = (courses: Course[]) => ({
     type: ActionTypesEnum.SET_COURSES,
     payload: courses,
+    meta: {feature: ActionFeaturesEnum.COURSES_FEATURE}
+  });
+
+  static setCoursesRawData = (aCoursesRawData: String) => ({
+    type: ActionTypesEnum.SET_COURSES_RAW_DATA,
+    payload: aCoursesRawData,
     meta: {feature: ActionFeaturesEnum.COURSES_FEATURE}
   });
 
@@ -154,4 +165,19 @@ export class ActionGenerator {
     type: ActionTypesEnum.SET_PLAY_GONG_ENABLED,
     payload: aIsPlayGongEnabled,
   });
+
+  static uploadCourseFile = (aCourseFile: File) => ({
+    type: ActionTypesEnum.UPLOAD_COURSES_FILE,
+    payload: aCourseFile,
+  });
+
+  static uploadCourseFileHasComplete = () => ({
+    type: ActionTypesEnum.UPLOAD_COURSES_FILE_WAS_COMPLETED,
+  });
+
+  static setLoggedIn = (aIsLoggedIn: boolean) => ({
+    type: ActionTypesEnum.SET_LOGGED_IN,
+    payload: aIsLoggedIn,
+  });
+
 }

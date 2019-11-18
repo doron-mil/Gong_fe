@@ -11,6 +11,8 @@ enum MessagesTranslationEnum {
   CANNOT_SCHEDULE_OBSOLETE_GONG = 'couldNotScheduleObsoleteGong',
   GONG_PLAYED_SUCCESSFULLY = 'gongPlayedSuccessfully',
   GONG_PLAYED_FAILED = 'gongPlayedFailed',
+  COURSES_UPLOADED_SUCCESSFULLY = 'coursesUploadedSuccessfully',
+  COURSES_UPLOAD_FAILED = 'coursesUploadFailed',
 }
 
 @Injectable({
@@ -68,7 +70,7 @@ export class MessagesService {
     });
   }
 
-  gongPlayedResult(aWasSuccessfully) {
+  gongPlayedResult(aWasSuccessfully: boolean) {
     const transKey = aWasSuccessfully ? MessagesTranslationEnum.GONG_PLAYED_SUCCESSFULLY :
       MessagesTranslationEnum.GONG_PLAYED_FAILED;
     const messageTrans = this.getTranlation(transKey);
@@ -78,5 +80,15 @@ export class MessagesService {
     });
   }
 
+  coursesUploaded(aFailedInfo:string) {
+    const transKey = !aFailedInfo ? MessagesTranslationEnum.COURSES_UPLOADED_SUCCESSFULLY :
+      MessagesTranslationEnum.COURSES_UPLOAD_FAILED;
+    const addedMessage = aFailedInfo ? `\nAdditionalInfo : ${aFailedInfo}` : '' ;
+    const messageTrans = `${this.getTranlation(transKey)} ${addedMessage}`;
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
+  }
 
 }

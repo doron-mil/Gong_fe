@@ -41,7 +41,9 @@
       "couldNotDeleteScheduledGong": "Could not delete Gong dated :%s",
       "couldNotScheduleObsoleteGong": "Have to pick future time",
       "gongPlayedSuccessfully": "Gong Played Successfully",
-      "gongPlayedFailed": "Gong Play Request failed"
+      "gongPlayedFailed": "Gong Play Request failed",
+      "coursesUploadedSuccessfully": "Courses Uploaded Successfully",
+      "coursesUploadFailed": "Courses Upload Request failed"
     }
   },
   "main": {
@@ -71,6 +73,19 @@
       "dateFormat": {
         "main": "Date Format",
         "delimiter": "Delimiter"
+      },
+      "exportImport": {
+        "main": "Export/Import",
+        "subMenu": {
+          "export": {
+            "main": "Export",
+            "course" : "Course Template"
+          },
+          "import": {
+            "main": "Import",
+            "course" : "Course Template"
+          }
+        }
       },
       "logout": "Logout"
     }
@@ -181,6 +196,16 @@
       },
       "buttons": {
         "scheduleCourse": "Schedule Course",
+        "cancel": "Cancel"
+      }
+    },
+    "selectCourses": {
+      "header": {
+        "download": "Select Courses for Download",
+        "delete": "Select Courses for Deletion"
+      },
+      "buttons": {
+        "submit": "Submit",
         "cancel": "Cancel"
       }
     }

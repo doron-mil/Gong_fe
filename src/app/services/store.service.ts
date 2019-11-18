@@ -4,6 +4,7 @@ import {NgRedux} from '@angular-redux/store';
 import {filter, first} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
+import * as _ from 'lodash';
 
 import {ActionGenerator} from '../store/actions/action';
 
@@ -211,4 +212,45 @@ export class StoreService implements OnInit, OnDestroy {
     console.log('c1');
   }
 
+  uploadCourseFile(aCourseFile: File) {
+    this.ngRedux.dispatch(ActionGenerator.uploadCourseFile(aCourseFile));
+  }
+
+  downloadCourses(aCoursesNamesArray: string[]) {
+    const coursesRawData = _.get(this.ngRedux.getState(), [StoreDataTypeEnum.STATIC_DATA, 'coursesRawData']);
+    const courses = Array.from(JSON.parse(coursesRawData));
+    const filteredCurses = courses.filter((course) => aCoursesNamesArray.includes(_.get(course, 'course_name')));
+    const blob = new Blob([JSON.stringify(filteredCurses)], {type: 'text/json'});
+    const url = window.URL.createObjectURL(blob);
+    // window.open(url);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'courses.json';
+    // this is necessary as link.click() does not work on the latest firefox
+    link.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
+
+    setTimeout(function () {
+      // For Firefox it is necessary to delay revoking the ObjectURL
+      window.URL.revokeObjectURL(url);
+      link.remove();
+    }, 100);
+
+  }
+
+  getCoursesNames(a4Role: String): string[] {
+    let coursesNamesArray = [];
+    if (a4Role === 'dev') {
+      coursesNamesArray = Array.from(this.coursesMap.keys());
+    } else {
+      const coursesArray = Array.from(this.coursesMap.values());
+      const coursesArrayFiltered = coursesArray.filter((course) => !course.isTest && !course.name.toLowerCase().includes('test'));
+      coursesNamesArray = coursesArrayFiltered.map((course) => course.name);
+    }
+    return coursesNamesArray;
+  }
+
+  setLoggedIn(aIsLoggedIn: boolean) {
+    this.ngRedux.dispatch(ActionGenerator.setLoggedIn(aIsLoggedIn));
+  }
 }

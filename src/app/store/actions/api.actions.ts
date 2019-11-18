@@ -4,7 +4,7 @@ export const API_SUCCESS = 'API_SUCCESS';
 export const API_ERROR = 'API_ERROR';
 
 // action creators
-export const apiRequest = (body: string, method: string, url: string, feature: string, data: any) => ({
+export const apiRequest = (body: string | FormData, method: string, url: string, feature: string, data: any) => ({
   type: `${feature} ${API_REQUEST}`,
   payload: body,
   data,

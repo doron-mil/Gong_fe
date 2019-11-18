@@ -11,6 +11,9 @@ export function staticDataReducer(state: StaticDataState = INITIAL_STATIC_DATA_S
       return Object.assign({}, state, {areas: action.payload});
     case ActionTypesEnum.SET_COURSES:
       return Object.assign({}, state, {courses: action.payload});
+    case ActionTypesEnum.SET_COURSES_RAW_DATA:
+      state.coursesRawData = action.payload
+      return state;
     default:
       return Object.assign({}, state);
   }

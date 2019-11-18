@@ -44,7 +44,9 @@
       "couldNotDeleteScheduledGong": " %s לא הצליחה מחיקת הגונג שמתוארך ל:",
       "couldNotScheduleObsoleteGong": "יש לבחור זמן עתידי",
       "gongPlayedSuccessfully": "גונג נוגן בהצלחה",
-      "gongPlayedFailed": "נכשלה בקשה לניגון גונג"
+      "gongPlayedFailed": "נכשלה בקשה לניגון גונג",
+      "coursesUploadedSuccessfully": "ייבוא קורסים התסיים בהצלחה",
+      "coursesUploadFailed": "ייבוא קורסים נכשל"
     }
   },
   "main": {
@@ -74,7 +76,19 @@
         "main": "פורמט תאריך",
         "delimiter": "מפריד"
       },
-      "dateFormat": "",
+      "exportImport": {
+        "main": "ייבא/ייצא",
+        "subMenu": {
+          "export": {
+            "main": "ייצא",
+            "course" : "תבנית קורס"
+          },
+          "import": {
+            "main": "יבא",
+            "course" : "תבנית קורס"
+          }
+        }
+      },
       "logout": "יציאה"
     }
   },
@@ -163,20 +177,30 @@
         "update": "עדכן קורס"
       },
       "labels": {
-        "courseName": "Course Name",
-        "dayStart": "Start from day",
-        "date": "Schedule day",
+        "courseName": "שם קורס",
+        "dayStart": "התחל מיום",
+        "date": "תאריך קורס",
         "isTest": "לבדיקות בלבד",
         "testHoursRange": "טווח שעות לבדיקה",
         "testHoursRangeStart": "התחלה",
         "testHoursRangeEnd": "סוף"
       },
       "placeHolders": {
-        "courseName": "Select a course",
-        "dayStart": "Select the day to start with"
+        "courseName": "בחר קורס",
+        "dayStart": "בחר יום קורס להתחלה"
       },
       "buttons": {
-        "scheduleCourse": "Schedule Course",
+        "scheduleCourse": "תזמן קורס",
+        "cancel": "בטל"
+      }
+    },
+    "selectCourses": {
+      "header": {
+        "download": "בחר קורסים להורדה",
+        "delete": "בחר קורסים למחיקה"
+      },
+      "buttons": {
+        "submit": "בצע",
         "cancel": "בטל"
       }
     }

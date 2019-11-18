@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {StoreService} from './store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +13,25 @@ export class AuthService {
   jwtHelper = new JwtHelperService();
   private role: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private storeService: StoreService) {
   }
 
   login(username: string, password: string): Observable<boolean> {
     return this.http.post<{ data: { token: string } }>('/api/login', {username: username, password: password})
       .pipe(
+        first(),
         map(result => {
           const token = result.data.token;
           this.setRole(token);
           localStorage.setItem('access_token', token);
+          this.storeService.setLoggedIn(true);
           return true;
         })
       );
   }
 
   logout() {
+    this.storeService.setLoggedIn(false);
     localStorage.removeItem('access_token');
   }
 
