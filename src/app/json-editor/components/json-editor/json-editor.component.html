@@ -41,7 +41,7 @@
           </span>
         </button>
 
-       <button mat-menu-item (click)="refreshProblems()">
+        <button mat-menu-item (click)="refreshProblems()">
           <mat-icon svgIcon="refresh"></mat-icon>
           <span>
             Recalculate problems
@@ -178,9 +178,18 @@
           </div>
           <div class="edit-trans-row">
             <div class="trans-key-container">
-              <span class="trans-key-label" [style.width]="getMaxLabelWidth( node )"
-                    [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
-                {{node.key}}
+              <span class="trans-header" [style.width]="getMaxLabelWidth( node )">
+                <span class="trans-key-label"
+                      [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
+                  {{node.key}}
+                </span>
+                <button mat-icon-button class="options-button"
+                        [matMenuTriggerFor]="translationOptionsMenu" [matMenuTriggerData]="{node:node}"
+                        (click)="$event.stopPropagation() ">
+                  <mat-icon class="mat-icon-rtl-mirror"
+                            svgIcon="dots-vertical"></mat-icon>
+
+                </button>
               </span>
             </div>
             <div class="trans-container">
@@ -252,6 +261,24 @@
           <mat-icon svgIcon="plus-box"></mat-icon>
           <span>
             Add Child
+          </span>
+        </button>
+
+        <button mat-menu-item (click)="deleteNode(node)">
+          <mat-icon svgIcon="trash-can-outline"></mat-icon>
+          <span>
+            Delete record
+          </span>
+        </button>
+      </ng-template>
+    </mat-menu>
+
+    <mat-menu #translationOptionsMenu="matMenu">
+      <ng-template matMenuContent let-node="node">
+        <button mat-menu-item (click)="editNodeName(node)">
+          <mat-icon svgIcon="pencil"></mat-icon>
+          <span>
+            Edit Name
           </span>
         </button>
 

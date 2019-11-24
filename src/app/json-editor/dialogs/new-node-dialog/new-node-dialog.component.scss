@@ -34,10 +34,6 @@
   flex-grow: 1;
 }
 
-h4 {
-  margin: 0px;
-}
-
 .buttons-container {
   align-self: flex-end;
   display: flex;
@@ -87,20 +83,47 @@ h4 {
   font-size: large;
 }
 
-::ng-deep .mat-dialog-container {
-  padding: unset !important;
-}
-
-::ng-deep .mat-form-field {
-  width: 90%;
-}
-
 .mandatory {
   color: red;
   font-weight: bolder;
 }
 
-.invalid-input{
-  color: red;
-  font-weight: bolder;
+.required-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .field-container {
+    position: relative;
+    height: 50%;
+    width: 50%;
+    padding-right: 10%;
+  }
+
+  .english-container {
+    height: 50%;
+  }
+
+  .invalid-input {
+    color: red;
+    font-weight: bolder;
+    position: absolute;
+    bottom: 0;
+  }
 }
+
+::ng-deep {
+  .mat-form-field-wrapper {
+    padding-bottom: 0.8em !important;
+  }
+
+  .mat-dialog-container {
+    padding: unset !important;
+  }
+
+  .mat-form-field {
+    width: 90%;
+  }
+}
+
+

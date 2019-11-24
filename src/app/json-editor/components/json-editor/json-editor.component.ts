@@ -348,11 +348,18 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
         this.setNodeFullPath(newJsonNode);
         this.setNewNodeId(newJsonNode);
         aNode.children().push(newJsonNode);
+        this.recalculateMaxKeyLength4Level(aNode);
 
         this.treeControl.expand(aNode);
         this.reRenderTree();
       }
     });
+  }
+
+  private recalculateMaxKeyLength4Level(aNode: JsonNode) {
+    let maxKeyLen = 0;
+    aNode.children().forEach(jsonNode => maxKeyLen = Math.max(jsonNode.key.length, maxKeyLen));
+    aNode.children().forEach(jsonNode => jsonNode.maxKeyLength4Level = maxKeyLen);
   }
 
   private reRenderTree() {
@@ -565,7 +572,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
   }
 
   refreshProblems() {
-
+    // TO DO
   }
 
   upload() {

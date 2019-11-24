@@ -8,42 +8,44 @@
   <hr class="line">
   <div class="body-content">
 
-    <div class="field-container">
-      <h4>
-        Key
-        <span class="mandatory">*</span>
-      </h4>
-      <mat-form-field>
-        <input matInput #keyInput placeholder="set Key name" [(ngModel)]="key" class="input-name">
-      </mat-form-field>
+    <div class="required-container">
+      <div class="field-container">
+        <mat-form-field>
+          <mat-label>
+            Key
+            <span class="mandatory">*</span>
+          </mat-label>
+          <input matInput #keyInput="ngModel" placeholder="set Key name" [(ngModel)]="key" class="input-name">
+        </mat-form-field>
 
-      <div class="invalid-input" *ngIf="keyError">
-        * {{keyError}}
+        <div class="invalid-input" [style.visibility]="(keyInput.dirty && keyError)?'visible':'hidden'">
+          * {{keyError}}
+        </div>
+      </div>
+
+      <div class="english-container" *ngIf="handledLanguages">
+        <mat-form-field>
+          <mat-label>
+            English
+            <span class="mandatory">*</span>
+          </mat-label>
+          <input matInput #enInput="ngModel" placeholder="set translation for English"
+                 [(ngModel)]="values['en']" class="input-name">
+        </mat-form-field>
+        <div class="invalid-input" [style.visibility]="(enInput.dirty && enError)?'visible':'hidden'">
+          * {{enError}}
+        </div>
       </div>
     </div>
-
-    <div class="english-container" *ngIf="handledLanguages">
-      <h4>
-        en
-        <span class="mandatory">*</span>
-      </h4>
-      <mat-form-field>
-        <input matInput #enInput placeholder="set translation for English"
-               [(ngModel)]="values['en']" class="input-name">
-      </mat-form-field>
-      <div class="invalid-input" *ngIf="enError">
-        * {{enError}}
-      </div>
-    </div>
-
 
     <div class="other-languages-container">
       <ng-container *ngFor="let lang of handledLanguages">
         <div class="non-english-container" *ngIf="lang.lang !== 'en'">
-          <h4>
-            {{lang.name}}
-          </h4>
           <mat-form-field>
+            <mat-label>
+              {{lang.name}}
+              <span class="mandatory">*</span>
+            </mat-label>
             <input matInput [placeholder]="'set translation for ' +  lang.name"
                    [(ngModel)]="values[lang.lang]" class="input-name">
           </mat-form-field>
