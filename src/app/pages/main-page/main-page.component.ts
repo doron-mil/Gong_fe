@@ -1,13 +1,14 @@
 import {Component, OnInit} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Router} from '@angular/router';
 
 import {StoreService} from '../../services/store.service';
+
 import {AuthService} from '../../services/auth.service';
+import {NotificationTypesEnum} from '../../json-editor/shared/dataModels/lang.model';
 
 import staticEnJsonImport from '../../../assets/i18n/en.json';
 import staticHeJsonImport from '../../../assets/i18n/he.json';
-import {NotificationTypesEnum} from '../../json-editor/model/data.model';
-import {HttpClient, HttpParams} from '@angular/common/http';
 
 interface TransResponseInt {
   data: { translations: Array<{ translatedText: string }> };

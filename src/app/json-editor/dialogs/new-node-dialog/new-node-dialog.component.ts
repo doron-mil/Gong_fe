@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {LanguageProperties} from '../../model/data.model';
+import {LanguageProperties} from '../../shared/dataModels/lang.model';
 
 const ENGLISH_CODE = 'en';
 

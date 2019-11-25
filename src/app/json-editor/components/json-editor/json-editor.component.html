@@ -1,9 +1,12 @@
-<div class="main-json-editor-container-not-ok" *ngIf="!wasLangLoadedOk">
+<div class="main-json-editor-container-not-ok" [style.display]="wasLangLoadedOk?'none':'flex'">
   <div class="not-ok-message">
     Languages were NOT loaded or English is missing
   </div>
 </div>
-<div class="main-json-editor-container" *ngIf="wasLangLoadedOk">
+
+<div class="main-json-editor-container"
+     [style.visibility]="wasLangLoadedOk?'visible':'hidden'"
+     [style.height]="wasLangLoadedOk?'100%':'0'">
 
   <div class="main-controls-container">
 
@@ -93,24 +96,24 @@
       </mat-menu>
 
       <mat-menu #langDisplayedMenu="matMenu" class="my-full-width-menu">
-
-        <mat-checkbox #displayLangCheck *ngFor="let lang of languages4EditingArray" class="lang-item"
-                      [matTooltip]="lang.name"
-                      [disabled]="lang.lang === 'en'"
-                      [checked]="lang.isDisplayed"
-                      (change)="lang.isDisplayed = displayLangCheck.checked"
-                      (click)="$event.stopPropagation()">
-          <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
-          <span>
-            {{lang.lang}}
-          </span>
-        </mat-checkbox>
-
+        <ng-template matMenuContent>
+          <mat-checkbox #displayLangCheck *ngFor="let lang of getLanguages4EditingArray()" class="lang-item"
+                        [matTooltip]="lang.name"
+                        [disabled]="lang.lang === 'en'"
+                        [checked]="lang.isDisplayed"
+                        (change)="lang.isDisplayed = displayLangCheck.checked"
+                        (click)="$event.stopPropagation()">
+            <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
+            <span>
+              {{lang.lang}}
+            </span>
+          </mat-checkbox>
+        </ng-template>
       </mat-menu>
 
       <mat-menu #otherLangManipulationMenu="matMenu" class="my-full-width-menu">
         <ng-template matMenuContent let-langMethod="langMethod">
-          <ng-container *ngFor="let lang of languages4EditingArray">
+          <ng-container *ngFor="let lang of getLanguages4EditingArray()">
             <button mat-menu-item (click)="langMethod(lang)"
                     *ngIf="lang.lang !== 'en'">
               <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
@@ -163,150 +166,13 @@
 
   <div class="tree-container">
 
-    <mat-tree fxFlex="1 1 20%" fxLayout="row" #tree [dataSource]="dataSource" [treeControl]="treeControl"
-              class="lang-tree">
+    <app-json-tree [languagesMap]="languagesMap"
+                   [foundObjectID]="foundObjectID"
+                   [knownLangsArray]="knownLangsArray"
+                   (outputMessages)="jsonTreeMessageReceived($event)"
+    >
 
-      <!-- This is the tree node template for leaf nodes -->
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-        <li class="mat-tree-node" [id]="node.id" [class.focused-found-element]="node.id === foundObjectID">
-          <div class="trans-row-icon-container">
-            <button mat-icon-button
-                    [class.problem-detected]="node.problemType !== problemType.NONE "
-                    [matTooltip]="getProblemText(node.problemType)" matTooltipClass="problem-detected-tooltip">
-              <mat-icon class="mat-icon-rtl-mirror" svgIcon="arrow-right-drop-circle-outline"></mat-icon>
-            </button>
-          </div>
-          <div class="edit-trans-row">
-            <div class="trans-key-container">
-              <span class="trans-header" [style.width]="getMaxLabelWidth( node )">
-                <span class="trans-key-label"
-                      [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
-                  {{node.key}}
-                </span>
-                <button mat-icon-button class="options-button"
-                        [matMenuTriggerFor]="translationOptionsMenu" [matMenuTriggerData]="{node:node}"
-                        (click)="$event.stopPropagation() ">
-                  <mat-icon class="mat-icon-rtl-mirror"
-                            svgIcon="dots-vertical"></mat-icon>
-
-                </button>
-              </span>
-            </div>
-            <div class="trans-container">
-              <ng-container *ngFor="let langData of languages4EditingArray">
-                <div class="trans-lang-container" *ngIf="langData.isDisplayed">
-                  <input type="text" [value]="node.value[langData.lang] ? node.value[langData.lang] : ''"
-                         class="input-trans"
-                         [ngClass]="{'not-found-trans': !node.value[langData.lang] }"
-                         [style.direction]="langData.isRtl ? 'rtl' :''"
-                         [placeholder]="!node.value[langData.lang] ? 'undefined !!!!' : ''">
-                  <span class="lang-label">
-                    {{langData.lang}}
-                  </span>
-                </div>
-              </ng-container>
-            </div>
-          </div>
-        </li>
-      </mat-tree-node>
-
-      <!-- This is the tree node template for expandable nodes -->
-      <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
-        <li>
-          <div class="mat-tree-node" [id]="node.id" [class.focused-found-element]="node.id === foundObjectID">
-            <button mat-icon-button matTreeNodeToggle
-                    [class.problem-detected]="node.problemType !== problemType.NONE "
-                    [matTooltip]="getProblemText(node.problemType)" matTooltipClass="problem-detected-tooltip">
-              <mat-icon class="mat-icon-rtl-mirror"
-                        [svgIcon]="treeControl.isExpanded(node) ?'chevron-down':'chevron-right'"></mat-icon>
-
-            </button>
-            <span [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
-              {{node.key}}
-            </span>
-            <button mat-icon-button class="options-button"
-                    [matMenuTriggerFor]="JsonNodeOptionsMenu" [matMenuTriggerData]="{node:node}"
-                    (click)="$event.stopPropagation() ">
-              <mat-icon class="mat-icon-rtl-mirror"
-                        svgIcon="dots-vertical"></mat-icon>
-
-            </button>
-
-          </div>
-          <ul [class.lang-tree-invisible]="!treeControl.isExpanded(node)">
-            <ng-container matTreeNodeOutlet></ng-container>
-          </ul>
-        </li>
-      </mat-nested-tree-node>
-
-    </mat-tree>
-
-    <mat-menu #JsonNodeOptionsMenu="matMenu">
-      <ng-template matMenuContent let-node="node">
-        <button mat-menu-item (click)="editNodeName(node)">
-          <mat-icon svgIcon="pencil"></mat-icon>
-          <span>
-            Edit Name
-          </span>
-        </button>
-
-        <button mat-menu-item (click)="editNodePath(node)">
-          <mat-icon svgIcon="tournament"></mat-icon>
-          <span>
-            Edit Path
-          </span>
-        </button>
-
-        <button mat-menu-item [matMenuTriggerFor]="addMenu" [matMenuTriggerData]="{node:node}">
-          <mat-icon svgIcon="plus-box"></mat-icon>
-          <span>
-            Add Child
-          </span>
-        </button>
-
-        <button mat-menu-item (click)="deleteNode(node)">
-          <mat-icon svgIcon="trash-can-outline"></mat-icon>
-          <span>
-            Delete record
-          </span>
-        </button>
-      </ng-template>
-    </mat-menu>
-
-    <mat-menu #translationOptionsMenu="matMenu">
-      <ng-template matMenuContent let-node="node">
-        <button mat-menu-item (click)="editNodeName(node)">
-          <mat-icon svgIcon="pencil"></mat-icon>
-          <span>
-            Edit Name
-          </span>
-        </button>
-
-        <button mat-menu-item (click)="deleteNode(node)">
-          <mat-icon svgIcon="trash-can-outline"></mat-icon>
-          <span>
-            Delete record
-          </span>
-        </button>
-      </ng-template>
-    </mat-menu>
-
-    <mat-menu #addMenu="matMenu">
-      <ng-template matMenuContent let-node="node">
-        <button mat-menu-item (click)="addChildNode(node,false)">
-          <mat-icon svgIcon="translate"></mat-icon>
-          <span>
-            Translation
-          </span>
-        </button>
-        <button mat-menu-item (click)="addChildNode(node)">
-          <mat-icon svgIcon="group"></mat-icon>
-          <span>
-            Container
-          </span>
-        </button>
-      </ng-template>
-    </mat-menu>
+    </app-json-tree>
 
   </div>
 
