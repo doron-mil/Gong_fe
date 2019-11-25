@@ -64,6 +64,7 @@ export class GeneralMiddlewareService {
         next(
           apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, ActionFeaturesEnum.MANUAL_GONGS_LIST_FEATURE, null)
         );
+        next(ActionGenerator.setPlayGongEnabled(true));
         break;
       case `${ActionFeaturesEnum.GONG_TYPES_FEATURE} ${API_SUCCESS}`:
         const gongsTypesArray = this.jsonConverterService.convert<GongType>(action.payload.data, 'GongType');
