@@ -23,6 +23,9 @@ export class JsonTreeComponent implements OnInit {
   @Input() foundObjectID: string;
   @Input() knownLangsArray: Array<LanguageProperties>;
 
+  @Input() allowNodesMenu: boolean = true;
+  @Input() readonlyLanguages: string[] = [];
+
   @Output() outputMessages = new EventEmitter<TreeNotificationTypesEnum>();
 
   @ViewChild('tree', {static: true}) tree: MatTree<JsonNode>;

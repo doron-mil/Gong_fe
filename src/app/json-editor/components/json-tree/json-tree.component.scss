@@ -15,6 +15,11 @@
   border: 1px blue solid;
   padding: 3px 1vw;
   margin-right: 2vw;
+
+  &:disabled{
+    background-color: lightgrey;
+    color: black;
+  }
 }
 
 .not-found-trans {

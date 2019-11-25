@@ -18,7 +18,7 @@
                       [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
                   {{node.key}}
                 </span>
-                <button mat-icon-button class="options-button"
+                <button mat-icon-button class="options-button" *ngIf="allowNodesMenu"
                         [matMenuTriggerFor]="translationOptionsMenu" [matMenuTriggerData]="{node:node}"
                         (click)="$event.stopPropagation() ">
                   <mat-icon class="mat-icon-rtl-mirror"
@@ -32,6 +32,7 @@
                 <div class="trans-lang-container" *ngIf="langData.isDisplayed">
                   <input type="text" [value]="node.value[langData.lang] ? node.value[langData.lang] : ''"
                          class="input-trans"
+                         [disabled]="readonlyLanguages.includes(langData.lang)"
                          [ngClass]="{'not-found-trans': !node.value[langData.lang] }"
                          [style.direction]="langData.isRtl ? 'rtl' :''"
                          [placeholder]="!node.value[langData.lang] ? 'undefined !!!!' : ''">
@@ -59,7 +60,7 @@
             <span [matTooltip]="node.fullPath" matTooltipClass="key-tooltip">
               {{node.key}}
             </span>
-            <button mat-icon-button class="options-button"
+            <button mat-icon-button class="options-button" *ngIf="allowNodesMenu"
                     [matMenuTriggerFor]="JsonNodeOptionsMenu" [matMenuTriggerData]="{node:node}"
                     (click)="$event.stopPropagation() ">
               <mat-icon class="mat-icon-rtl-mirror"

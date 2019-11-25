@@ -43,6 +43,9 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
 
   @Input() languagesMap: Map<string, any>;
 
+  @Input() allowNodesMenu: boolean = true;
+  @Input() readonlyLanguages: string[] = [];
+
   @Input() translateMethod: (sourceStrings: Array<string>, targetLang: string) => (Promise<Array<string>>);
 
   @Output() outputMessages = new EventEmitter<NotificationTypesEnum>();

@@ -78,4 +78,8 @@ export class MainPageComponent implements OnInit {
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {
     console.log(`jsonEditorMessageReceived was activated with value ${aMessagesEnum}`);
   }
+
+  isAdmin(): boolean {
+    return ['admin', 'dev'].includes(this.authService.getRole());
+  }
 }
