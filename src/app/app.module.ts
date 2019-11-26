@@ -42,6 +42,10 @@ import localConversionSchema from './utils/json-converter-config/gong-conversion
 import {JsonEditorModule} from './json-editor/json-editor.module';
 import {HeaderComponent} from './components/header/header.component';
 import {SelectCoursesDialogComponent} from './dialogs/select-courses-dialog/select-courses-dialog.component';
+import {ConfigurationComponent} from './pages/configuration/configuration.component';
+import {DeviceSetupComponent} from './pages/configuration/device-setup/device-setup.component';
+import {AreasI18nComponent} from './pages/configuration/areas-i18n/areas-i18n.component';
+import { ConfigPageHostDirective } from './shared/config-page-host.directive';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -95,6 +99,10 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     MaxDirective,
     HeaderComponent,
     SelectCoursesDialogComponent,
+    ConfigurationComponent,
+    DeviceSetupComponent,
+    AreasI18nComponent,
+    ConfigPageHostDirective,
   ],
   imports: [
     BrowserModule,
@@ -117,7 +125,11 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     }),
     JsonEditorModule,
   ],
-  entryComponents: [ScheduleCourseDialogComponent, SelectCoursesDialogComponent],
+  entryComponents: [
+    ScheduleCourseDialogComponent,
+    SelectCoursesDialogComponent,
+    DeviceSetupComponent ,
+    AreasI18nComponent],
   providers: [ApiMiddlewareService, GeneralMiddlewareService],
   bootstrap: [AppComponent]
 })

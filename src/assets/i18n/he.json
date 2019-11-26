@@ -62,7 +62,8 @@
     },
     "tabs": {
       "manual": "ידני",
-      "automatic": "אוטומטי"
+      "automatic": "אוטומטי",
+      "config": "תצורה"
     },
     "menu": {
       "language": {
@@ -222,5 +223,11 @@
         }
       }
     }
+  },
+  "config":{
+    "deviceSetup" : "בקר",
+    "AreasI18n" : "שמות איזורים",
+    "GongsI18n" : "שמות צלילים",
+    "CoursesI18n" : "שמות קורסים"
   }
 }

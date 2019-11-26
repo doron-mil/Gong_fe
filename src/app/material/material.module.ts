@@ -21,6 +21,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {Md2DatepickerModule, MdNativeDateModule} from 'angular-md2';
+import {MatSidenavModule} from '@angular/material';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'angular-md2';
     MatDialogModule,
     MatTreeModule,
     MatBottomSheetModule,
+    MatSidenavModule,
   ],
   exports: [
     MatToolbarModule,
@@ -70,6 +72,7 @@ import {Md2DatepickerModule, MdNativeDateModule} from 'angular-md2';
     MatDialogModule,
     MatTreeModule,
     MatBottomSheetModule,
+    MatSidenavModule,
   ],
 })
 export class MaterialModule {

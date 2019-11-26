@@ -60,7 +60,8 @@
     },
     "tabs": {
       "manual": "Manual",
-      "automatic": "Automatic"
+      "automatic": "Automatic",
+      "config": "Config"
     },
     "menu": {
       "language": {
@@ -227,5 +228,11 @@
         }
       }
     }
+  },
+  "config":{
+    "deviceSetup" : "Device Setup",
+    "AreasI18n" : "Areas names",
+    "GongsI18n" : "Gongs names",
+    "CoursesI18n" : "Courses names"
   }
 }

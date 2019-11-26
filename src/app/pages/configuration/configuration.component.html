@@ -1,0 +1,16 @@
+<mat-sidenav-container class="sidenav-container" >
+  <mat-sidenav mode="side" opened mode="side" class="side-nav">
+    <div class="config-side-control-container">
+
+      <button mat-button (click)="displayComponent(comp)" *ngFor="let comp of componentsArray"
+        [class.selected]="comp === selectedComponent" [disabled]="comp === selectedComponent">
+        {{'config.' +  comp.name | translate }}
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <ng-template appConfigPageHost></ng-template>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

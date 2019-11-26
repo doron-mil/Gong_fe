@@ -1,0 +1,32 @@
+mat-sidenav-container {
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+
+  .side-nav {
+    position: unset;
+
+    .config-side-control-container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      BUTTON {
+        height: 10vh;
+        cursor: pointer;
+
+        &.selected {
+          border: 3px blue solid;
+          cursor: default;
+          color: black;
+        }
+      }
+    }
+  }
+
+  mat-sidenav-content {
+    position: unset;
+    margin: unset !important;
+  }
+}
