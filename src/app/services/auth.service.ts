@@ -42,7 +42,11 @@ export class AuthService {
       this.logout();
     }
     this.setRole(token);
-    return (!!token);
+    const isLoggedIn = !!token;
+    if (this.storeService.getIsLoggedIn() !== isLoggedIn) {
+      this.storeService.setLoggedIn(isLoggedIn);
+    }
+    return (isLoggedIn);
   }
 
   getRole() {

@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
+import * as _ from 'lodash';
 import moment from 'moment';
 
 import {AngularJsonClassConverterService} from 'angular-json-class-converter';
-import {API_ERROR, API_SUCCESS, apiRequest} from '../../actions/api.actions';
+import {API_ERROR, API_SUCCESS, apiMockSuccess, apiRequest, apiSuccess} from '../../actions/api.actions';
 
 import {ActionFeaturesEnum, ActionGenerator, ActionTypesEnum} from '../../actions/action';
 import {Area} from '../../../model/area';
@@ -18,9 +19,13 @@ import {ScheduledCourseGong} from '../../../model/ScheduledCourseGong';
 import {MessagesService} from '../../../services/messages.service';
 import {DateFormat} from '../../../model/dateFormat';
 import {AuthService} from '../../../services/auth.service';
+import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
+import {StoreDataTypeEnum} from '../../storeDataTypeEnum';
+import {StoreService} from '../../../services/store.service';
 
 
 const BASIC_URL = 'api/';
+const GET_STATIC_DATA_URL = `${BASIC_URL}data/staticData`;
 const GONG_TYPES_URL = `${BASIC_URL}data/gongTypes`;
 const AREA_URL = `${BASIC_URL}data/areas`;
 const COURSES_URL = `${BASIC_URL}data/courses`;
@@ -39,7 +44,9 @@ const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
 export class GeneralMiddlewareService {
   constructor(private jsonConverterService: AngularJsonClassConverterService,
               private authService: AuthService,
+              private storeService: StoreService,
               private router: Router,
+              private indexedDbService: IndexedDbService,
               private messagesService: MessagesService) {
   }
 
@@ -49,15 +56,19 @@ export class GeneralMiddlewareService {
 
     switch (action.type) {
       case ActionTypesEnum.READ_TO_STORE_DATA:
-        next(
-          apiRequest(null, 'GET', GONG_TYPES_URL, ActionFeaturesEnum.GONG_TYPES_FEATURE, null)
-        );
-        next(
-          apiRequest(null, 'GET', AREA_URL, ActionFeaturesEnum.AREA_FEATURE, null)
-        );
-        next(
-          apiRequest(null, 'GET', COURSES_URL, ActionFeaturesEnum.COURSES_FEATURE, null)
-        );
+        // Checking to see if static data refresh is needed
+        this.storeService.getBasicServerDataPromise().then((pBasicServerData) => {
+          const staticUpdateTime = Number(localStorage.getItem('static_update_time'));
+          const serverStaticDataLastUpdateTime = pBasicServerData.staticDataLastUpdateTime.getTime();
+          if (Number.isNaN(staticUpdateTime) || serverStaticDataLastUpdateTime > staticUpdateTime) {
+            next(
+              apiRequest(null, 'GET', GET_STATIC_DATA_URL, ActionFeaturesEnum.STATIC_DATA_FEATURE, serverStaticDataLastUpdateTime)
+            );
+          } else {
+            dispatch(ActionGenerator.readToStoreStaticData());
+          }
+        });
+
         next(
           apiRequest(null, 'GET', COURSES_SCHEDULE_URL, ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE, null)
         );
@@ -65,6 +76,33 @@ export class GeneralMiddlewareService {
           apiRequest(null, 'GET', GET_MANUAL_GONGS_URL, ActionFeaturesEnum.MANUAL_GONGS_LIST_FEATURE, null)
         );
         next(ActionGenerator.setPlayGongEnabled(true));
+        break;
+      case ActionTypesEnum.READ_TO_STORE_STATIC_DATA:
+        // load data from indexedDB
+        let promise;
+        let promiseArray: Promise<any>[] = [];
+
+        promise = this.indexedDbService.getAllStoredDataRecords(DbObjectTypeEnum.AREAS).then((pAreasJson) => {
+          dispatch(apiMockSuccess(pAreasJson, ActionFeaturesEnum.AREA_FEATURE, null));
+        });
+        promiseArray.push(promise);
+
+        promise = this.indexedDbService.getAllStoredDataRecords(DbObjectTypeEnum.COURSES).then((pCoursesJson) => {
+          dispatch(apiMockSuccess(pCoursesJson, ActionFeaturesEnum.COURSES_FEATURE, null));
+        });
+        promiseArray.push(promise);
+
+        promise = this.indexedDbService.getAllStoredDataRecords(DbObjectTypeEnum.GONGS).then((pGongTypesJson) => {
+          dispatch(apiMockSuccess(pGongTypesJson, ActionFeaturesEnum.GONG_TYPES_FEATURE, null));
+        });
+        promiseArray.push(promise);
+
+        Promise.all(promiseArray)
+          .then(() => next(ActionGenerator.storeStaticDataWasUpdated()))
+          .catch(error =>
+            console.error(`GeneralMiddlewareService:${ActionTypesEnum.READ_TO_STORE_STATIC_DATA}` + '' +
+              'Error in  processing API middleware : ', error));
+
         break;
       case `${ActionFeaturesEnum.GONG_TYPES_FEATURE} ${API_SUCCESS}`:
         const gongsTypesArray = this.jsonConverterService.convert<GongType>(action.payload.data, 'GongType');
@@ -121,6 +159,38 @@ export class GeneralMiddlewareService {
         next(
           ActionGenerator.setBasicServerData(basicServerData)
         );
+        break;
+      case `${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}`:
+        localStorage.setItem('static_update_time', action.data);
+
+        promiseArray = [];
+
+        const staticData = _.get(action, ['payload', 'data']);
+
+        const languagesJson = _.get(staticData, 'languages');
+        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.LANGUAGES, languagesJson
+          , (val) => val.translation, (val) => val.language);
+        promiseArray.push(promise);
+
+        const areasJson = _.get(staticData, 'areas');
+        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.AREAS, areasJson);
+        promiseArray.push(promise);
+
+        const gongTypesJson = _.get(staticData, 'gongTypes');
+        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.GONGS, gongTypesJson);
+        promiseArray.push(promise);
+
+        const coursesJson = _.get(staticData, 'courses');
+        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.COURSES, coursesJson, undefined
+          , (val) => val.course_name);
+        promiseArray.push(promise);
+
+        Promise.all(promiseArray)
+          .then(() => dispatch(ActionGenerator.readToStoreStaticData()))
+          .catch(error =>
+            console.error(`GeneralMiddlewareService:${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}` + '' +
+              'Error in  processing API middleware : ', error));
+
         break;
       case ActionTypesEnum.ADD_MANUAL_GONG:
         const manualGongJson = this.jsonConverterService.convertToJson(action.payload);

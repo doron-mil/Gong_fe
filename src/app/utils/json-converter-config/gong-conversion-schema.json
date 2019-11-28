@@ -12,6 +12,11 @@
         "conversionFunctionName": "timeToDateConversion"
       },
       {
+        "propertyName": "staticDataLastUpdateTime",
+        "propertyNameInJson": "staticDataLastUpdateTime",
+        "conversionFunctionName": "timeToDateConversion"
+      },
+      {
         "propertyName": "isManual",
         "propertyNameInJson": "nextScheduledJob.isManual"
       }

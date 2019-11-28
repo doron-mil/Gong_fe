@@ -7,8 +7,11 @@ export function innerReducer(state: InnerDataState = INITIAL_INNER_DATA_STATE,
                              action: AppAction): any {
 
   switch (action.type) {
-   case ActionTypesEnum.SET_LOGGED_IN:
+    case ActionTypesEnum.SET_LOGGED_IN:
       state.isLoggedIn = action.payload as boolean;
+      return state;
+    case ActionTypesEnum.STORE_STATIC_DATA_WAS_UPDATED:
+      state.staticDataWasUpdated = new Date();
       return state;
     case ActionTypesEnum.SET_DATE_FORMAT:
       const oldDateFormat = action.payload as DateFormat;

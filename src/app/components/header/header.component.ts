@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 
 import {Subscription, timer} from 'rxjs';
-import {first, takeUntil} from 'rxjs/operators';
+import {filter, first, takeUntil} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import {NgRedux} from '@angular-redux/store';
 
@@ -50,11 +50,6 @@ export class HeaderComponent extends BaseComponent {
               private dialog: MatDialog,
               private translate: TranslateService) {
     super();
-
-    this.translate.addLangs(['en', 'he']);
-    this.translate.setDefaultLang(this.currentLanguage);
-    this.translate.use(this.currentLanguage);
-
   }
 
   protected hookOnInit() {
@@ -115,6 +110,14 @@ export class HeaderComponent extends BaseComponent {
           this.currentRole = '';
         }
       });
+
+    this.translate.onLangChange.pipe(
+      filter(res => !!res && (res.lang.trim() !== '')),
+      takeUntil(this.onDestroy$))
+      .subscribe((newSetLang) => {
+        this.getSupportedLanguages();
+      });
+
   }
 
   initDateFormatOptions(): void {
@@ -132,7 +135,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   private getSupportedLanguages() {
-    this.supportedLanguagesArray = this.translate.getLangs();
+    this.supportedLanguagesArray = this.translate.getLangs().filter(lang => lang.trim() !== '');
   }
 
   logout() {

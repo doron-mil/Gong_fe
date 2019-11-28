@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
 
-import {filter, first} from 'rxjs/operators';
+import {filter, first, takeUntil} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'lodash';
@@ -17,6 +17,7 @@ import {CourseSchedule} from '../model/courseSchedule';
 import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 import {Gong} from '../model/gong';
 import {DateFormat} from '../model/dateFormat';
+import {BasicServerData} from '../model/basicServerData';
 
 @Injectable({
   providedIn: 'root'
@@ -250,7 +251,21 @@ export class StoreService implements OnInit, OnDestroy {
     return coursesNamesArray;
   }
 
+  getIsLoggedIn(): boolean {
+    const isLoggedIn = _.get(this.ngRedux.getState(), [StoreDataTypeEnum.INNER_DATA, 'isLoggedIn']) as boolean;
+    return isLoggedIn;
+  }
+
   setLoggedIn(aIsLoggedIn: boolean) {
     this.ngRedux.dispatch(ActionGenerator.setLoggedIn(aIsLoggedIn));
   }
+
+  getBasicServerDataPromise(): Promise<BasicServerData> {
+    return this.ngRedux.select<BasicServerData>([StoreDataTypeEnum.DYNAMIC_DATA, 'basicServerData'])
+      .pipe(
+        filter(res => !!res),
+        first()).toPromise();
+
+  }
+
 }

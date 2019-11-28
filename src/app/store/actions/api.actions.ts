@@ -18,6 +18,13 @@ export const apiSuccess = (response: Response, feature: string, data: any) => ({
   meta: {feature},
 });
 
+export const apiMockSuccess = (response: any, feature: string, data: any) => ({
+  type: `${feature} ${API_SUCCESS}`,
+  payload: {ok: 'of_course' , data : response},
+  data,
+  meta: {feature},
+});
+
 export const apiError = (error, feature: string, data: any) => ({
   type: `${feature} ${API_ERROR}`,
   payload: error,

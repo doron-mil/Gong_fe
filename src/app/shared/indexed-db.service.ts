@@ -1,0 +1,116 @@
+import {Injectable} from '@angular/core';
+import * as idb from 'idb';
+import {IDBPDatabase, IDBPObjectStore} from 'idb/lib/entry';
+
+export enum DbObjectTypeEnum {
+  LANGUAGES = 'LANGUAGES',
+  COURSES = 'COURSES',
+  AREAS = 'AREAS',
+  GONGS = 'GONGS',
+}
+
+export interface DbRecordInterface {
+  id: string;
+  data: any;
+}
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class IndexedDbService {
+
+  private dbObjectParametersMap: { [key: string]: { dbName: string, objectStoreName: string } } = {};
+
+  constructor() {
+    this.dbObjectParametersMap[DbObjectTypeEnum.LANGUAGES] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.LANGUAGES};
+    this.dbObjectParametersMap[DbObjectTypeEnum.COURSES] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.COURSES};
+    this.dbObjectParametersMap[DbObjectTypeEnum.AREAS] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.AREAS};
+    this.dbObjectParametersMap[DbObjectTypeEnum.GONGS] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.GONGS};
+  }
+
+  saveDataArray2DB(dbObjectType: DbObjectTypeEnum, dataArray: Array<any>,
+                   dataExtractorFunc = (val) => val,
+                   idExtractorFunc = (val) => val.id
+  ): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      this.openDb(dbObjectType)
+        .then((db) => {
+          const store = this.getStore(db, dbObjectType, 'readwrite');
+          const promisesArray: Promise<any>[] = [];
+          dataArray.forEach((recordData) => {
+            const newRecordId = idExtractorFunc(recordData);
+            const newRecordValue = dataExtractorFunc(recordData);
+            promisesArray.push(store.put(newRecordValue, newRecordId));
+          });
+          Promise.all(promisesArray)
+            .then(() => resolve(true))
+            .catch((error) => reject(error));
+        });
+    });
+  }
+
+  getAllStoredDataRecords(dbObjectType: DbObjectTypeEnum): Promise<Array<any>> {
+    return new Promise<Array<any>>((resolve, reject) => {
+      this.openDb(dbObjectType).then(async (db) => {
+        const store = this.getStore(db, dbObjectType, 'readonly');
+
+        store.getAll().then((retArray) => resolve(retArray))
+          .catch((error) => reject(error));
+
+      }).catch((error) => reject(error));
+    });
+  }
+
+  getStoredDataRecord4Key(dbObjectType: DbObjectTypeEnum, aKey: any): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.openDb(dbObjectType).then(async (db) => {
+        const store = this.getStore(db, dbObjectType, 'readonly');
+
+        store.get(aKey).then((retValue) => resolve(retValue))
+          .catch((error) => reject(error));
+
+      }).catch((error) => reject(error));
+    });
+  }
+
+  getStoredDataAllKeys(dbObjectType: DbObjectTypeEnum): Promise<string[]> {
+    return new Promise<string[]>((resolve, reject) => {
+      this.openDb(dbObjectType).then(async (db) => {
+        const store = this.getStore(db, dbObjectType, 'readonly');
+
+        store.getAllKeys().then((retValue) => resolve(retValue))
+          .catch((error) => reject(error));
+
+      }).catch((error) => reject(error));
+    });
+  }
+
+  private openDb(dbObjectType: DbObjectTypeEnum) {
+    const dbName = this.dbObjectParametersMap[dbObjectType].dbName;
+    const objectStoreName = this.dbObjectParametersMap[dbObjectType].objectStoreName;
+    return idb.openDB(dbName, 1, {
+      upgrade: (db, oldVersion, newVersion, transaction) => {
+        console.log(dbName + ' oldVersion :' + oldVersion, db);
+        switch (oldVersion) {
+          case 0:
+            db.createObjectStore(DbObjectTypeEnum.LANGUAGES);
+            db.createObjectStore(DbObjectTypeEnum.AREAS);
+            db.createObjectStore(DbObjectTypeEnum.COURSES);
+            db.createObjectStore(DbObjectTypeEnum.GONGS);
+            break;
+          case 1:
+            break;
+        }
+      }
+    });
+  }
+
+  private getStore(db: IDBPDatabase, dbObjectType: DbObjectTypeEnum, mode: 'readonly' | 'readwrite')
+    : IDBPObjectStore<any, string[], string> {
+    const storeName = this.dbObjectParametersMap[dbObjectType].objectStoreName;
+    const tx = db.transaction(storeName, mode);
+    return tx.objectStore(storeName);
+  }
+}
+

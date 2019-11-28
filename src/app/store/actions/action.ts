@@ -11,6 +11,7 @@ import {DateFormat} from '../../model/dateFormat';
 
 export enum ActionFeaturesEnum {
   BASIC_DATA_FEATURE = '[BASIC_DATA]',
+  STATIC_DATA_FEATURE = '[STATIC_DATA]',
   GONG_TYPES_FEATURE = '[GONG_TYPES]',
   AREA_FEATURE = '[AREA]',
   COURSES_FEATURE = '[COURSES]',
@@ -29,6 +30,8 @@ export enum ActionFeaturesEnum {
 export enum ActionTypesEnum {
   SET_LOGGED_IN = 'SET_LOGGED_IN',
   READ_TO_STORE_DATA = 'READ_TO_STORE_DATA',
+  READ_TO_STORE_STATIC_DATA = 'READ_TO_STORE_STATIC_DATA',
+  STORE_STATIC_DATA_WAS_UPDATED = 'STORE_STATIC_DATA_WAS_UPDATED',
   GET_BASIC_DATA = 'GET_BASIC_DATA',
   SET_BASIC_DATA = 'SET_BASIC_DATA',
   SET_GONG_TYPES = 'SET_GONG_TYPES',
@@ -59,6 +62,14 @@ export interface AppAction extends Action {
 export class ActionGenerator {
   static readToStoreData = () => ({
     type: ActionTypesEnum.READ_TO_STORE_DATA
+  });
+
+  static readToStoreStaticData = () => ({
+    type: ActionTypesEnum.READ_TO_STORE_STATIC_DATA
+  });
+
+  static storeStaticDataWasUpdated = () => ({
+    type: ActionTypesEnum.STORE_STATIC_DATA_WAS_UPDATED
   });
 
   static getBasicData = () => ({
