@@ -8,8 +8,9 @@ export class EnumUtils {
     return retArray;
   }
 
-  public static getEnumValues<T>(aEnumObject: T): (string | number)[] {
+  public static getEnumValues<T>(aEnumObject: T): (T[keyof T] )[] {
     const retArray = EnumUtils.getEnumKeys(aEnumObject).map((key: string) => aEnumObject[key]);
+    console.log( '1111', retArray)
     return retArray;
   }
 }

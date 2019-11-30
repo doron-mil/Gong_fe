@@ -141,16 +141,19 @@ export class GeneralMiddlewareService {
         break;
       case ActionTypesEnum.GET_BASIC_DATA:
         next(
-          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE, null)
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE, action.data)
         );
-        const localStorageDateFormatStrigified = localStorage.getItem('date_format');
-        if (localStorageDateFormatStrigified) {
-          const localStorageDateFormatParsed = JSON.parse(localStorageDateFormatStrigified);
-          const localStorageDateFormat =
-            this.jsonConverterService.convertOneObject<DateFormat>(localStorageDateFormatParsed, 'DateFormat');
-          next(
-            ActionGenerator.setDateFormat(localStorageDateFormat)
-          );
+        const bypassRefreshDateFormat = _.get(action.data, ['bypassRefreshDateFormat']) as boolean;
+        if (!bypassRefreshDateFormat) {
+          const localStorageDateFormatStrigified = localStorage.getItem('date_format');
+          if (localStorageDateFormatStrigified) {
+            const localStorageDateFormatParsed = JSON.parse(localStorageDateFormatStrigified);
+            const localStorageDateFormat =
+              this.jsonConverterService.convertOneObject<DateFormat>(localStorageDateFormatParsed, 'DateFormat');
+            next(
+              ActionGenerator.setDateFormat(localStorageDateFormat)
+            );
+          }
         }
         break;
       case `${ActionFeaturesEnum.BASIC_DATA_FEATURE} ${API_SUCCESS}`:
@@ -159,6 +162,11 @@ export class GeneralMiddlewareService {
         next(
           ActionGenerator.setBasicServerData(basicServerData)
         );
+        const reloadStaticData = _.get(action.data, ['reloadStaticData']) as boolean;
+        if (reloadStaticData) {
+          apiRequest(null, 'GET', GET_STATIC_DATA_URL, ActionFeaturesEnum.STATIC_DATA_FEATURE
+            , basicServerData.staticDataLastUpdateTime.getTime());
+        }
         break;
       case `${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}`:
         localStorage.setItem('static_update_time', action.data);
@@ -207,7 +215,8 @@ export class GeneralMiddlewareService {
           ActionGenerator.updateManualGong(action.data)
         );
         dispatch(
-          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE, null)
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
+            , {bypassRefreshDateFormat: true})
         );
         break;
       case `${ActionFeaturesEnum.MANUAL_GONG_ADD_FEATURE} ${API_ERROR}`:
@@ -319,8 +328,8 @@ export class GeneralMiddlewareService {
         break;
       case `${ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE} ${API_SUCCESS}`:
         next(
-          apiRequest(null, 'GET', COURSES_URL, ActionFeaturesEnum.COURSES_FEATURE, null)
-        );
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
+            , {bypassRefreshDateFormat: true, reloadStaticData: true}));
       // tslint:disable-next-line:no-switch-case-fall-through
       case `${ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE} ${API_ERROR}`:
         this.messagesService.coursesUploaded(action.payload.error && action.payload.error.additional_message);

@@ -36,7 +36,7 @@ enum Translation_Enum {
   templateUrl: './gongs-time-table.component.html',
   styleUrls: ['./gongs-time-table.component.scss']
 })
-export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, OnChanges, AfterViewChecked {
+export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
 
   private _scheduledGongsArray: ScheduledGong[];
   private _displayDate: boolean = true;

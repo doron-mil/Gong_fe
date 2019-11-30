@@ -1,0 +1,20 @@
+.translation-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  .translation-topic-selection {
+    height: 15%;
+
+    .topics-radio-group {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .translation-main {
+    height: 85%;
+  }
+}

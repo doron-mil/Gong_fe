@@ -57,7 +57,7 @@ export class StoreService implements OnInit, OnDestroy {
         if (areaArry && areaArry.length > 0) {
           this.areasMap = [];
           areaArry.forEach((area: Area) => {
-            this.translateService.get('general.typesValues.areas.values.' + area.name).subscribe(areaTrans => {
+            this.translateService.get('general.typesValues.areas.' + area.name).subscribe(areaTrans => {
               area.translation = areaTrans;
             });
             this.areasMap[area.id] = area;

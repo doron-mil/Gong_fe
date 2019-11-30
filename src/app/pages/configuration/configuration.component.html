@@ -1,10 +1,10 @@
-<mat-sidenav-container class="sidenav-container" >
+<mat-sidenav-container class="sidenav-container">
   <mat-sidenav mode="side" opened mode="side" class="side-nav">
     <div class="config-side-control-container">
 
       <button mat-button (click)="displayComponent(comp)" *ngFor="let comp of componentsArray"
-        [class.selected]="comp === selectedComponent" [disabled]="comp === selectedComponent">
-        {{'config.' +  comp.name | translate }}
+              [class.selected]="comp === selectedComponent" [disabled]="comp === selectedComponent">
+        {{'config.' + comp.name  + '.label' | translate }}
       </button>
     </div>
   </mat-sidenav>

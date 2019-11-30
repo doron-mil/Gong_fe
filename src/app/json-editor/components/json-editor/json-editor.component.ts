@@ -1,31 +1,16 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {MatCheckbox} from '@angular/material/checkbox';
-import {MatDialog} from '@angular/material/dialog';
-import {MatMenuTrigger} from '@angular/material/menu';
-import {MatTree, MatTreeNestedDataSource} from '@angular/material/tree';
-import {NestedTreeControl} from '@angular/cdk/tree';
+
 import {fromEvent} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
 import * as _ from 'lodash';
 
-import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-dialog.component';
+import {MatBottomSheet, MatCheckbox, MatDialog, MatMenuTrigger} from '@angular/material';
+
+import {JsonNode, ProblemType, SearchByEnum, TreeNotificationTypesEnum} from '../../shared/dataModels/tree.model';
+import {JsonTreeComponent} from '../json-tree/json-tree.component';
+
 import {LanguageProperties, NotificationTypesEnum} from '../../shared/dataModels/lang.model';
 import {langPropsArray as knownLanguages} from './known-languages';
-import {MessagesComponent} from '../../dialogs/messages/messages.component';
-import {BasicNode, NewNodeDialogComponent} from '../../dialogs/new-node-dialog/new-node-dialog.component';
-import {JsonTreeComponent} from '../json-tree/json-tree.component';
-import {JsonNode, ProblemType, SearchByEnum, TreeNotificationTypesEnum} from '../../shared/dataModels/tree.model';
-
-// https://www.google.com/search?q=json+representation+in+typescript&oq=json+representation+in+ty&aqs=chrome.1.69i57j33l2.21951j0j7&sourceid=chrome&ie=UTF-8
-
-// https://github.com/ngx-translate/core
-
-// https://www.google.com/search?q=typescript+json+iterate&oq=typescript+json+it&aqs=chrome.1.69i57j0l3j69i60l2.10887j0j7&sourceid=chrome&ie=UTF-8
-
-// https://www.google.com/search?q=typescript+multiple+object+type&oq=typescript+multiple+ob&aqs=chrome.1.69i57j0l5.17175j0j7&sourceid=chrome&ie=UTF-8
-// typescriptlang.org/docs/handbook/advanced-types.html
-//
 
 const MAX_NO_LANGUAGES_4_EDITING = 2;
 
@@ -82,7 +67,6 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.listenToSearchTextChange();
   }
-
 
   private listenToSearchTextChange() {
     fromEvent(this.searchTextInput.nativeElement, 'keyup').pipe(

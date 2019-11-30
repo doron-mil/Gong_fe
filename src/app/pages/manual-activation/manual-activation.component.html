@@ -40,7 +40,7 @@
                            [ngClass]="{selectedGongTypeClass: gongType.id === gongToPlay?.gongTypeId}"
                            (click)="gongToPlay.gongTypeId = gongType.id" style="cursor: pointer">
               <span style="text-align: center">
-                {{'general.typesValues.gongType.values.' + gongType?.name | translate }}
+                {{'general.typesValues.gongType.' + gongType?.name | translate }}
               </span>
             </mat-list-item>
           </mat-list>
@@ -56,14 +56,14 @@
           <mat-selection-list #areasSelectionCtrl [(ngModel)]="gongToPlay.areas">
             <div class="first-area-option-all">
               <mat-list-option [value]="0" #allAreasSelectionCtrl class="listItemClass">
-                {{'manualActivation.dropdowns.areas.values.all' | translate }}
+                {{'general.typesValues.areas.all' | translate }}
               </mat-list-option>
               <mat-divider></mat-divider>
 
             </div>
             <div class="others-area-options">
               <mat-list-option *ngFor="let area of areas" [value]="area.id" class="listItemClass">
-                {{'manualActivation.dropdowns.areas.values.' + area.name | translate }}
+                {{'general.typesValues.areas.' + area.name | translate }}
               </mat-list-option>
             </div>
           </mat-selection-list>

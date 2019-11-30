@@ -1,0 +1,20 @@
+<div class="translation-container">
+
+  <div class="translation-topic-selection">
+    <mat-radio-group class="topics-radio-group" [(ngModel)]="selectedTopic" >
+      <mat-radio-button class="example-radio-button" *ngFor="let topic of topics" [value]="topic"
+                        (change)="topicHasChanged($event)">
+        {{'config.i18n.radio.' + topic| translate}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class="translation-main">
+    <app-json-editor [languagesMap]="languagesMap"
+                     [allowNodesMenu]="false"
+                     (languagesMapOutput)="languagesMapUpdateReceived($event)"
+                     (outputMessages)="jsonEditorMessageReceived($event)">
+    </app-json-editor>
+  </div>
+
+</div>

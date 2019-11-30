@@ -12,7 +12,7 @@ export class CustomMissingTranslationHandler implements MissingTranslationHandle
   constructor(private authService: NgRedux<any>) {  }
 
   handle(params: MissingTranslationHandlerParams) {
-    console.error( `Couldn't find translation for ${params.key}`)
+    // console.error( `Couldn't find translation for ${params.key}`)
     const lastDotIndex = params.key.lastIndexOf('.');
     const isLoggedIn = _.get(this.authService.getState(), [StoreDataTypeEnum.INNER_DATA, 'isLoggedIn']) as boolean;
     const postfix = isLoggedIn ? '˚˚®' : ''; // Alt + k

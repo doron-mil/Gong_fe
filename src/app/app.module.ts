@@ -50,7 +50,7 @@ import {AutomaticActivationComponent} from './pages/automatic-activation/automat
 import {LoginComponent} from './pages/login/login.component';
 import {ConfigurationComponent} from './pages/configuration/configuration.component';
 import {DeviceSetupComponent} from './pages/configuration/device-setup/device-setup.component';
-import {AreasI18nComponent} from './pages/configuration/areas-i18n/areas-i18n.component';
+import {I18nEditingComponent} from './pages/configuration/i18n-editing/i18n-editing.component';
 import {MainPageComponent} from './pages/main-page/main-page.component';
 
 import {HeaderComponent} from './components/header/header.component';
@@ -103,7 +103,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     SelectCoursesDialogComponent,
     ConfigurationComponent,
     DeviceSetupComponent,
-    AreasI18nComponent,
+    I18nEditingComponent,
     ConfigPageHostDirective,
   ],
   imports: [
@@ -131,7 +131,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     ScheduleCourseDialogComponent,
     SelectCoursesDialogComponent,
     DeviceSetupComponent,
-    AreasI18nComponent],
+    I18nEditingComponent],
   providers: [ApiMiddlewareService, GeneralMiddlewareService],
   bootstrap: [AppComponent]
 })

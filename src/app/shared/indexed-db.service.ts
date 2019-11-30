@@ -62,6 +62,23 @@ export class IndexedDbService {
     });
   }
 
+  getAllStoredDataRecordsAndKeysMap(dbObjectType: DbObjectTypeEnum): Promise<Map<any, any>> {
+    return new Promise<Map<any, any>>((resolve, reject) => {
+      this.openDb(dbObjectType).then(async (db) => {
+        const store = this.getStore(db, dbObjectType, 'readonly');
+
+        const retMap = new Map<any, any>();
+        let cursor = await store.openCursor();
+        while (cursor) {
+          retMap.set(cursor.key, cursor.value);
+          cursor = await cursor.continue();
+        }
+        resolve(retMap);
+
+      }).catch((error) => reject(error));
+    });
+  }
+
   getStoredDataRecord4Key(dbObjectType: DbObjectTypeEnum, aKey: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.openDb(dbObjectType).then(async (db) => {

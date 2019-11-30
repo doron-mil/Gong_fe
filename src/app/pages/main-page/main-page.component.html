@@ -1,18 +1,12 @@
 <mat-tab-group mat-align-tabs="center" class="matTabGroupClass" backgroundColor="disabled" color="accent">
 
-  <mat-tab *ngIf="loggedInRole === 'dev'">
+  <mat-tab *ngIf="isAdmin()">
     <ng-template mat-tab-label>
-      Json editor
+      {{ 'main.tabs.config' | translate }}
     </ng-template>
-    <app-json-editor [languagesMap]="languagesMap"
-                     [translateMethod]="getTranslateMethod()"
-                     [allowNodesMenu]="true"
-                     (languagesMapOutput)="languagesMapUpdateReceived($event)"
-                     (outputMessages)="jsonEditorMessageReceived($event)">
-    </app-json-editor>
-    <!--  [readonlyLanguages]="[ 're' , 'he']"-->
-
+    <app-configuration></app-configuration>
   </mat-tab>
+
 
   <mat-tab>
     <ng-template mat-tab-label>
@@ -28,11 +22,18 @@
     <app-automatic-activation></app-automatic-activation>
   </mat-tab>
 
-  <mat-tab *ngIf="isAdmin()">
+  <mat-tab *ngIf="loggedInRole === 'dev'">
     <ng-template mat-tab-label>
-      {{ 'main.tabs.config' | translate }}
+      Json editor
     </ng-template>
-    <app-configuration></app-configuration>
+    <app-json-editor [languagesMap]="languagesMap"
+                     [translateMethod]="getTranslateMethod()"
+                     [allowNodesMenu]="true"
+                     (languagesMapOutput)="languagesMapUpdateReceived($event)"
+                     (outputMessages)="jsonEditorMessageReceived($event)">
+    </app-json-editor>
+    <!--  [readonlyLanguages]="[ 're' , 'he']"-->
+
   </mat-tab>
 
 

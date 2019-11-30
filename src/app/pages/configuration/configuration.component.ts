@@ -1,7 +1,8 @@
 import {Component, ComponentFactoryResolver, OnInit, ViewChild} from '@angular/core';
 import {DeviceSetupComponent} from './device-setup/device-setup.component';
-import {AreasI18nComponent} from './areas-i18n/areas-i18n.component';
+import {I18nEditingComponent} from './i18n-editing/i18n-editing.component';
 import {ConfigPageHostDirective} from '../../shared/config-page-host.directive';
+import {BaseComponent} from '../../shared/baseComponent';
 
 interface IComponentRecord {
   name: string;
@@ -13,7 +14,7 @@ interface IComponentRecord {
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.scss']
 })
-export class ConfigurationComponent implements OnInit {
+export class ConfigurationComponent extends BaseComponent  {
 
   @ViewChild(ConfigPageHostDirective, {static: true}) mainConfigTemplateCtrl: ConfigPageHostDirective;
 
@@ -21,16 +22,17 @@ export class ConfigurationComponent implements OnInit {
   selectedComponent: IComponentRecord;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {
+    super();
     this.constructComponentsArray();
   }
 
-  ngOnInit() {
+  protected hookOnInit() {
     this.displayComponent(this.selectedComponent);
   }
 
   private constructComponentsArray() {
+    this.componentsArray.push({name: 'i18n', component: I18nEditingComponent});
     this.componentsArray.push({name: 'deviceSetup', component: DeviceSetupComponent});
-    this.componentsArray.push({name: 'AreasI18n', component: AreasI18nComponent});
 
     this.selectedComponent = this.componentsArray[0];
   }

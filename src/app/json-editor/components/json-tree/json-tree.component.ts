@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
-import {MatBottomSheet, MatDialog, MatTree, MatTreeNestedDataSource} from '@angular/material';
 
+import {MatBottomSheet, MatDialog, MatTree, MatTreeNestedDataSource} from '@angular/material';
 import * as _ from 'lodash';
 
 import {JsonNode, ProblemType, TreeNotificationTypesEnum} from '../../shared/dataModels/tree.model';
@@ -17,7 +17,7 @@ import {BasicNode, NewNodeDialogComponent} from '../../dialogs/new-node-dialog/n
   templateUrl: './json-tree.component.html',
   styleUrls: ['./json-tree.component.scss']
 })
-export class JsonTreeComponent implements OnInit {
+export class JsonTreeComponent implements OnInit, OnChanges {
 
   @Input() languagesMap: Map<string, any>;
   @Input() foundObjectID: string;
@@ -43,6 +43,16 @@ export class JsonTreeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.reconstructData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.languagesMap) {
+      this.reconstructData();
+    }
+  }
+
+  private reconstructData() {
     const constructionOK = this.constructLanguagesDataStructure();
     this.outputMessages.emit(constructionOK ? TreeNotificationTypesEnum.TREE_INITIALIZATION_SUCCESS
       : TreeNotificationTypesEnum.TREE_INITIALIZATION_FAILED);

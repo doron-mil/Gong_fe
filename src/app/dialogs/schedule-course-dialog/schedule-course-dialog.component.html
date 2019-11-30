@@ -18,7 +18,7 @@
           <mat-select [(value)]="selectedCourse" (selectionChange)="onCourseSelectedChange()"
                       placeholder="{{ 'dialogs.scheduleCourse.placeHolders.courseName' | translate}}">
             <mat-option *ngFor="let course of courses" [value]="course">
-              {{ 'automaticActivation.scheduleTable.courseName.' + course.name| translate}}
+              {{ 'general.typesValues.courses.' + course.name| translate}}
               <div *ngIf="course.isTest" class="test-course-label">
                 ({{ 'dialogs.scheduleCourse.labels.isTest' | translate}})
               </div>
