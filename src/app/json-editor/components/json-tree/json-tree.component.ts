@@ -1,23 +1,30 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 
 import {MatBottomSheet, MatDialog, MatTree, MatTreeNestedDataSource} from '@angular/material';
 import * as _ from 'lodash';
 
-import {JsonNode, ProblemType, TreeNotificationTypesEnum} from '../../shared/dataModels/tree.model';
+import {LanguageProperties, NotificationTypesEnum} from '../../shared/dataModels/lang.model';
+import {JsonNode, ProblemType} from '../../shared/dataModels/tree.model';
 
-import {LanguageProperties} from '../../shared/dataModels/lang.model';
 import {NameEditDialogComponent} from '../../dialogs/name-edit-dialog/name-edit-dialog.component';
 import {MessagesComponent} from '../../dialogs/messages/messages.component';
 import {BasicNode, NewNodeDialogComponent} from '../../dialogs/new-node-dialog/new-node-dialog.component';
+import {FormControl, FormGroup} from '@angular/forms';
+import {Subject, Subscription} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
+interface ICtrlNode {
+  ctrl: FormControl;
+  node: JsonNode;
+}
 
 @Component({
   selector: 'app-json-tree',
   templateUrl: './json-tree.component.html',
   styleUrls: ['./json-tree.component.scss']
 })
-export class JsonTreeComponent implements OnInit, OnChanges {
+export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() languagesMap: Map<string, any>;
   @Input() foundObjectID: string;
@@ -26,9 +33,13 @@ export class JsonTreeComponent implements OnInit, OnChanges {
   @Input() allowNodesMenu: boolean = true;
   @Input() readonlyLanguages: string[] = [];
 
-  @Output() outputMessages = new EventEmitter<TreeNotificationTypesEnum>();
+  @Output() outputMessages = new EventEmitter<NotificationTypesEnum>();
 
   @ViewChild('tree', {static: true}) tree: MatTree<JsonNode>;
+
+  treeForm: FormGroup = new FormGroup({});
+  formControlArray: { [key: string]: ICtrlNode } = {};
+  changedControls: { key: string; value: string }[];
 
   problemType = ProblemType;
 
@@ -36,14 +47,26 @@ export class JsonTreeComponent implements OnInit, OnChanges {
   dataSource = new MatTreeNestedDataSource<JsonNode>();
   data: JsonNode[];
 
-
   languages4EditingArray: Array<LanguageProperties>;
+
+  onDestroy$ = new Subject<boolean>();
+  valueChangeSubscription: Subscription;
 
   constructor(private dialog: MatDialog, private bottomSheet: MatBottomSheet) {
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next(true);
+    this.onDestroy$.complete();
+  }
+
   ngOnInit() {
-    this.reconstructData();
+    // this.reconstructData();
+
+
+    // console.log('0000', this.treeForm.controls);
+
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -52,13 +75,65 @@ export class JsonTreeComponent implements OnInit, OnChanges {
     }
   }
 
+  private unsubscribeToValueChange() {
+    if (this.valueChangeSubscription) {
+      this.valueChangeSubscription.unsubscribe();
+      this.valueChangeSubscription = undefined;
+    }
+  }
+
+  private subscribeToValueChange() {
+    this.valueChangeSubscription = this.treeForm.valueChanges.pipe(
+      takeUntil(this.onDestroy$)
+    ).subscribe((ctrlsObjMap) => {
+      const changedCtrls = Object.entries(ctrlsObjMap)
+        .map(entry => ({key: entry[0] as string, value: entry[1] as string}))
+        .filter(mappedEntry => {
+          const value = mappedEntry.value;
+          let isOnFiltered = !!value;
+          if (isOnFiltered) {
+            const key = mappedEntry.key;
+            const node = this.formControlArray[key].node;
+            const lang = key.substr(key.length - 2);
+            isOnFiltered = node.value[lang] !== value;
+          }
+          return isOnFiltered;
+        });
+      this.changedControls = changedCtrls;
+      const notificationType = this.changedControls.length ? NotificationTypesEnum.TREE_IS_DIRTY : NotificationTypesEnum.TREE_IS_CLEAN;
+      this.outputMessages.emit(notificationType);
+    });
+  }
+
+  getInputCtrlArray(aNode: JsonNode, aLang: string) {
+    const key = aNode.id + '-' + aLang;
+    let ctrlStruct: ICtrlNode = this.formControlArray[key];
+    let cr = false;
+    if (!ctrlStruct) {
+      cr = true;
+      const isDisabled = this.readonlyLanguages.includes(aLang) ? {value: '', disabled: true} : undefined;
+      const newCtrl = new FormControl(isDisabled);
+      ctrlStruct = {ctrl: newCtrl, node: aNode};
+      this.formControlArray[key] = ctrlStruct;
+      this.treeForm.addControl(key, newCtrl);
+    }
+    return ctrlStruct.ctrl;
+  }
+
+
   private reconstructData() {
+    this.unsubscribeToValueChange();
+    this.formControlArray = {};
+    this.treeForm.controls = {};
     const constructionOK = this.constructLanguagesDataStructure();
-    this.outputMessages.emit(constructionOK ? TreeNotificationTypesEnum.TREE_INITIALIZATION_SUCCESS
-      : TreeNotificationTypesEnum.TREE_INITIALIZATION_FAILED);
+    this.outputMessages.emit(constructionOK ? NotificationTypesEnum.TREE_INITIALIZATION_SUCCESS
+      : NotificationTypesEnum.TREE_INITIALIZATION_FAILED);
 
     this.dataSource.data = this.data;
     this.treeControl.dataNodes = this.data;
+    setTimeout(() => {
+      this.subscribeToValueChange();
+    });
   }
 
   hasChild = (aNumber: number, node: JsonNode) => !!node.hasChildren;

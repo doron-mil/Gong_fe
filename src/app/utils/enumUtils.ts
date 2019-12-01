@@ -10,7 +10,6 @@ export class EnumUtils {
 
   public static getEnumValues<T>(aEnumObject: T): (T[keyof T] )[] {
     const retArray = EnumUtils.getEnumKeys(aEnumObject).map((key: string) => aEnumObject[key]);
-    console.log( '1111', retArray)
     return retArray;
   }
 }

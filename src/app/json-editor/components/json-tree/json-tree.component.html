@@ -1,5 +1,6 @@
-    <mat-tree fxFlex="1 1 20%" fxLayout="row" #tree [dataSource]="dataSource" [treeControl]="treeControl"
-              class="lang-tree">
+<form [formGroup]="treeForm">
+  <mat-tree fxFlex="1 1 20%" fxLayout="row" #tree [dataSource]="dataSource" [treeControl]="treeControl"
+            class="lang-tree">
 
       <!-- This is the tree node template for leaf nodes -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
@@ -24,27 +25,28 @@
                   <mat-icon class="mat-icon-rtl-mirror"
                             svgIcon="dots-vertical"></mat-icon>
 
-                </button>
-              </span>
-            </div>
-            <div class="trans-container">
-              <ng-container *ngFor="let langData of languages4EditingArray">
-                <div class="trans-lang-container" *ngIf="langData.isDisplayed">
-                  <input type="text" [value]="node.value[langData.lang] ? node.value[langData.lang] : ''"
-                         class="input-trans"
-                         [disabled]="readonlyLanguages.includes(langData.lang)"
-                         [ngClass]="{'not-found-trans': !node.value[langData.lang] }"
-                         [style.direction]="langData.isRtl ? 'rtl' :''"
-                         [placeholder]="!node.value[langData.lang] ? 'undefined !!!!' : ''">
-                  <span class="lang-label">
-                    {{langData.lang}}
-                  </span>
-                </div>
-              </ng-container>
-            </div>
+              </button>
+            </span>
           </div>
-        </li>
-      </mat-tree-node>
+          <div class="trans-container">
+            <ng-container *ngFor="let langData of languages4EditingArray">
+              <div class="trans-lang-container" *ngIf="langData.isDisplayed">
+                <input #langInput [formControl]="getInputCtrlArray( node , langData.lang )"
+                       type="text"
+                       class="input-trans"
+                       [value]="node.value[langData.lang]? node.value[langData.lang] : ''"
+                       [ngClass]="{'not-found-trans': !node.value[langData.lang] }"
+                       [style.direction]="langData.isRtl ? 'rtl' :''"
+                       [placeholder]="!node.value[langData.lang] ? 'undefined !!!!' : ''">
+                <span class="lang-label">
+                  {{langData.lang}}
+                </span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </li>
+    </mat-tree-node>
 
       <!-- This is the tree node template for expandable nodes -->
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
@@ -127,19 +129,20 @@
       </ng-template>
     </mat-menu>
 
-    <mat-menu #addMenu="matMenu">
-      <ng-template matMenuContent let-node="node">
-        <button mat-menu-item (click)="addChildNode(node,false)">
-          <mat-icon svgIcon="translate"></mat-icon>
-          <span>
-            Translation
-          </span>
-        </button>
-        <button mat-menu-item (click)="addChildNode(node)">
-          <mat-icon svgIcon="group"></mat-icon>
-          <span>
-            Container
-          </span>
-        </button>
-      </ng-template>
-    </mat-menu>
+  <mat-menu #addMenu="matMenu">
+    <ng-template matMenuContent let-node="node">
+      <button mat-menu-item (click)="addChildNode(node,false)">
+        <mat-icon svgIcon="translate"></mat-icon>
+        <span>
+          Translation
+        </span>
+      </button>
+      <button mat-menu-item (click)="addChildNode(node)">
+        <mat-icon svgIcon="group"></mat-icon>
+        <span>
+          Container
+        </span>
+      </button>
+    </ng-template>
+  </mat-menu>
+</form>

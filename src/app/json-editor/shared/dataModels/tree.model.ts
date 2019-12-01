@@ -1,8 +1,3 @@
-export enum TreeNotificationTypesEnum {
-  TREE_INITIALIZATION_SUCCESS,
-  TREE_INITIALIZATION_FAILED,
-}
-
 export enum SearchByEnum {
   PROBLEM = 'PROBLEM',
   TEXT = 'TEXT',

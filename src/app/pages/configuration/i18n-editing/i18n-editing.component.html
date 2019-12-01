@@ -1,15 +1,21 @@
 <div class="translation-container">
 
   <div class="translation-topic-selection">
-    <mat-radio-group class="topics-radio-group" [(ngModel)]="selectedTopic" >
+    <mat-radio-group class="topics-radio-group" [(ngModel)]="selectedTopic">
       <mat-radio-button class="example-radio-button" *ngFor="let topic of topics" [value]="topic"
                         (change)="topicHasChanged($event)">
         {{'config.i18n.radio.' + topic| translate}}
       </mat-radio-button>
     </mat-radio-group>
+
+    <button mat-raised-button color="primary"
+            class="top-area-button"
+            (click)="saveJson()" [disabled]="!isJsonDirty">
+      {{ 'dialogs.scheduleCourse.buttons.cancel' | translate }}
+    </button>
   </div>
 
-  <div class="translation-main">
+  <div class="translation-main" [style.visibility]="showJsonEditor?'visible':'hidden'">
     <app-json-editor [languagesMap]="languagesMap"
                      [allowNodesMenu]="false"
                      (languagesMapOutput)="languagesMapUpdateReceived($event)"

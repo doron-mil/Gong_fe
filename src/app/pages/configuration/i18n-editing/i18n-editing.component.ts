@@ -26,6 +26,10 @@ export class I18nEditingComponent extends BaseComponent {
   topics: Array<TopicsEnum> = [];
   selectedTopic: TopicsEnum;
 
+  showJsonEditor: boolean = false;
+
+  isJsonDirty= false;
+
   constructor(private indexedDbService: IndexedDbService) {
     super();
   }
@@ -49,10 +53,25 @@ export class I18nEditingComponent extends BaseComponent {
   }
 
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {
-    console.log(`jsonEditorMessageReceived was activated with value ${aMessagesEnum}`);
+    switch (aMessagesEnum) {
+      case NotificationTypesEnum.TREE_INITIALIZATION_SUCCESS:
+        if (!this.showJsonEditor) {
+          setTimeout(() => this.showJsonEditor = true);
+        }
+        break;
+      case NotificationTypesEnum.TREE_IS_DIRTY:
+        this.isJsonDirty = true ;
+        break;
+      case NotificationTypesEnum.TREE_IS_CLEAN:
+        this.isJsonDirty = false ;
+        break;
+    }
+
+    console.log('1111 jsonEditorMessageReceived', aMessagesEnum);
   }
 
   topicHasChanged(aEvent: MatRadioChange) {
+    this.selectedTopic = TopicsEnum.GONGS
     this.reloadJsonEditorForTopic(aEvent.value as TopicsEnum);
   }
 
@@ -67,4 +86,7 @@ export class I18nEditingComponent extends BaseComponent {
     });
   }
 
+  saveJson() {
+
+  }
 }

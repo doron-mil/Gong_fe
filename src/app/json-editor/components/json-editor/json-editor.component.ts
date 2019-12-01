@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 
-import {fromEvent} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map} from 'rxjs/operators';
+import {fromEvent, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import {MatBottomSheet, MatCheckbox, MatDialog, MatMenuTrigger} from '@angular/material';
 
-import {JsonNode, ProblemType, SearchByEnum, TreeNotificationTypesEnum} from '../../shared/dataModels/tree.model';
+import {JsonNode, ProblemType, SearchByEnum} from '../../shared/dataModels/tree.model';
 import {JsonTreeComponent} from '../json-tree/json-tree.component';
 
 import {LanguageProperties, NotificationTypesEnum} from '../../shared/dataModels/lang.model';
@@ -24,7 +24,7 @@ const ENGLISH_CODE = 'en';
   templateUrl: './json-editor.component.html',
   styleUrls: ['./json-editor.component.scss'],
 })
-export class JsonEditorComponent implements OnInit, AfterViewInit {
+export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() languagesMap: Map<string, any>;
 
@@ -55,6 +55,8 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
   searchText = '';
   searchBufferObjectMap: { [key: string]: Array<JsonNode> } = {};  // Only one item representing
 
+  onDestroy$ = new Subject<boolean>();
+
   // current search
 
   constructor(private dialog: MatDialog, private bottomSheet: MatBottomSheet) {
@@ -64,22 +66,28 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    this.onDestroy$.next(true);
+    this.onDestroy$.complete();
+  }
+
   ngAfterViewInit() {
     this.listenToSearchTextChange();
   }
 
   private listenToSearchTextChange() {
     fromEvent(this.searchTextInput.nativeElement, 'keyup').pipe(
+      takeUntil(this.onDestroy$),
       // get value
       map((event: any) => {
         return event.target.value;
-      })
+      }),
       // if character length greater then 2
-      , filter(res => res.length > 2)
+      filter(res => res.length > 2),
       // Time in milliseconds between key events
-      , debounceTime(1000)
+      debounceTime(1000),
       // If previous query is diffent from current
-      , distinctUntilChanged()
+      distinctUntilChanged()
       // subscription for response
     ).subscribe((newSearchText: string) => {
       this.searchTextChanged(newSearchText);
@@ -321,14 +329,15 @@ export class JsonEditorComponent implements OnInit, AfterViewInit {
     // }
   }
 
-  jsonTreeMessageReceived(aNotificationEnum: TreeNotificationTypesEnum) {
+  jsonTreeMessageReceived(aNotificationEnum: NotificationTypesEnum) {
     switch (aNotificationEnum) {
-      case TreeNotificationTypesEnum.TREE_INITIALIZATION_SUCCESS:
+      case NotificationTypesEnum.TREE_INITIALIZATION_SUCCESS:
         this.wasLangLoadedOk = true;
         break;
-      case TreeNotificationTypesEnum.TREE_INITIALIZATION_FAILED:
+      case NotificationTypesEnum.TREE_INITIALIZATION_FAILED:
         this.wasLangLoadedOk = false;
         break;
     }
+    this.outputMessages.emit(aNotificationEnum);
   }
 }
