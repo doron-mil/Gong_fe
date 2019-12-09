@@ -109,6 +109,9 @@ export class HeaderComponent extends BaseComponent {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((pIsLoggedIn) => {
         this.isLoggedIn = pIsLoggedIn;
+        if (!this.isLoggedIn) {
+          this.isLoggedIn = this.authService.loggedIn;
+        }
         if (pIsLoggedIn) {
           this.currentRole = this.authService.getRole();
         } else {
