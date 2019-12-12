@@ -62,11 +62,6 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     // this.reconstructData();
-
-
-    // console.log('0000', this.treeForm.controls);
-
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -256,7 +251,6 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   editNodePath(aNode: JsonNode) {
     // TO DO
-    console.log('1111', aNode);
   }
 
   deleteNode(aNode: JsonNode) {

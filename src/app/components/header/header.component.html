@@ -124,7 +124,7 @@
     {{'main.labels.nextGong' | translate}} :
     <div *ngIf="nextGongTime">
       {{ nextGongTime | amDateFormat: currentDateFormat.delimited + ' HH:mm'}}
-      <span matTooltip="{{ 'main.tooltips.manual.' + isManual | translate}}"
+      <span matTooltip="{{ 'main.tooltips.manual.' + !!isManual | translate}}"
             matTooltipClass="manualTooltipClass" class="isManualSymbol mat-elevation-z8">
         {{isManual ? 'M' : 'A'}}
       </span>

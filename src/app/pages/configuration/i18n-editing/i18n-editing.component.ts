@@ -89,11 +89,9 @@ export class I18nEditingComponent extends BaseComponent {
         break;
     }
 
-    console.log('1111 jsonEditorMessageReceived', aMessagesEnum);
   }
 
   async topicHasChanged(aEvent: MatRadioChange) {
-    console.log('1111 ', this.selectedTopic);
     if (this.isJsonDirty) {
       const beforeChangeSelectedTopic = this.selectedTopic;
       const title = super.getTranslation(TransKeysEnum.UNSAVED_CONFIRM_TITLE);
@@ -114,8 +112,8 @@ export class I18nEditingComponent extends BaseComponent {
       if (result.value !== true) {
         setTimeout(() => {
           this.selectedTopic = beforeChangeSelectedTopic;
-          return;
         });
+        return;
       }
     }
 

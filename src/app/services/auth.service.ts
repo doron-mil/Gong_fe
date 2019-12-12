@@ -25,6 +25,7 @@ export class AuthService {
           this.setRole(token);
           localStorage.setItem('access_token', token);
           this.storeService.setLoggedIn(true);
+          this.storeService.getBasicData();
           return true;
         })
       );
