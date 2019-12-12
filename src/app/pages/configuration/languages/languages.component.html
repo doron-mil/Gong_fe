@@ -1,0 +1,20 @@
+<div class="languages-container">
+  <div class="languages-main" [style.visibility]="showJsonEditor?'visible':'hidden'">
+    <app-json-editor [languagesMap]="languagesMap"
+                     [allowNodesMenu]="false"
+                     [readonlyLanguages]="[ 'en']"
+                     [allowUpload]="false"
+                     [addedControlsTemplate]="addedControlsTemplate"
+                     (languagesMapOutput)="languagesMapUpdateReceived($event)"
+                     (outputMessages)="jsonEditorMessageReceived($event)">
+    </app-json-editor>
+  </div>
+</div>
+
+<ng-template #addedControlsTemplate>
+  <button mat-raised-button color="primary"
+            class="top-area-button"
+            (click)="saveJson()" [disabled]="!isJsonDirty">
+      {{ 'dialogs.scheduleCourse.buttons.cancel' | translate }}
+    </button>
+</ng-template>

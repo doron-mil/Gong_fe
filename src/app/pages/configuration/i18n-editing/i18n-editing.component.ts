@@ -3,15 +3,25 @@ import {MatRadioChange} from '@angular/material';
 
 import * as _ from 'lodash';
 
+import Swal, {SweetAlertResult} from 'sweetalert2';
+
 import {NotificationTypesEnum} from '../../../json-editor/shared/dataModels/lang.model';
-import {BaseComponent} from '../../../shared/baseComponent';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
+import {BaseComponent} from '../../../shared/baseComponent';
 import {EnumUtils} from '../../../utils/enumUtils';
+import {TranslateService} from '@ngx-translate/core';
 
 enum TopicsEnum {
   AREAS = 'areas',
   COURSES = 'courses',
   GONGS = 'gongType',
+}
+
+enum TransKeysEnum {
+  UNSAVED_CONFIRM_TITLE = 'config.i18n.confirm.unsaved.title',
+  UNSAVED_CONFIRM_MESSAGE = 'config.i18n.confirm.unsaved.message',
+  UNSAVED_CONFIRM_CANCEL = 'config.i18n.confirm.unsaved.buttons.cancel',
+  UNSAVED_CONFIRM_ACTION = 'config.i18n.confirm.unsaved.buttons.confirm',
 }
 
 @Component({
@@ -28,10 +38,13 @@ export class I18nEditingComponent extends BaseComponent {
 
   showJsonEditor: boolean = false;
 
-  isJsonDirty= false;
+  isJsonDirty = false;
 
-  constructor(private indexedDbService: IndexedDbService) {
-    super();
+  keysArray4Translations: Array<string>;
+
+  constructor(private indexedDbService: IndexedDbService,
+              translate: TranslateService) {
+    super(translate);
   }
 
   protected hookOnInit() {
@@ -40,6 +53,15 @@ export class I18nEditingComponent extends BaseComponent {
 
     this.getLanguagesMap();
   }
+
+  protected getKeysArray4Translations(): string[] {
+    if (!this.keysArray4Translations) {
+      this.keysArray4Translations = [];
+      this.keysArray4Translations.push(...EnumUtils.getEnumValues(TransKeysEnum));
+    }
+    return this.keysArray4Translations;
+  }
+
 
   private getLanguagesMap() {
     this.indexedDbService.getAllStoredDataRecordsAndKeysMap(DbObjectTypeEnum.LANGUAGES).then((languages) => {
@@ -60,18 +82,44 @@ export class I18nEditingComponent extends BaseComponent {
         }
         break;
       case NotificationTypesEnum.TREE_IS_DIRTY:
-        this.isJsonDirty = true ;
+        this.isJsonDirty = true;
         break;
       case NotificationTypesEnum.TREE_IS_CLEAN:
-        this.isJsonDirty = false ;
+        this.isJsonDirty = false;
         break;
     }
 
     console.log('1111 jsonEditorMessageReceived', aMessagesEnum);
   }
 
-  topicHasChanged(aEvent: MatRadioChange) {
-    this.selectedTopic = TopicsEnum.GONGS
+  async topicHasChanged(aEvent: MatRadioChange) {
+    console.log('1111 ', this.selectedTopic);
+    if (this.isJsonDirty) {
+      const beforeChangeSelectedTopic = this.selectedTopic;
+      const title = super.getTranslation(TransKeysEnum.UNSAVED_CONFIRM_TITLE);
+      const message = super.getTranslation(TransKeysEnum.UNSAVED_CONFIRM_MESSAGE);
+      const confirm = super.getTranslation(TransKeysEnum.UNSAVED_CONFIRM_ACTION);
+      const cancel = super.getTranslation(TransKeysEnum.UNSAVED_CONFIRM_CANCEL);
+
+      const result: SweetAlertResult = await Swal.fire({
+        title: title,
+        html: message,
+        imageUrl: '/assets/icons/alerts/icons8-error-48.png',
+        customClass: 'confirmClass',
+        confirmButtonText: confirm,
+        showCancelButton: true,
+        cancelButtonText: cancel,
+      });
+
+      if (result.value !== true) {
+        setTimeout(() => {
+          this.selectedTopic = beforeChangeSelectedTopic;
+          return;
+        });
+      }
+    }
+
+    this.isJsonDirty = false;
     this.reloadJsonEditorForTopic(aEvent.value as TopicsEnum);
   }
 

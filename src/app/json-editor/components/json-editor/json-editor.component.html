@@ -8,7 +8,7 @@
      [style.visibility]="wasLangLoadedOk?'visible':'hidden'"
      [style.height]="wasLangLoadedOk?'100%':'0'">
 
-  <div class="main-controls-container">
+  <div class="main-controls-container" *ngIf="allowMainToolbar">
 
     <div class="control-buttons-container">
       <button mat-icon-button class="main-menu-button"
@@ -51,7 +51,7 @@
           </span>
         </button>
 
-        <button mat-menu-item (click)="upload()">
+        <button mat-menu-item (click)="upload()" *ngIf="allowUpload">
           <mat-icon svgIcon="upload"></mat-icon>
           <span>
             Upload
@@ -138,6 +138,11 @@
         </button>
 
       </div>
+
+      <div class="added_controls-container">
+        <ng-container [ngTemplateOutlet]="addedControlsTemplate"></ng-container>
+      </div>
+
     </div>
 
     <div class="search-container">

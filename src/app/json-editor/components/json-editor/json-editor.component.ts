@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 
 import {fromEvent, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
@@ -29,9 +29,14 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() languagesMap: Map<string, any>;
 
   @Input() allowNodesMenu: boolean = true;
+  @Input() allowMainToolbar: boolean = true;
+  @Input() allowUpload: boolean = true;
   @Input() readonlyLanguages: string[] = [];
 
   @Input() translateMethod: (sourceStrings: Array<string>, targetLang: string) => (Promise<Array<string>>);
+
+  @Input()
+  addedControlsTemplate: TemplateRef<any>;
 
   @Output() outputMessages = new EventEmitter<NotificationTypesEnum>();
 
@@ -76,22 +81,24 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private listenToSearchTextChange() {
-    fromEvent(this.searchTextInput.nativeElement, 'keyup').pipe(
-      takeUntil(this.onDestroy$),
-      // get value
-      map((event: any) => {
-        return event.target.value;
-      }),
-      // if character length greater then 2
-      filter(res => res.length > 2),
-      // Time in milliseconds between key events
-      debounceTime(1000),
-      // If previous query is diffent from current
-      distinctUntilChanged()
-      // subscription for response
-    ).subscribe((newSearchText: string) => {
-      this.searchTextChanged(newSearchText);
-    });
+    if (this.searchTextInput) {
+      fromEvent(this.searchTextInput.nativeElement, 'keyup').pipe(
+        takeUntil(this.onDestroy$),
+        // get value
+        map((event: any) => {
+          return event.target.value;
+        }),
+        // if character length greater then 2
+        filter(res => res.length > 2),
+        // Time in milliseconds between key events
+        debounceTime(1000),
+        // If previous query is diffent from current
+        distinctUntilChanged()
+        // subscription for response
+      ).subscribe((newSearchText: string) => {
+        this.searchTextChanged(newSearchText);
+      });
+    }
   }
 
 

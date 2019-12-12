@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 
 import {AngularJsonClassConverterService} from 'angular-json-class-converter';
-import {API_ERROR, API_SUCCESS, apiMockSuccess, apiRequest, apiSuccess} from '../../actions/api.actions';
+import {API_ERROR, API_SUCCESS, apiMockSuccess, apiRequest} from '../../actions/api.actions';
 
 import {ActionFeaturesEnum, ActionGenerator, ActionTypesEnum} from '../../actions/action';
 import {Area} from '../../../model/area';
@@ -20,7 +20,6 @@ import {MessagesService} from '../../../services/messages.service';
 import {DateFormat} from '../../../model/dateFormat';
 import {AuthService} from '../../../services/auth.service';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
-import {StoreDataTypeEnum} from '../../storeDataTypeEnum';
 import {StoreService} from '../../../services/store.service';
 
 

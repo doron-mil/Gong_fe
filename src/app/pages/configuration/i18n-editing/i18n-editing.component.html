@@ -18,6 +18,7 @@
   <div class="translation-main" [style.visibility]="showJsonEditor?'visible':'hidden'">
     <app-json-editor [languagesMap]="languagesMap"
                      [allowNodesMenu]="false"
+                     [allowMainToolbar]="false"
                      (languagesMapOutput)="languagesMapUpdateReceived($event)"
                      (outputMessages)="jsonEditorMessageReceived($event)">
     </app-json-editor>

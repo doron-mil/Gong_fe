@@ -3,6 +3,7 @@ import {DeviceSetupComponent} from './device-setup/device-setup.component';
 import {I18nEditingComponent} from './i18n-editing/i18n-editing.component';
 import {ConfigPageHostDirective} from '../../shared/config-page-host.directive';
 import {BaseComponent} from '../../shared/baseComponent';
+import {LanguagesComponent} from './languages/languages.component';
 
 interface IComponentRecord {
   name: string;
@@ -32,6 +33,7 @@ export class ConfigurationComponent extends BaseComponent  {
 
   private constructComponentsArray() {
     this.componentsArray.push({name: 'i18n', component: I18nEditingComponent});
+    this.componentsArray.push({name: 'languages', component: LanguagesComponent});
     this.componentsArray.push({name: 'deviceSetup', component: DeviceSetupComponent});
 
     this.selectedComponent = this.componentsArray[0];
