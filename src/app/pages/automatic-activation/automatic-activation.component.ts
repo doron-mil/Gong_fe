@@ -217,18 +217,14 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
     if (this.waitToScroll) {
       const el = document.getElementById('NEXT_GONG');
       if (el) {
-        el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+        el.parentElement.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
         this.waitToScroll = false;
       }
     } else {
       const el = document.getElementById('FIRST_GONG');
       if (el) {
-        // console.log('333333',el[0]);
-        // el.scrollTop = 0;
-        el.scrollIntoView({behavior: 'auto', block: 'center', inline: 'start'});
-        // this.waitToScroll = false;
+        el.parentElement.scrollIntoView({behavior: 'auto', block: 'center', inline: 'start'});
       }
-
     }
   }
 
