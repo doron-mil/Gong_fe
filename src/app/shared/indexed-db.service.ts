@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
+
 import * as idb from 'idb';
 import {IDBPDatabase, IDBPObjectStore} from 'idb/lib/entry';
+
+import {EnumUtils} from '../utils/enumUtils';
 
 export enum DbObjectTypeEnum {
   LANGUAGES = 'LANGUAGES',
@@ -100,6 +103,21 @@ export class IndexedDbService {
           .catch((error) => reject(error));
 
       }).catch((error) => reject(error));
+    });
+  }
+
+  clearAllStaticData(): Promise<any> {
+    return new Promise<boolean>((resolve, reject) => {
+      const promisesArray: Promise<any>[] = [];
+      EnumUtils.getEnumValues(DbObjectTypeEnum).forEach(dbObjectType => {
+        this.openDb(dbObjectType)
+          .then((db) => {
+            promisesArray.push(db.clear(dbObjectType));
+          });
+      });
+      Promise.all(promisesArray)
+        .then(() => resolve(true))
+        .catch((error) => reject(error));
     });
   }
 

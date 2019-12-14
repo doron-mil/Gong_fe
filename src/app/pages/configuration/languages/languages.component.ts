@@ -1,8 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
+
+import {takeUntil} from 'rxjs/operators';
+
+import {NgRedux} from '@angular-redux/store';
+
 import {NotificationTypesEnum} from '../../../json-editor/shared/dataModels/lang.model';
 import {BaseComponent} from '../../../shared/baseComponent';
-import {EnumUtils} from '../../../utils/enumUtils';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
+import {StoreDataTypeEnum} from '../../../store/storeDataTypeEnum';
 
 @Component({
   selector: 'app-languages',
@@ -15,8 +20,21 @@ export class LanguagesComponent extends BaseComponent {
   showJsonEditor: boolean = false;
   isJsonDirty = false;
 
-  constructor(private indexedDbService: IndexedDbService) {
+  staticDataRecentUpdateDate: Date;
+
+  constructor(private ngRedux: NgRedux<any>, private indexedDbService: IndexedDbService) {
     super();
+  }
+
+  protected listenForUpdates() {
+    this.ngRedux.select<Date>([StoreDataTypeEnum.INNER_DATA, 'staticDataWasUpdated'])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((staticDataUpdateDate) => {
+        if (staticDataUpdateDate && this.staticDataRecentUpdateDate !== staticDataUpdateDate) {
+          this.staticDataRecentUpdateDate = staticDataUpdateDate;
+          this.getLanguagesMap();
+        }
+      });
   }
 
   protected hookOnInit() {
@@ -49,9 +67,4 @@ export class LanguagesComponent extends BaseComponent {
   languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
     console.log('languagesMapUpdateReceived ', aReceivedLangMap);
   }
-
-  saveJson() {
-  }
-
-
 }

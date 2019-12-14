@@ -3,6 +3,8 @@ import {MatRadioChange} from '@angular/material';
 
 import {NgRedux} from '@angular-redux/store';
 
+import {takeUntil} from 'rxjs/operators';
+
 import * as _ from 'lodash';
 import {TranslateService} from '@ngx-translate/core';
 import Swal, {SweetAlertResult} from 'sweetalert2';
@@ -12,6 +14,7 @@ import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.ser
 import {BaseComponent} from '../../../shared/baseComponent';
 import {EnumUtils} from '../../../utils/enumUtils';
 import {ActionGenerator} from '../../../store/actions/action';
+import {StoreDataTypeEnum} from '../../../store/storeDataTypeEnum';
 
 enum TopicsEnum {
   AREAS = 'areas',
@@ -44,17 +47,26 @@ export class I18nEditingComponent extends BaseComponent {
 
   keysArray4Translations: Array<string>;
 
+  staticDataRecentUpdateDate: Date;
+
   constructor(private ngRedux: NgRedux<any>,
               private indexedDbService: IndexedDbService,
               translate: TranslateService) {
     super(translate);
-  }
-
-  protected hookOnInit() {
     this.topics.push(...EnumUtils.getEnumValues(TopicsEnum));
     this.selectedTopic = this.topics[0];
+  }
 
-    this.getLanguagesMap();
+
+  protected listenForUpdates() {
+    this.ngRedux.select<Date>([StoreDataTypeEnum.INNER_DATA, 'staticDataWasUpdated'])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((staticDataUpdateDate) => {
+        if (staticDataUpdateDate && this.staticDataRecentUpdateDate !== staticDataUpdateDate) {
+          this.staticDataRecentUpdateDate = staticDataUpdateDate;
+          this.getLanguagesMap();
+        }
+      });
   }
 
   protected getKeysArray4Translations(): string[] {

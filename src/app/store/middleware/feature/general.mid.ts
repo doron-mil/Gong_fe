@@ -50,24 +50,14 @@ export class GeneralMiddlewareService {
               private messagesService: MessagesService) {
   }
 
-
   generalMiddleware = ({getState, dispatch}) => (next) => (action) => {
     next(action);
 
     switch (action.type) {
       case ActionTypesEnum.READ_TO_STORE_DATA:
-        // Checking to see if static data refresh is needed
-        this.storeService.getBasicServerDataPromise().then((pBasicServerData) => {
-          const staticUpdateTime = Number(localStorage.getItem('static_update_time'));
-          const serverStaticDataLastUpdateTime = pBasicServerData.staticDataLastUpdateTime.getTime();
-          if (Number.isNaN(staticUpdateTime) || serverStaticDataLastUpdateTime > staticUpdateTime) {
-            next(
-              apiRequest(null, 'GET', GET_STATIC_DATA_URL, ActionFeaturesEnum.STATIC_DATA_FEATURE, serverStaticDataLastUpdateTime)
-            );
-          } else {
-            dispatch(ActionGenerator.readToStoreStaticData());
-          }
-        });
+        dispatch(
+          ActionGenerator.readToStoreStaticData()
+        );
 
         next(
           apiRequest(null, 'GET', COURSES_SCHEDULE_URL, ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE, null)
@@ -162,45 +152,44 @@ export class GeneralMiddlewareService {
         next(
           ActionGenerator.setBasicServerData(basicServerData)
         );
-        const reloadStaticData = _.get(action.data, ['reloadStaticData']) as boolean;
-        if (reloadStaticData) {
+        const newlyLastUpdateTime = this.needToUpdateStaticData(basicServerData);
+        if (newlyLastUpdateTime) {
           dispatch(
             apiRequest(null, 'GET', GET_STATIC_DATA_URL, ActionFeaturesEnum.STATIC_DATA_FEATURE
-              , basicServerData.staticDataLastUpdateTime.getTime())
+              , newlyLastUpdateTime)
           );
         }
         break;
       case `${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}`:
         localStorage.setItem('static_update_time', action.data);
+        this.indexedDbService.clearAllStaticData().then(() => {
+          promiseArray = [];
+          const staticData = _.get(action, ['payload', 'data']);
 
-        promiseArray = [];
+          const languagesJson = _.get(staticData, 'languages');
+          promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.LANGUAGES, languagesJson
+            , (val) => val.translation, (val) => val.language);
+          promiseArray.push(promise);
 
-        const staticData = _.get(action, ['payload', 'data']);
+          const areasJson = _.get(staticData, 'areas');
+          promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.AREAS, areasJson);
+          promiseArray.push(promise);
 
-        const languagesJson = _.get(staticData, 'languages');
-        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.LANGUAGES, languagesJson
-          , (val) => val.translation, (val) => val.language);
-        promiseArray.push(promise);
+          const gongTypesJson = _.get(staticData, 'gongTypes');
+          promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.GONGS, gongTypesJson);
+          promiseArray.push(promise);
 
-        const areasJson = _.get(staticData, 'areas');
-        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.AREAS, areasJson);
-        promiseArray.push(promise);
+          const coursesJson = _.get(staticData, 'courses');
+          promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.COURSES, coursesJson, undefined
+            , (val) => val.course_name);
+          promiseArray.push(promise);
 
-        const gongTypesJson = _.get(staticData, 'gongTypes');
-        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.GONGS, gongTypesJson);
-        promiseArray.push(promise);
-
-        const coursesJson = _.get(staticData, 'courses');
-        promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.COURSES, coursesJson, undefined
-          , (val) => val.course_name);
-        promiseArray.push(promise);
-
-        Promise.all(promiseArray)
-          .then(() => dispatch(ActionGenerator.readToStoreStaticData()))
-          .catch(error =>
-            console.error(`GeneralMiddlewareService:${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}` + '' +
-              'Error in  processing API middleware : ', error));
-
+          Promise.all(promiseArray)
+            .then(() => dispatch(ActionGenerator.readToStoreStaticData()))
+            .catch(error =>
+              console.error(`GeneralMiddlewareService:${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}` + '' +
+                'Error in  processing API middleware : ', error));
+        });
         break;
       case ActionTypesEnum.UPDATE_LANGUAGES:
         const stringedifiedLanguagesJson = JSON.stringify(action.payload);
@@ -212,7 +201,7 @@ export class GeneralMiddlewareService {
       case `${ActionFeaturesEnum.UPDATE_LANGUAGES_FEATURE} ${API_SUCCESS}`:
         next(
           apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
-            , {bypassRefreshDateFormat: true, reloadStaticData: true}));
+            , {bypassRefreshDateFormat: true}));
         break;
       case ActionTypesEnum.ADD_MANUAL_GONG:
         const manualGongJson = this.jsonConverterService.convertToJson(action.payload);
@@ -343,7 +332,7 @@ export class GeneralMiddlewareService {
       case `${ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE} ${API_SUCCESS}`:
         next(
           apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
-            , {bypassRefreshDateFormat: true, reloadStaticData: true}));
+            , {bypassRefreshDateFormat: true}));
       // tslint:disable-next-line:no-switch-case-fall-through
       case `${ActionFeaturesEnum.UPLOAD_COURSES_FILE_FEATURE} ${API_ERROR}`:
         this.messagesService.coursesUploaded(action.payload.error && action.payload.error.additional_message);
@@ -365,4 +354,14 @@ export class GeneralMiddlewareService {
       }
     }
   };
+
+  private needToUpdateStaticData(aNewlyRecievedBasicServerData: BasicServerData): number {
+    const staticUpdateTime = Number(localStorage.getItem('static_update_time'));
+    const serverStaticDataLastUpdateTime = aNewlyRecievedBasicServerData.staticDataLastUpdateTime.getTime();
+    let newlyLastUpdateTime = Number.isNaN(staticUpdateTime) ? serverStaticDataLastUpdateTime : undefined;
+    if (!newlyLastUpdateTime) {
+      newlyLastUpdateTime = serverStaticDataLastUpdateTime > staticUpdateTime ? serverStaticDataLastUpdateTime : undefined;
+    }
+    return newlyLastUpdateTime;
+  }
 }
