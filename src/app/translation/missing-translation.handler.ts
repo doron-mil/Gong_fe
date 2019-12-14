@@ -9,10 +9,16 @@ export function CustomMissingTranslationHandlerFactory(authService: NgRedux<any>
 }
 
 export class CustomMissingTranslationHandler implements MissingTranslationHandler {
-  constructor(private authService: NgRedux<any>) {  }
+  handledMissingKsys: { [key: string]: boolean } = {};
+
+  constructor(private authService: NgRedux<any>) {
+  }
 
   handle(params: MissingTranslationHandlerParams) {
-    console.error( `MissingTranslation for : ${params.key}`)
+    if (!this.handledMissingKsys[params.key]) {
+      this.handledMissingKsys[params.key] = true;
+      console.error(`MissingTranslation for : ${params.key}`);
+    }
     const lastDotIndex = params.key.lastIndexOf('.');
     const isLoggedIn = _.get(this.authService.getState(), [StoreDataTypeEnum.INNER_DATA, 'isLoggedIn']) as boolean;
     const postfix = isLoggedIn ? '˚˚®' : ''; // Alt + k

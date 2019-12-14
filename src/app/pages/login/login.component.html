@@ -7,6 +7,7 @@
           <p>
             <mat-form-field>
               <input type="text" matInput
+                     autocomplete="username"
                      placeholder="Username"
                      name="username"
                      #usernameId [(ngModel)]="username">
@@ -16,6 +17,7 @@
           <p>
             <mat-form-field>
               <input type="password" matInput
+                     autocomplete="current-password"
                      placeholder="Password"
                      name="password"
                      #passwordId [(ngModel)]="password">

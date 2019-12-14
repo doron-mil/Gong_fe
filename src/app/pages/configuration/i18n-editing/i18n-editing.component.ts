@@ -1,15 +1,17 @@
 import {Component} from '@angular/core';
 import {MatRadioChange} from '@angular/material';
 
-import * as _ from 'lodash';
+import {NgRedux} from '@angular-redux/store';
 
+import * as _ from 'lodash';
+import {TranslateService} from '@ngx-translate/core';
 import Swal, {SweetAlertResult} from 'sweetalert2';
 
 import {NotificationTypesEnum} from '../../../json-editor/shared/dataModels/lang.model';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
 import {BaseComponent} from '../../../shared/baseComponent';
 import {EnumUtils} from '../../../utils/enumUtils';
-import {TranslateService} from '@ngx-translate/core';
+import {ActionGenerator} from '../../../store/actions/action';
 
 enum TopicsEnum {
   AREAS = 'areas',
@@ -42,7 +44,8 @@ export class I18nEditingComponent extends BaseComponent {
 
   keysArray4Translations: Array<string>;
 
-  constructor(private indexedDbService: IndexedDbService,
+  constructor(private ngRedux: NgRedux<any>,
+              private indexedDbService: IndexedDbService,
               translate: TranslateService) {
     super(translate);
   }
@@ -71,7 +74,14 @@ export class I18nEditingComponent extends BaseComponent {
   }
 
   languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
-    console.log('languagesMapUpdateReceived ', aReceivedLangMap);
+    this.languagesMap = aReceivedLangMap;
+    this.saveJsonEditorDataForTopic();
+
+    const langsObjArray = [];
+    Array.from(this.globalLanguagesMap.entries()).forEach((entry) => {
+      langsObjArray.push({language: entry[0], translation: entry[1]});
+    });
+    this.ngRedux.dispatch(ActionGenerator.updateLanguages(langsObjArray));
   }
 
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {
@@ -132,7 +142,12 @@ export class I18nEditingComponent extends BaseComponent {
     });
   }
 
-  saveJson() {
-
+  private saveJsonEditorDataForTopic() {
+    const keys = Array.from(this.languagesMap.keys());
+    keys.forEach(key => {
+      const updatedTranslation = this.languagesMap.get(key);
+      const translationOnGlobal = this.globalLanguagesMap.get(key);
+      _.set(translationOnGlobal, ['general', 'typesValues', this.selectedTopic], updatedTranslation);
+    });
   }
 }

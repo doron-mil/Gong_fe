@@ -24,7 +24,8 @@ export enum ActionFeaturesEnum {
   REMOVE_MANUAL_GONG_FEATURE = '[REMOVE_MANUAL_GONG]',
   PLAY_GONG_FEATURE = '[PLAY_GONG_FEATURE]',
   DATE_FORMAT_FEATURE = '[DATE_FORMAT_FEATURE]',
-  UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE_FEATURE]',
+  UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE]',
+  UPDATE_LANGUAGES_FEATURE = '[UPDATE_LANGUAGES]',
 }
 
 export enum ActionTypesEnum {
@@ -52,6 +53,7 @@ export enum ActionTypesEnum {
   SET_PLAY_GONG_ENABLED = 'SET_PLAY_GONG_ENABLED',
   UPLOAD_COURSES_FILE = 'UPLOAD_COURSE_FILE',
   UPLOAD_COURSES_FILE_WAS_COMPLETED = 'UPLOAD_COURSES_FILE_WAS_COMPLETED',
+  UPDATE_LANGUAGES = 'UPDATE_LANGUAGES',
 }
 
 export interface AppAction extends Action {
@@ -189,6 +191,12 @@ export class ActionGenerator {
   static setLoggedIn = (aIsLoggedIn: boolean) => ({
     type: ActionTypesEnum.SET_LOGGED_IN,
     payload: aIsLoggedIn,
+  });
+
+
+  static updateLanguages = (aLanguagesMap: any) => ({
+    type: ActionTypesEnum.UPDATE_LANGUAGES,
+    payload: aLanguagesMap,
   });
 
 }

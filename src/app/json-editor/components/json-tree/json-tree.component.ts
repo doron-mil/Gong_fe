@@ -38,8 +38,8 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('tree', {static: true}) tree: MatTree<JsonNode>;
 
   treeForm: FormGroup = new FormGroup({});
-  formControlArray: { [key: string]: ICtrlNode } = {};
-  changedControls: { key: string; value: string }[];
+  formControlObjectMap: { [key: string]: ICtrlNode } = {};
+  changedControls: { key: string; value: string }[]; // key = <id>-<lang>
 
   problemType = ProblemType;
 
@@ -83,12 +83,12 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
     ).subscribe((ctrlsObjMap) => {
       const changedCtrls = Object.entries(ctrlsObjMap)
         .map(entry => ({key: entry[0] as string, value: entry[1] as string}))
-        .filter(mappedEntry => {
+        .filter(mappedEntry => {  // Filtering only ctrls that are changed compared with the original data
           const value = mappedEntry.value;
           let isOnFiltered = !!value;
           if (isOnFiltered) {
             const key = mappedEntry.key;
-            const node = this.formControlArray[key].node;
+            const node = this.formControlObjectMap[key].node;
             const lang = key.substr(key.length - 2);
             isOnFiltered = node.value[lang] !== value;
           }
@@ -100,26 +100,49 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  updateDataFromInputControls() {
+    if (!this.changedControls || this.changedControls.length <= 0) {
+      return;
+    }
+
+    this.changedControls.forEach(changeStruct => {
+      const tokensArray = changeStruct.key.split('-');
+      const ctrlLang = tokensArray[1];
+      const foundCtrlNode = this.formControlObjectMap[changeStruct.key];
+      if (foundCtrlNode) {
+        foundCtrlNode.node.value[ctrlLang] = changeStruct.value;
+      }
+    });
+
+    this.changedControls = [];
+    this.outputMessages.emit(NotificationTypesEnum.TREE_IS_CLEAN);
+  }
+
   getInputCtrlArray(aNode: JsonNode, aLang: string) {
     const key = aNode.id + '-' + aLang;
-    let ctrlStruct: ICtrlNode = this.formControlArray[key];
+    let ctrlStruct: ICtrlNode = this.formControlObjectMap[key];
     let cr = false;
     if (!ctrlStruct) {
       cr = true;
       const isDisabled = this.readonlyLanguages.includes(aLang) ? {value: '', disabled: true} : undefined;
       const newCtrl = new FormControl(isDisabled);
       ctrlStruct = {ctrl: newCtrl, node: aNode};
-      this.formControlArray[key] = ctrlStruct;
+      this.formControlObjectMap[key] = ctrlStruct;
       this.treeForm.addControl(key, newCtrl);
     }
     return ctrlStruct.ctrl;
   }
 
+  private clearUpdateMonitorData() {
+    this.formControlObjectMap = {};
+    this.changedControls = [];
+    this.treeForm.controls = {};
+  }
+
 
   private reconstructData() {
     this.unsubscribeToValueChange();
-    this.formControlArray = {};
-    this.treeForm.controls = {};
+    this.clearUpdateMonitorData();
     const constructionOK = this.constructLanguagesDataStructure();
     this.outputMessages.emit(constructionOK ? NotificationTypesEnum.TREE_INITIALIZATION_SUCCESS
       : NotificationTypesEnum.TREE_INITIALIZATION_FAILED);

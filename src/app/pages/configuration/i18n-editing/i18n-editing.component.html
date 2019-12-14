@@ -10,17 +10,18 @@
 
     <button mat-raised-button color="primary"
             class="top-area-button"
-            (click)="saveJson()" [disabled]="!isJsonDirty">
-      {{ 'dialogs.scheduleCourse.buttons.cancel' | translate }}
+            (click)="jsonEditor.upload()" [disabled]="!isJsonDirty">
+      {{ 'config.i18n.buttons.save' | translate }}
     </button>
   </div>
 
   <div class="translation-main" [style.visibility]="showJsonEditor?'visible':'hidden'">
-    <app-json-editor [languagesMap]="languagesMap"
-                     [allowNodesMenu]="false"
-                     [allowMainToolbar]="false"
-                     (languagesMapOutput)="languagesMapUpdateReceived($event)"
-                     (outputMessages)="jsonEditorMessageReceived($event)">
+    <app-json-editor #jsonEditor
+      [languagesMap]="languagesMap"
+      [allowNodesMenu]="false"
+      [allowMainToolbar]="false"
+      (languagesMapOutput)="languagesMapUpdateReceived($event)"
+      (outputMessages)="jsonEditorMessageReceived($event)">
     </app-json-editor>
   </div>
 

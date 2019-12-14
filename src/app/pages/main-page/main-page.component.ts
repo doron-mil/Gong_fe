@@ -1,14 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 
 import {StoreService} from '../../services/store.service';
 
 import {AuthService} from '../../services/auth.service';
 import {NotificationTypesEnum} from '../../json-editor/shared/dataModels/lang.model';
-
-import staticEnJsonImport from '../../../assets/i18n/en.json';
-import staticHeJsonImport from '../../../assets/i18n/he.json';
 
 interface TransResponseInt {
   data: { translations: Array<{ translatedText: string }> };
@@ -21,8 +18,6 @@ interface TransResponseInt {
 })
 export class MainPageComponent implements OnInit {
 
-  languagesMap: Map<string, any>;
-
   loggedInRole: string;
 
   apiKey = '';
@@ -32,9 +27,6 @@ export class MainPageComponent implements OnInit {
               private http: HttpClient,
               private router: Router,
               private storeService: StoreService) {
-    this.languagesMap = new Map<string, any>();
-    this.languagesMap.set('en', staticEnJsonImport);
-    this.languagesMap.set('he', staticHeJsonImport);
   }
 
   ngOnInit() {

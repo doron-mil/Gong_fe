@@ -309,6 +309,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       languagesUtilsObjectMap[langProperties.lang] = newJson4Lang;
     });
 
+    this.treeComponent.updateDataFromInputControls();
     this.convertDataToJsonObjects(this.treeComponent.data, languagesUtilsObjectMap);
 
     this.languagesMapOutput.emit(languagesMap);

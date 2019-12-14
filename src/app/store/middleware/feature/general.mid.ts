@@ -38,6 +38,7 @@ const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
 const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
 const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
+const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -163,8 +164,10 @@ export class GeneralMiddlewareService {
         );
         const reloadStaticData = _.get(action.data, ['reloadStaticData']) as boolean;
         if (reloadStaticData) {
-          apiRequest(null, 'GET', GET_STATIC_DATA_URL, ActionFeaturesEnum.STATIC_DATA_FEATURE
-            , basicServerData.staticDataLastUpdateTime.getTime());
+          dispatch(
+            apiRequest(null, 'GET', GET_STATIC_DATA_URL, ActionFeaturesEnum.STATIC_DATA_FEATURE
+              , basicServerData.staticDataLastUpdateTime.getTime())
+          );
         }
         break;
       case `${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}`:
@@ -198,6 +201,18 @@ export class GeneralMiddlewareService {
             console.error(`GeneralMiddlewareService:${ActionFeaturesEnum.STATIC_DATA_FEATURE} ${API_SUCCESS}` + '' +
               'Error in  processing API middleware : ', error));
 
+        break;
+      case ActionTypesEnum.UPDATE_LANGUAGES:
+        const stringedifiedLanguagesJson = JSON.stringify(action.payload);
+        next(
+          apiRequest(stringedifiedLanguagesJson, 'POST', UPDATE_LANGUAGES_URL,
+            ActionFeaturesEnum.UPDATE_LANGUAGES_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.UPDATE_LANGUAGES_FEATURE} ${API_SUCCESS}`:
+        next(
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
+            , {bypassRefreshDateFormat: true, reloadStaticData: true}));
         break;
       case ActionTypesEnum.ADD_MANUAL_GONG:
         const manualGongJson = this.jsonConverterService.convertToJson(action.payload);
