@@ -323,7 +323,8 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         this.treeComponent.languages4EditingArray.forEach((langProperties: LanguageProperties) => {
           const lang = langProperties.lang;
-          _.set(aLangObjectMap[lang], jsonNode.fullPath, jsonNode.value[lang]);
+          const value = jsonNode.value[lang] ? jsonNode.value[lang] : '';
+          _.set(aLangObjectMap[lang], jsonNode.fullPath, value);
         });
       }
     });

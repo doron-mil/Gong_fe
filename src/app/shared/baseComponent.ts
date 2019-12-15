@@ -1,12 +1,23 @@
 import {OnDestroy, OnInit} from '@angular/core';
+
 import {Subject} from 'rxjs';
-import {TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
+
+import {NgRedux} from '@angular-redux/store';
+import {TranslateService} from '@ngx-translate/core';
+
+import {StoreDataTypeEnum} from '../store/storeDataTypeEnum';
+import {AuthService} from '../services/auth.service';
 
 export class BaseComponent implements OnInit, OnDestroy {
 
-  constructor(private translateService: TranslateService = null) {
+  constructor(protected translateService: TranslateService = null,
+              protected ngReduxObj: NgRedux<any> = null,
+              protected authServiceObj: AuthService = null) {
   }
+
+  protected isLoggedIn = false;
+  protected currentRole: string;
 
   translationMap = new Map<string, string>();
 
@@ -21,6 +32,21 @@ export class BaseComponent implements OnInit, OnDestroy {
       this.translateService.onLangChange.pipe(
         takeUntil(this.onDestroy$))
         .subscribe(() => this.translateNeededText());
+    }
+    if (this.ngReduxObj && this.authServiceObj) {
+      this.ngReduxObj.select<boolean>([StoreDataTypeEnum.INNER_DATA, 'isLoggedIn'])
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe((pIsLoggedIn) => {
+          this.isLoggedIn = pIsLoggedIn;
+          if (!this.isLoggedIn) {
+            this.isLoggedIn = this.authServiceObj.loggedIn;
+          }
+          if (pIsLoggedIn) {
+            this.currentRole = this.authServiceObj.getRole();
+          } else {
+            this.currentRole = '';
+          }
+        });
     }
   }
 
@@ -55,5 +81,10 @@ export class BaseComponent implements OnInit, OnDestroy {
       keysArray.forEach((key) => this.translationMap.set(key, transResult[key]));
     });
   }
+
+  protected  isAdminRole() {
+    return ['admin', 'dev'].includes(this.currentRole);
+  }
+
 
 }

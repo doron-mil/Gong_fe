@@ -1,8 +1,11 @@
 <div class="languages-container">
+  <div class="loading-json" [style.display]="showJsonEditor?'none':'block'">
+    Loading....
+  </div>
   <div class="languages-main" [style.visibility]="showJsonEditor?'visible':'hidden'">
-    <app-json-editor #jsonEditor [languagesMap]="languagesMap"
-                     [allowNodesMenu]="false"
-                     [readonlyLanguages]="[ 'en']"
+    <app-json-editor #jsonEditor [languagesMap]="globalLanguagesMap"
+                     [allowNodesMenu]="currentRole === 'dev'"
+                     [readonlyLanguages]="currentRole === 'dev' ? [] :[ 'en']"
                      [allowUpload]="false"
                      [addedControlsTemplate]="addedControlsTemplate"
                      (languagesMapOutput)="languagesMapUpdateReceived($event)"
@@ -13,8 +16,8 @@
 
 <ng-template #addedControlsTemplate>
   <button mat-raised-button color="primary"
-            class="top-area-button"
-            (click)="jsonEditor.upload()" [disabled]="!isJsonDirty">
-      {{ 'dialogs.scheduleCourse.buttons.cancel' | translate }}
-    </button>
+          class="top-area-button"
+          (click)="jsonEditor.upload()" [disabled]="!isJsonDirty">
+    {{ 'dialogs.scheduleCourse.buttons.cancel' | translate }}
+  </button>
 </ng-template>

@@ -40,6 +40,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
   treeForm: FormGroup = new FormGroup({});
   formControlObjectMap: { [key: string]: ICtrlNode } = {};
   changedControls: { key: string; value: string }[]; // key = <id>-<lang>
+  wasStructureUpdated = false;
 
   problemType = ProblemType;
 
@@ -94,10 +95,25 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
           }
           return isOnFiltered;
         });
-      this.changedControls = changedCtrls;
-      const notificationType = this.changedControls.length ? NotificationTypesEnum.TREE_IS_DIRTY : NotificationTypesEnum.TREE_IS_CLEAN;
-      this.outputMessages.emit(notificationType);
+      this.handleChangeInData(changedCtrls, null);
     });
+  }
+
+  private handleChangeInData(aChangedCtrlsNewArray: { value: string; key: string }[], aWasStructureUpdated: Boolean) {
+    const wasDirty = this.wasStructureUpdated || this.changedControls.length > 0;
+    if (aWasStructureUpdated) {
+      this.wasStructureUpdated = aWasStructureUpdated.valueOf();
+    }
+
+    if (aChangedCtrlsNewArray) {
+      this.changedControls = aChangedCtrlsNewArray;
+    }
+
+    const isNowDirty = this.wasStructureUpdated || this.changedControls.length > 0;
+    if (isNowDirty !== wasDirty) {
+      const notificationType = isNowDirty ? NotificationTypesEnum.TREE_IS_DIRTY : NotificationTypesEnum.TREE_IS_CLEAN;
+      this.outputMessages.emit(notificationType);
+    }
   }
 
   updateDataFromInputControls() {
@@ -114,8 +130,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    this.changedControls = [];
-    this.outputMessages.emit(NotificationTypesEnum.TREE_IS_CLEAN);
+    this.handleChangeInData([], Boolean(false));
   }
 
   getInputCtrlArray(aNode: JsonNode, aLang: string) {
@@ -174,10 +189,11 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
   private constructLanguagesDataStructure(): boolean {
     this.languages4EditingArray = [];
 
-    const englishJson = this.languagesMap.get('en');
-    if (!englishJson) {
+    if (!this.languagesMap || !this.languagesMap.get('en')) {
       return false;
     }
+
+    const englishJson = this.languagesMap.get('en');
 
     // First load the english
     this.data = this.convertJsonIntoJsonNode(englishJson, 'en');
@@ -285,6 +301,8 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         const parentChildrenArray = aNode.parent ? aNode.parent.children() : this.data;
         const res = _.remove(parentChildrenArray, (jsonNode: JsonNode) => jsonNode.id === aNode.id);
 
+        this.handleChangeInData(null, Boolean(true));
+
         this.reRenderTree();
       }
     });
@@ -316,6 +334,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         aNode.children().push(newJsonNode);
         this.recalculateMaxKeyLength4Level(aNode);
 
+        this.handleChangeInData(null, Boolean(true));
         this.treeControl.expand(aNode);
         this.reRenderTree();
       }
@@ -332,6 +351,16 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
   private reRenderTree() {
     this.dataSource.data = null;
     this.dataSource.data = this.data;
+
+    this.changedControls.forEach(changeStruct => {
+      const key = changeStruct.key;
+      const ctrl = this.formControlObjectMap[key].ctrl;
+      if (ctrl) {
+        ctrl.setValue(changeStruct.value);
+      } else {
+        console.error(`Couldn't find ctrl for key :${key}`);
+      }
+    });
   }
 
   private setNodeFullPath(aNode: JsonNode) {
@@ -386,7 +415,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
     newJsonNode.key = aKey;
     newJsonNode.id = `${aParent ? aParent.id + '.' : ''}${aIndex}`;
     newJsonNode.fullPath = `${aParent ? aParent.fullPath + '.' : ''}${aKey}`;
-    const hasChildren = !_.isString(aValue);
+    const hasChildren = !!aValue && !_.isString(aValue);
     newJsonNode.hasChildren = hasChildren;
     newJsonNode.parent = aParent;
     newJsonNode.value = (!hasChildren) ? {[aLang]: aValue} : this.convertJsonIntoJsonNode(aValue, aLang, newJsonNode);
@@ -403,7 +432,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
       const key = objectItem[0] as string;
       const foundJsonNode = jsonNodeObjectMap[key];
       const value = objectItem[1];
-      const hasChildren = !_.isString(value);
+      const hasChildren = !!value && !_.isString(value);
       if (foundJsonNode) {
         if (foundJsonNode.hasChildren === hasChildren) {
           if (hasChildren) {
@@ -416,15 +445,11 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
           foundJsonNode.problemType = ProblemType.MISS_MATCH_PROBLEM;
         }
       } else {
-        const currentFirstItem = aBaseDataModelArray[0];
-        const currentFirstItemPath = currentFirstItem.fullPath;
-        const currentFirstItemParent = currentFirstItem.parent;
-        const lastPointIndex = currentFirstItemPath.lastIndexOf('.');
+        const currentFirstItemParent = aBaseDataModelArray[0] ? aBaseDataModelArray[0].parent : null;
         const newJsonNode = this.createJsonNodeFromKeyValue(aBaseDataModelArray.length, key, value, aLang, currentFirstItemParent);
         newJsonNode.problemType = ProblemType.NOT_EXIST_ON_EN;
         aBaseDataModelArray.push(newJsonNode);
       }
     });
   }
-
 }

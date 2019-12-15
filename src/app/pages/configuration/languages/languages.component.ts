@@ -5,48 +5,38 @@ import {takeUntil} from 'rxjs/operators';
 import {NgRedux} from '@angular-redux/store';
 
 import {NotificationTypesEnum} from '../../../json-editor/shared/dataModels/lang.model';
-import {BaseComponent} from '../../../shared/baseComponent';
+import {BaseLangComponent} from '../base-lang.component';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
 import {StoreDataTypeEnum} from '../../../store/storeDataTypeEnum';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-languages',
   templateUrl: './languages.component.html',
   styleUrls: ['./languages.component.scss']
 })
-export class LanguagesComponent extends BaseComponent {
-  languagesMap: Map<string, any> = new Map<string, any>();
-
+export class LanguagesComponent extends BaseLangComponent {
   showJsonEditor: boolean = false;
   isJsonDirty = false;
 
   staticDataRecentUpdateDate: Date;
 
-  constructor(private ngRedux: NgRedux<any>, private indexedDbService: IndexedDbService) {
-    super();
+  constructor(ngRedux: NgRedux<any>,
+              indexedDbService: IndexedDbService,
+              authService: AuthService) {
+    super(null, ngRedux, authService, indexedDbService);
   }
 
   protected listenForUpdates() {
-    this.ngRedux.select<Date>([StoreDataTypeEnum.INNER_DATA, 'staticDataWasUpdated'])
+    this.ngReduxObj.select<Date>([StoreDataTypeEnum.INNER_DATA, 'staticDataWasUpdated'])
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((staticDataUpdateDate) => {
         if (staticDataUpdateDate && this.staticDataRecentUpdateDate !== staticDataUpdateDate) {
           this.staticDataRecentUpdateDate = staticDataUpdateDate;
-          this.getLanguagesMap();
+          super.getLanguagesMap();
         }
       });
   }
-
-  protected hookOnInit() {
-    this.getLanguagesMap();
-  }
-
-  private getLanguagesMap() {
-    this.indexedDbService.getAllStoredDataRecordsAndKeysMap(DbObjectTypeEnum.LANGUAGES).then((languages) => {
-      this.languagesMap = languages;
-    });
-  }
-
 
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {
     switch (aMessagesEnum) {
@@ -65,6 +55,8 @@ export class LanguagesComponent extends BaseComponent {
   }
 
   languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
-    console.log('languagesMapUpdateReceived ', aReceivedLangMap);
+    this.globalLanguagesMap = aReceivedLangMap;
+
+    super.saveGlobalLanguagesMap();
   }
 }

@@ -10,10 +10,9 @@ import {TranslateService} from '@ngx-translate/core';
 import Swal, {SweetAlertResult} from 'sweetalert2';
 
 import {NotificationTypesEnum} from '../../../json-editor/shared/dataModels/lang.model';
-import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
-import {BaseComponent} from '../../../shared/baseComponent';
+import {IndexedDbService} from '../../../shared/indexed-db.service';
+import {BaseLangComponent} from '../base-lang.component';
 import {EnumUtils} from '../../../utils/enumUtils';
-import {ActionGenerator} from '../../../store/actions/action';
 import {StoreDataTypeEnum} from '../../../store/storeDataTypeEnum';
 
 enum TopicsEnum {
@@ -34,8 +33,7 @@ enum TransKeysEnum {
   templateUrl: './i18n-editing.component.html',
   styleUrls: ['./i18n-editing.component.scss']
 })
-export class I18nEditingComponent extends BaseComponent {
-  globalLanguagesMap: Map<string, any>;
+export class I18nEditingComponent extends BaseLangComponent {
   languagesMap: Map<string, any> = new Map<string, any>();
 
   topics: Array<TopicsEnum> = [];
@@ -50,9 +48,9 @@ export class I18nEditingComponent extends BaseComponent {
   staticDataRecentUpdateDate: Date;
 
   constructor(private ngRedux: NgRedux<any>,
-              private indexedDbService: IndexedDbService,
+              indexedDbService: IndexedDbService,
               translate: TranslateService) {
-    super(translate);
+    super(translate, null, null, indexedDbService);
     this.topics.push(...EnumUtils.getEnumValues(TopicsEnum));
     this.selectedTopic = this.topics[0];
   }
@@ -78,9 +76,8 @@ export class I18nEditingComponent extends BaseComponent {
   }
 
 
-  private getLanguagesMap() {
-    this.indexedDbService.getAllStoredDataRecordsAndKeysMap(DbObjectTypeEnum.LANGUAGES).then((languages) => {
-      this.globalLanguagesMap = languages;
+  protected getLanguagesMap(): Promise<void> {
+    return super.getLanguagesMap().then(() => {
       this.reloadJsonEditorForTopic();
     });
   }
@@ -89,11 +86,7 @@ export class I18nEditingComponent extends BaseComponent {
     this.languagesMap = aReceivedLangMap;
     this.saveJsonEditorDataForTopic();
 
-    const langsObjArray = [];
-    Array.from(this.globalLanguagesMap.entries()).forEach((entry) => {
-      langsObjArray.push({language: entry[0], translation: entry[1]});
-    });
-    this.ngRedux.dispatch(ActionGenerator.updateLanguages(langsObjArray));
+    super.saveGlobalLanguagesMap();
   }
 
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {

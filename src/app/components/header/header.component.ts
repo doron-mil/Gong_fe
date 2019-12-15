@@ -23,10 +23,9 @@ import {SelectCoursesDialogComponent} from '../../dialogs/select-courses-dialog/
 })
 export class HeaderComponent extends BaseComponent {
 
-  @ViewChild('courseFile', {static: false}) file: ElementRef;
+  @ViewChild('courseFile', {static: false}) courseFile: ElementRef;
+  @ViewChild('gongFile', {static: false}) gongFile: ElementRef;
 
-  isLoggedIn = false;
-  currentRole: string;
 
   supportedLanguagesArray: string[];
   currentLanguage: string = 'en';
@@ -43,13 +42,13 @@ export class HeaderComponent extends BaseComponent {
   nextGongSubscription: Subscription;
 
 
-  constructor(private ngRedux: NgRedux<any>,
+  constructor(ngRedux: NgRedux<any>,
               private storeService: StoreService,
-              private authService: AuthService,
+              authService: AuthService,
               private router: Router,
               private dialog: MatDialog,
               private translate: TranslateService) {
-    super();
+    super(null, ngRedux, authService);
   }
 
   protected hookOnInit() {
@@ -60,7 +59,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   protected listenForUpdates() {
-    this.ngRedux.select<BasicServerData>([StoreDataTypeEnum.DYNAMIC_DATA, 'basicServerData'])
+    this.ngReduxObj.select<BasicServerData>([StoreDataTypeEnum.DYNAMIC_DATA, 'basicServerData'])
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((basicServerData: BasicServerData) => {
         if (basicServerData) {
@@ -92,25 +91,11 @@ export class HeaderComponent extends BaseComponent {
         this.delimiterChanged();
       });
 
-    this.ngRedux.select<number>([StoreDataTypeEnum.INNER_DATA, 'uploadCoursesFileEnded'])
+    this.ngReduxObj.select<number>([StoreDataTypeEnum.INNER_DATA, 'uploadCoursesFileEnded'])
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((uploadCount) => {
-        if (this.file && this.file.nativeElement) {
-          this.file.nativeElement.value = '';
-        }
-      });
-
-    this.ngRedux.select<boolean>([StoreDataTypeEnum.INNER_DATA, 'isLoggedIn'])
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe((pIsLoggedIn) => {
-        this.isLoggedIn = pIsLoggedIn;
-        if (!this.isLoggedIn) {
-          this.isLoggedIn = this.authService.loggedIn;
-        }
-        if (pIsLoggedIn) {
-          this.currentRole = this.authService.getRole();
-        } else {
-          this.currentRole = '';
+        if (this.courseFile && this.courseFile.nativeElement) {
+          this.courseFile.nativeElement.value = '';
         }
       });
 
@@ -142,7 +127,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   logout() {
-    this.authService.logout();
+    this.authServiceObj.logout();
     this.router.navigate(['']);
   }
 
@@ -191,18 +176,19 @@ export class HeaderComponent extends BaseComponent {
   }
 
   uploadCoursesFile() {
-    this.file.nativeElement.click();
+    this.courseFile.nativeElement.click();
+  }
+
+  uploadGongFile() {
+    this.gongFile.nativeElement.click();
   }
 
   onCoursesFileChange() {
-    const files = this.file.nativeElement.files;
+    const files = this.courseFile.nativeElement.files;
 
     if (files && files.length === 1) {
       this.storeService.uploadCourseFile(files[0]);
     }
   }
 
-  isAdminRole() {
-    return ['admin', 'dev'].includes(this.currentRole);
-  }
 }
