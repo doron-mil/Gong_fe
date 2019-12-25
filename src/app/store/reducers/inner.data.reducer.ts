@@ -23,6 +23,9 @@ export function innerReducer(state: InnerDataState = INITIAL_INNER_DATA_STATE,
     case ActionTypesEnum.UPLOAD_COURSES_FILE_WAS_COMPLETED:
       state.uploadCoursesFileEnded = state.uploadCoursesFileEnded + 1;
       return state;
+    case ActionTypesEnum.UPLOAD_GONG_FILE_WAS_COMPLETED:
+      state.uploadGongFileEnded = state.uploadGongFileEnded + 1;
+      return state;
     default:
       return Object.assign({}, state);
   }

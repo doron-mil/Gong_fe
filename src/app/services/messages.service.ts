@@ -13,6 +13,8 @@ enum MessagesTranslationEnum {
   GONG_PLAYED_FAILED = 'gongPlayedFailed',
   COURSES_UPLOADED_SUCCESSFULLY = 'coursesUploadedSuccessfully',
   COURSES_UPLOAD_FAILED = 'coursesUploadFailed',
+  GONGS_UPLOADED_SUCCESSFULLY = 'gongUploadedSuccessfully',
+  GONGS_UPLOAD_FAILED = 'gongUploadFailed',
 }
 
 @Injectable({
@@ -80,10 +82,21 @@ export class MessagesService {
     });
   }
 
-  coursesUploaded(aFailedInfo:string) {
+  coursesUploaded(aFailedInfo: string) {
     const transKey = !aFailedInfo ? MessagesTranslationEnum.COURSES_UPLOADED_SUCCESSFULLY :
       MessagesTranslationEnum.COURSES_UPLOAD_FAILED;
-    const addedMessage = aFailedInfo ? `\nAdditionalInfo : ${aFailedInfo}` : '' ;
+    const addedMessage = aFailedInfo ? `\nAdditionalInfo : ${aFailedInfo}` : '';
+    const messageTrans = `${this.getTranlation(transKey)} ${addedMessage}`;
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
+  }
+
+  gongsUploaded(aFailedInfo: string) {
+    const transKey = !aFailedInfo ? MessagesTranslationEnum.GONGS_UPLOADED_SUCCESSFULLY :
+      MessagesTranslationEnum.GONGS_UPLOAD_FAILED;
+    const addedMessage = aFailedInfo ? `\nAdditionalInfo : ${aFailedInfo}` : '';
     const messageTrans = `${this.getTranlation(transKey)} ${addedMessage}`;
     this.snackBar.open(messageTrans, null, {
       duration: 5000,

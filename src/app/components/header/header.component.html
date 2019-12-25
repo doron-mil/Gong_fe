@@ -149,7 +149,7 @@
 </mat-toolbar>
 
 <form >
-  <input type="courseFile" #courseFile style="display: none" (change)="onCoursesFileChange()" accept=".json"/>
-  <input type="courseFile" #gongFile style="display: none" (change)="onCoursesFileChange()" accept=".json"/>
+  <input type="file" #courseFile style="display: none" (change)="onCoursesFileChange()" accept=".json"/>
+  <input type="file" #gongFile style="display: none" (change)="onGongFileChange()" accept="audio/*"/>
 </form>
 

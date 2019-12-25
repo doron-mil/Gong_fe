@@ -25,6 +25,7 @@ export enum ActionFeaturesEnum {
   PLAY_GONG_FEATURE = '[PLAY_GONG_FEATURE]',
   DATE_FORMAT_FEATURE = '[DATE_FORMAT_FEATURE]',
   UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE]',
+  UPLOAD_GONG_FILE_FEATURE = '[UPLOAD_GONG_FILE]',
   UPDATE_LANGUAGES_FEATURE = '[UPDATE_LANGUAGES]',
 }
 
@@ -52,7 +53,9 @@ export enum ActionTypesEnum {
   SET_DATE_FORMAT = 'SET_DATE_FORMAT',
   SET_PLAY_GONG_ENABLED = 'SET_PLAY_GONG_ENABLED',
   UPLOAD_COURSES_FILE = 'UPLOAD_COURSE_FILE',
+  UPLOAD_GONG_FILE = 'UPLOAD_GONG_FILE',
   UPLOAD_COURSES_FILE_WAS_COMPLETED = 'UPLOAD_COURSES_FILE_WAS_COMPLETED',
+  UPLOAD_GONG_FILE_WAS_COMPLETED = 'UPLOAD_GONG_FILE_WAS_COMPLETED',
   UPDATE_LANGUAGES = 'UPDATE_LANGUAGES',
 }
 
@@ -186,6 +189,15 @@ export class ActionGenerator {
 
   static uploadCourseFileHasComplete = () => ({
     type: ActionTypesEnum.UPLOAD_COURSES_FILE_WAS_COMPLETED,
+  });
+
+  static uploadGongFile = (aGongFile: File) => ({
+    type: ActionTypesEnum.UPLOAD_GONG_FILE,
+    payload: aGongFile,
+  });
+
+  static uploadGongFileHasComplete = () => ({
+    type: ActionTypesEnum.UPLOAD_GONG_FILE_WAS_COMPLETED,
   });
 
   static setLoggedIn = (aIsLoggedIn: boolean) => ({

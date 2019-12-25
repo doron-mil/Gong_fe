@@ -217,6 +217,10 @@ export class StoreService implements OnInit, OnDestroy {
     this.ngRedux.dispatch(ActionGenerator.uploadCourseFile(aCourseFile));
   }
 
+  uploadGongFile(aGongFile: File) {
+    this.ngRedux.dispatch(ActionGenerator.uploadGongFile(aGongFile));
+  }
+
   downloadCourses(aCoursesNamesArray: string[]) {
     const coursesRawData = _.get(this.ngRedux.getState(), [StoreDataTypeEnum.STATIC_DATA, 'coursesRawData']);
     const courses = Array.from(JSON.parse(coursesRawData));

@@ -99,6 +99,14 @@ export class HeaderComponent extends BaseComponent {
         }
       });
 
+    this.ngReduxObj.select<number>([StoreDataTypeEnum.INNER_DATA, 'uploadGongFileEnded'])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((uploadCount) => {
+        if (this.gongFile && this.gongFile.nativeElement) {
+          this.gongFile.nativeElement.value = '';
+        }
+      });
+
     this.translate.onLangChange.pipe(
       filter(res => !!res && (res.lang.trim() !== '')),
       takeUntil(this.onDestroy$))
@@ -188,6 +196,13 @@ export class HeaderComponent extends BaseComponent {
 
     if (files && files.length === 1) {
       this.storeService.uploadCourseFile(files[0]);
+    }
+  }
+
+  onGongFileChange() {
+    const files = this.gongFile.nativeElement.files;
+    if (files && files.length === 1) {
+      this.storeService.uploadGongFile(files[0]);
     }
   }
 

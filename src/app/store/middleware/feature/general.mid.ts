@@ -38,6 +38,7 @@ const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
 const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
 const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
+const UPLOAD_GONG_URL = `${BASIC_URL}data/uploadGong`;
 const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
 
 @Injectable()
@@ -321,8 +322,8 @@ export class GeneralMiddlewareService {
         localStorage.setItem('date_format', JSON.stringify(action.payload));
         break;
       case ActionTypesEnum.UPLOAD_COURSES_FILE:
-        const file = action.payload as File;
-        const formData: FormData = new FormData();
+        let file = action.payload as File;
+        let formData: FormData = new FormData();
         formData.append('file', file, file.name);
         next(
           apiRequest(formData, 'POST', UPLOAD_COURSES_URL,
@@ -338,6 +339,32 @@ export class GeneralMiddlewareService {
         this.messagesService.coursesUploaded(action.payload.error && action.payload.error.additional_message);
         next(
           ActionGenerator.uploadCourseFileHasComplete()
+        );
+        break;
+      case ActionTypesEnum.UPLOAD_GONG_FILE:
+        file = action.payload as File;
+        formData = new FormData();
+        formData.append('file', file, file.name);
+        next(
+          apiRequest(formData, 'POST', UPLOAD_GONG_URL,
+            ActionFeaturesEnum.UPLOAD_GONG_FILE_FEATURE, action.payload)
+        );
+        break;
+      case `${ActionFeaturesEnum.UPLOAD_GONG_FILE_FEATURE} ${API_SUCCESS}`:
+        next(
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
+            , {bypassRefreshDateFormat: true}));
+      // tslint:disable-next-line:no-switch-case-fall-through
+      case `${ActionFeaturesEnum.UPLOAD_GONG_FILE_FEATURE} ${API_ERROR}`:
+        let additionalErrorInfo = action.payload.error.additional_message;
+        if (action.payload.error && !additionalErrorInfo) {
+          additionalErrorInfo = 'Unknown Error';
+        } else {
+          additionalErrorInfo = undefined;
+        }
+        this.messagesService.gongsUploaded(additionalErrorInfo);
+        next(
+          ActionGenerator.uploadGongFileHasComplete()
         );
         break;
     }
