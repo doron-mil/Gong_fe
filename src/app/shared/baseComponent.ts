@@ -24,10 +24,6 @@ export class BaseComponent implements OnInit, OnDestroy {
   protected onDestroy$ = new Subject<boolean>();
 
   ngOnInit() {
-    this.translateNeededText();
-    this.listenForUpdates();
-    this.hookOnInit();
-
     if (this.translateService) {
       this.translateService.onLangChange.pipe(
         takeUntil(this.onDestroy$))
@@ -48,6 +44,10 @@ export class BaseComponent implements OnInit, OnDestroy {
           }
         });
     }
+
+    this.translateNeededText();
+    this.listenForUpdates();
+    this.hookOnInit();
   }
 
   ngOnDestroy() {

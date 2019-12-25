@@ -1,12 +1,5 @@
 <mat-tab-group mat-align-tabs="center" class="matTabGroupClass" backgroundColor="disabled" color="accent">
 
-  <mat-tab *ngIf="isAdmin()">
-    <ng-template mat-tab-label>
-      {{ 'main.tabs.config' | translate }}
-    </ng-template>
-    <app-configuration></app-configuration>
-  </mat-tab>
-
 
   <mat-tab>
     <ng-template mat-tab-label>
@@ -20,6 +13,13 @@
       {{ 'main.tabs.automatic' | translate }}
     </ng-template>
     <app-automatic-activation></app-automatic-activation>
+  </mat-tab>
+
+  <mat-tab *ngIf="isAdmin()">
+    <ng-template mat-tab-label>
+      {{ 'main.tabs.config' | translate }}
+    </ng-template>
+    <app-configuration></app-configuration>
   </mat-tab>
 
 

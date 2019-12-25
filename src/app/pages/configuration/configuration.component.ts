@@ -1,8 +1,12 @@
-import {Component, ComponentFactoryResolver, OnInit, ViewChild} from '@angular/core';
-import {DeviceSetupComponent} from './device-setup/device-setup.component';
-import {I18nEditingComponent} from './i18n-editing/i18n-editing.component';
+import {Component, ComponentFactoryResolver, ViewChild} from '@angular/core';
+
+import {NgRedux} from '@angular-redux/store';
+
+import {AuthService} from '../../services/auth.service';
 import {ConfigPageHostDirective} from '../../shared/config-page-host.directive';
 import {BaseComponent} from '../../shared/baseComponent';
+import {DeviceSetupComponent} from './device-setup/device-setup.component';
+import {I18nEditingComponent} from './i18n-editing/i18n-editing.component';
 import {LanguagesComponent} from './languages/languages.component';
 
 interface IComponentRecord {
@@ -15,27 +19,32 @@ interface IComponentRecord {
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.scss']
 })
-export class ConfigurationComponent extends BaseComponent  {
+export class ConfigurationComponent extends BaseComponent {
 
   @ViewChild(ConfigPageHostDirective, {static: true}) mainConfigTemplateCtrl: ConfigPageHostDirective;
 
   componentsArray: IComponentRecord[] = [];
   selectedComponent: IComponentRecord;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {
-    super();
-    this.constructComponentsArray();
+  constructor(
+    ngRedux: NgRedux<any>,
+    authService: AuthService,
+    private componentFactoryResolver: ComponentFactoryResolver) {
+    super(null, ngRedux, authService);
+
   }
 
   protected hookOnInit() {
+    this.constructComponentsArray();
     this.displayComponent(this.selectedComponent);
   }
 
   private constructComponentsArray() {
     this.componentsArray.push({name: 'i18n', component: I18nEditingComponent});
-    this.componentsArray.push({name: 'languages', component: LanguagesComponent});
-    this.componentsArray.push({name: 'deviceSetup', component: DeviceSetupComponent});
-
+    if (this.currentRole === 'dev') {
+      this.componentsArray.push({name: 'languages', component: LanguagesComponent});
+      this.componentsArray.push({name: 'deviceSetup', component: DeviceSetupComponent});
+    }
     this.selectedComponent = this.componentsArray[0];
   }
 
