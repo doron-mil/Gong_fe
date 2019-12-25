@@ -16,8 +16,8 @@ export class BaseComponent implements OnInit, OnDestroy {
               protected authServiceObj: AuthService = null) {
   }
 
-  protected isLoggedIn = false;
-  protected currentRole: string;
+  isLoggedIn = false;
+  currentRole: string;
 
   translationMap = new Map<string, string>();
 
@@ -82,7 +82,11 @@ export class BaseComponent implements OnInit, OnDestroy {
     });
   }
 
-  protected  isAdminRole() {
+  public getIsLoggedIn() {
+    return this.isLoggedIn;
+  }
+
+  public isAdminRole() {
     return ['admin', 'dev'].includes(this.currentRole);
   }
 

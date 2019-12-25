@@ -19,18 +19,18 @@
         </span>
       </button>
 
-      <mat-divider *ngIf="isLoggedIn"></mat-divider>
+      <mat-divider *ngIf="getIsLoggedIn()"></mat-divider>
 
-      <button mat-menu-item [matMenuTriggerFor]="exportImportMenu" *ngIf="isLoggedIn && isAdminRole()">
+      <button mat-menu-item [matMenuTriggerFor]="exportImportMenu" *ngIf="getIsLoggedIn() && isAdminRole()">
         <mat-icon svgIcon="swap-vertical-bold"></mat-icon>
         <span>
           {{'main.menu.exportImport.main' | translate}}
         </span>
       </button>
 
-      <mat-divider *ngIf="isLoggedIn"></mat-divider>
+      <mat-divider *ngIf="getIsLoggedIn()"></mat-divider>
 
-      <button mat-menu-item (click)="logout()" *ngIf="isLoggedIn">
+      <button mat-menu-item (click)="logout()" *ngIf="getIsLoggedIn()">
         <mat-icon svgIcon="logout"></mat-icon>
         <span>
           {{'main.menu.logout' | translate}}
@@ -127,7 +127,7 @@
     {{'main.labels.currentTime' | translate}} : {{ now | amDateFormat: 'HH:mm'}}
   </section>
 
-  <section class="nextGongTimeContainer" [ngClass]="{langRtl: currentLanguage === 'he'}" *ngIf="isLoggedIn">
+  <section class="nextGongTimeContainer" [ngClass]="{langRtl: currentLanguage === 'he'}" *ngIf="getIsLoggedIn()">
     {{'main.labels.nextGong' | translate}} :
     <div *ngIf="nextGongTime">
       {{ nextGongTime | amDateFormat: currentDateFormat.delimited + ' HH:mm'}}

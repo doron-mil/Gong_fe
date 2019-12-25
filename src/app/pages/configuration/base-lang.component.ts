@@ -8,7 +8,7 @@ import {ActionGenerator} from '../../store/actions/action';
 
 
 export class BaseLangComponent extends BaseComponent {
-  protected globalLanguagesMap: Map<string, any>;
+  globalLanguagesMap: Map<string, any>;
 
   constructor(translateService: TranslateService = null,
               ngRedux: NgRedux<any> = null,
@@ -33,6 +33,7 @@ export class BaseLangComponent extends BaseComponent {
     });
     this.ngReduxObj.dispatch(ActionGenerator.updateLanguages(langsObjArray));
   }
+
 
 
 }
