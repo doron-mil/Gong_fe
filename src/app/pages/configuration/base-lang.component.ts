@@ -18,11 +18,15 @@ export class BaseLangComponent extends BaseComponent {
   }
 
   protected getLanguagesMap(): Promise<void> {
-    return new Promise(resolve => {
-      this.indexedDbService.getAllStoredDataRecordsAndKeysMap(DbObjectTypeEnum.LANGUAGES).then((languages) => {
-        this.globalLanguagesMap = languages;
-        resolve();
-      });
+    return new Promise((resolve, reject) => {
+      if (this.indexedDbService) {
+        this.indexedDbService.getAllStoredDataRecordsAndKeysMap(DbObjectTypeEnum.LANGUAGES).then((languages) => {
+          this.globalLanguagesMap = languages;
+          resolve();
+        });
+      } else {
+        reject();
+      }
     });
   }
 
@@ -31,9 +35,10 @@ export class BaseLangComponent extends BaseComponent {
     Array.from(this.globalLanguagesMap.entries()).forEach((entry) => {
       langsObjArray.push({language: entry[0], translation: entry[1]});
     });
-    this.ngReduxObj.dispatch(ActionGenerator.updateLanguages(langsObjArray));
+    if (this.ngReduxObj) {
+      this.ngReduxObj.dispatch(ActionGenerator.updateLanguages(langsObjArray));
+    }
   }
-
 
 
 }

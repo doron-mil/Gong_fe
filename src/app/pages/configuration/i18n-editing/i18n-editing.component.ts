@@ -47,17 +47,17 @@ export class I18nEditingComponent extends BaseLangComponent {
 
   staticDataRecentUpdateDate: Date;
 
-  constructor(private ngRedux: NgRedux<any>,
+  constructor(ngRedux: NgRedux<any>,
               indexedDbService: IndexedDbService,
               translate: TranslateService) {
-    super(translate, null, null, indexedDbService);
+    super(translate, ngRedux, null, indexedDbService);
     this.topics.push(...EnumUtils.getEnumValues(TopicsEnum));
     this.selectedTopic = this.topics[0];
   }
 
 
   protected listenForUpdates() {
-    this.ngRedux.select<Date>([StoreDataTypeEnum.INNER_DATA, 'staticDataWasUpdated'])
+    this.ngReduxObj.select<Date>([StoreDataTypeEnum.INNER_DATA, 'staticDataWasUpdated'])
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((staticDataUpdateDate) => {
         if (staticDataUpdateDate && this.staticDataRecentUpdateDate !== staticDataUpdateDate) {
