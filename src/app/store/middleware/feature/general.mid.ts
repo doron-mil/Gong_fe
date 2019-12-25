@@ -356,9 +356,11 @@ export class GeneralMiddlewareService {
             , {bypassRefreshDateFormat: true}));
       // tslint:disable-next-line:no-switch-case-fall-through
       case `${ActionFeaturesEnum.UPLOAD_GONG_FILE_FEATURE} ${API_ERROR}`:
-        let additionalErrorInfo = action.payload.error.additional_message;
-        if (action.payload.error && !additionalErrorInfo) {
-          additionalErrorInfo = 'Unknown Error';
+        let additionalErrorInfo = action.payload.error && action.payload.error.additional_message;
+        if (action.payload.error) {
+          if (!additionalErrorInfo) {
+            additionalErrorInfo = action.payload.error.message ? action.payload.error.message : 'Unknown Error';
+          }
         } else {
           additionalErrorInfo = undefined;
         }
