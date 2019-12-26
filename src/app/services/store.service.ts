@@ -18,6 +18,7 @@ import {ScheduledCourseGong} from '../model/ScheduledCourseGong';
 import {Gong} from '../model/gong';
 import {DateFormat} from '../model/dateFormat';
 import {BasicServerData} from '../model/basicServerData';
+import {IObjectMap} from '../model/store-model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,14 +26,13 @@ import {BasicServerData} from '../model/basicServerData';
 export class StoreService implements OnInit, OnDestroy {
 
   private areasMapObservable: BehaviorSubject<Area[]> = new BehaviorSubject<Area[]>([]);
-  private gongTypesMapObservable: BehaviorSubject<GongType[]> = new BehaviorSubject<GongType[]>([]);
-  private coursesMapObservableObsolete: BehaviorSubject<{ [key: string]: Course }> =
-    new BehaviorSubject<{ [key: string]: Course }>({});
+  private gongTypesMapObservable: BehaviorSubject<IObjectMap<GongType>> = new BehaviorSubject<IObjectMap<GongType>>({});
+  private coursesMapObservableObsolete: BehaviorSubject<IObjectMap<Course>> = new BehaviorSubject<IObjectMap<Course>>({});
   private coursesMapObservable: BehaviorSubject<Map<string, Course>> = new BehaviorSubject<Map<string, Course>>(null);
 
   areasMap: Area[] = [];
-  gongTypesMap: GongType[] = [];
-  coursesMapObsolete: { [key: string]: Course } = {};
+  gongTypesMap: IObjectMap<GongType> = {};
+  coursesMapObsolete: IObjectMap<Course> = {};
   coursesMap: Map<string, Course>;
 
   subscriptionsArray: Subscription[] = [];
@@ -74,7 +74,7 @@ export class StoreService implements OnInit, OnDestroy {
       this.ngRedux.select<GongType[]>([StoreDataTypeEnum.STATIC_DATA, 'gongTypes'])
         .subscribe((gongTypes: GongType[]) => {
           if (gongTypes && gongTypes.length > 0) {
-            this.gongTypesMap = new Array();
+            this.gongTypesMap = {};
             gongTypes.forEach((gongType: GongType) => {
               this.gongTypesMap[gongType.id] = gongType;
             });
@@ -123,7 +123,7 @@ export class StoreService implements OnInit, OnDestroy {
     return this.areasMapObservable;
   }
 
-  getGongTypesMap(): Observable<GongType[]> {
+  getGongTypesMap(): Observable<IObjectMap<GongType>> {
     return this.gongTypesMapObservable;
   }
 
@@ -139,7 +139,7 @@ export class StoreService implements OnInit, OnDestroy {
     return await this.areasMapObservable.toPromise();
   }
 
-  async getGongTypesMapAsync(): Promise<GongType[]> {
+  async getGongTypesMapAsync(): Promise<IObjectMap<GongType>> {
     return await this.gongTypesMapObservable.toPromise();
   }
 

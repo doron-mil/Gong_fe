@@ -14,6 +14,7 @@ import {UpdateStatusEnum} from '../../model/updateStatusEnum';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {MessagesService} from '../../services/messages.service';
 import {Gong} from '../../model/gong';
+import {IObjectMap} from '../../model/store-model';
 
 @Component({
   selector: 'app-manual-activation',
@@ -95,8 +96,8 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   private constructGongTypesArray() {
     this.gongTypes = [];
 
-    this.storeService.getGongTypesMap().subscribe((gongTypesMap: GongType[]) => {
-      this.gongTypes = gongTypesMap;
+    this.storeService.getGongTypesMap().subscribe((gongTypesMap: IObjectMap<GongType>) => {
+      this.gongTypes = Array.from(Object.values(gongTypesMap));
       this.isGongTypesArrayReady.next(true);
       if (this.gongTypes && this.gongTypes[0]) {
         this.gongToPlay.gongTypeId = this.gongTypes[0].id;
