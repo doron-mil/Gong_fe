@@ -64,6 +64,7 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
 
     this.gongToPlay.areas = [];
     this.gongToPlay.volume = 100;
+    this.gongToPlay.repeat = 1;
     this.gongToPlay.isActive = true;
     this.gongToPlay.updateStatus = UpdateStatusEnum.PENDING;
   }
@@ -146,6 +147,10 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
 
   private computeDatePickerStartTime() {
     this.scheduleGongStartDate = moment().add(1, 'm').toDate();
+  }
+
+  repeatIncrement( aIncrementValue = 1){
+    this.gongToPlay.repeat += aIncrementValue;
   }
 
   reopen() {

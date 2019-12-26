@@ -79,6 +79,9 @@
         "propertyNameInJson": "day_number"
       },
       {
+        "propertyName": "repeat"
+      },
+      {
         "propertyName": "time",
         "conversionFunctionName": "timeConversion",
         "conversionFunctionToJsonName": "timeToStrConversionForJson"

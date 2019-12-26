@@ -18,13 +18,38 @@
       </div>
 
       <button mat-fab color="accent" (click)="playGong()" class="manual-button"
-              [disabled]="!playGongEnabled || gongToPlay.areas.length <= 0">
+              [disabled]="!playGongEnabled || gongToPlay.areas.length <= 0"
+              matTooltip="{{ 'manualActivation.buttons.play' | translate }}">
         <mat-icon svgIcon="play"></mat-icon>
       </button>
       <button mat-raised-button color="primary" (click)="scheduleGong()" class="manual-button schedule-button"
-              [disabled]="gongToPlay.areas.length <= 0">
-        {{ 'manualActivation.buttons.schedulePlay' | translate }}
+              [disabled]="gongToPlay.areas.length <= 0"
+              matTooltip="{{ 'manualActivation.buttons.schedulePlay' | translate }}">
+        <mat-icon svgIcon="timetable"></mat-icon>
       </button>
+      <div class="repeat-div" matTooltip="{{ 'manualActivation.buttons.repeat' | translate }}">
+        <div class="r-side">
+          R
+        </div>
+        <div class="l-side">
+          <div class="spinner-button-container">
+            <button mat-raised-button color="primary" (click)="repeatIncrement()" class="spinner-button"
+                    [disabled]="gongToPlay.areas.length <= 0 || gongToPlay.repeat >= 20">
+              <mat-icon svgIcon="menu-up"></mat-icon>
+            </button>
+          </div>
+          <div class="repeat-number">
+            {{gongToPlay.repeat}}
+          </div>
+          <div class="spinner-button-container">
+            <button mat-raised-button color="primary"
+                    (click)="repeatIncrement(-1)" class="spinner-button"
+                    [disabled]="gongToPlay.areas.length <= 0 || gongToPlay.repeat <= 1">
+              <mat-icon svgIcon="menu-down"></mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
     </div><!--End of btnGroup-->
 
     <div class="gongs-features-controls-container">

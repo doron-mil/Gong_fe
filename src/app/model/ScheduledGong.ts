@@ -13,6 +13,7 @@ export class ScheduledGong {
   areas: number[];
   volume: number;
   isActive: boolean;
+  repeat: number;
 
   // Only used internally - not initialized
   updateStatus: UpdateStatusEnum;
@@ -28,6 +29,7 @@ export class ScheduledGong {
     clonedObject.areas = this.areas;
     clonedObject.volume = this.volume;
     clonedObject.isActive = this.isActive;
+    clonedObject.repeat = this.repeat;
 
     clonedObject.date = this.date;
     clonedObject.time = this.time;

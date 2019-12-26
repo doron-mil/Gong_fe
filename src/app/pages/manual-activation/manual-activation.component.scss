@@ -1,3 +1,7 @@
+@import '~@angular/material/theming';
+
+$primary: mat-palette($mat-indigo);
+
 .manual-main-container {
   height: 95%;
 }
@@ -30,6 +34,55 @@
 
     .schedule-button {
       height: 50px;
+      width: 50px;
+      min-width: unset;
+    }
+
+    .repeat-div {
+      width: 60px;
+      display: flex;
+      justify-content: space-evenly;
+      border: 3px mat-color($primary) solid;
+      border-radius: 8px;
+      margin-left: 10px;
+
+      .r-side {
+        width: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: x-large;
+        font-weight: bolder;
+        padding: 5px;
+        color: mat-color($primary);
+      }
+
+      .l-side {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .spinner-button-container {
+        width: 100%;
+
+        .spinner-button {
+          height: 12px;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          min-width: unset;
+
+          ::ng-deep span {
+            position: absolute;
+            top: -13px;
+          }
+        }
+      }
+
+      .repeat-number {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 
