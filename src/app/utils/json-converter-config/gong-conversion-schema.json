@@ -137,7 +137,8 @@
         "propertyNameInJson": "gong.areas"
       },
       {
-        "propertyName": "repeat"
+        "propertyName": "repeat",
+        "propertyNameInJson": "gong.repeat"
       }
     ]
   },
