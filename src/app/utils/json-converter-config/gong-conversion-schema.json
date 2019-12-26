@@ -79,9 +79,6 @@
         "propertyNameInJson": "day_number"
       },
       {
-        "propertyName": "repeat"
-      },
-      {
         "propertyName": "time",
         "conversionFunctionName": "timeConversion",
         "conversionFunctionToJsonName": "timeToStrConversionForJson"
@@ -138,6 +135,9 @@
       {
         "propertyName": "areas",
         "propertyNameInJson": "gong.areas"
+      },
+      {
+        "propertyName": "repeat"
       }
     ]
   },
@@ -155,6 +155,9 @@
       {
         "propertyName": "areas",
         "propertyNameInJson": "areas"
+      },
+      {
+        "propertyName": "repeat"
       }
     ]
   }

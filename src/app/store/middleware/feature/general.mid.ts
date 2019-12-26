@@ -316,7 +316,7 @@ export class GeneralMiddlewareService {
         break;
       case `${ActionFeaturesEnum.PLAY_GONG_FEATURE} ${API_SUCCESS}`:
         next(ActionGenerator.setPlayGongEnabled(true));
-        this.messagesService.gongPlayedResult(action.payload.gongSuccessPlay);
+        this.messagesService.gongPlayedResult(action.payload.data.gongSuccessPlay);
         break;
       case ActionTypesEnum.SET_DATE_FORMAT:
         localStorage.setItem('date_format', JSON.stringify(action.payload));
