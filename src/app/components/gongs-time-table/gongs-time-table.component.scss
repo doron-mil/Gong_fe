@@ -37,13 +37,21 @@ th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
   flex-direction: row;
   justify-content: center;
 
-  .repeat {
+  .repeat-volume_container {
     position: relative;
-    top: 6px;
-    bottom: 6px;
-    //left: 16px;
-    font-size: smaller;
-    font-weight: bolder;
+
+    .repeat-container {
+      position: relative;
+      top: 6px;
+      bottom: 6px;
+      //left: 16px;
+      font-size: smaller;
+      font-weight: bolder;
+    }
+
+    .mat-progress-spinner {
+      top: -14px;
+    }
   }
 }
 

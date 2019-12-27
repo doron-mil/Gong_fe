@@ -69,17 +69,19 @@
     <th mat-header-cell *matHeaderCellDef class="volumeTd">
       {{ 'general.tableHeaders.gongsTimeTable.volume' | translate }}
       <BR>
-      (Repeat)
+      ({{ 'general.tableHeaders.gongsTimeTable.repeat' | translate }})
     </th>
     <td mat-cell *matCellDef="let element" class="volumeTd"
         [ngClass]="{'nextGong' : element.isTheNextGong}">
       <div matTooltip="{{element.volume}} %" matTooltipClass="volumeTooltipClass"
            class="volumeContainer">
-        <div class="repeat" [style.left.px]="((''+element.repeat).length ===1)?15:19">
-          {{element.repeat}}
+        <div class="repeat-volume_container">
+          <div class="repeat-container" >
+            {{element.repeat}}
+          </div>
+          <mat-progress-spinner [value]="element.volume" [diameter]="25" [strokeWidth]="3">
+          </mat-progress-spinner>
         </div>
-        <mat-progress-spinner [value]="element.volume" [diameter]="25" [strokeWidth]="3">
-        </mat-progress-spinner>
       </div>
     </td>
   </ng-container>
