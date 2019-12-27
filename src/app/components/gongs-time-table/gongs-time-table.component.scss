@@ -36,6 +36,15 @@ th.mat-header-cell:first-of-type, td.mat-cell:first-of-type {
   display: flex;
   flex-direction: row;
   justify-content: center;
+
+  .repeat {
+    position: relative;
+    top: 6px;
+    bottom: 6px;
+    //left: 16px;
+    font-size: smaller;
+    font-weight: bolder;
+  }
 }
 
 .dayClass {
@@ -70,6 +79,6 @@ th.mat-header-cell:last-of-type {
   padding-right: unset;
 }
 
-::ng-deep .toggle-gong-check .mat-checkbox-layout{
+::ng-deep .toggle-gong-check .mat-checkbox-layout {
   border: 2px solid blue;
 }

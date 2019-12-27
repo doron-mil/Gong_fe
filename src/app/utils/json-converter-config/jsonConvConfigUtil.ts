@@ -19,6 +19,7 @@ const addNewGongToArray = (aCourseDay, aGongTime, aGongRecord, aGongsArray) => {
   newScheduledGong.gongTypeId = aGongRecord.type;
   newScheduledGong.areas = aGongRecord.areas;
   newScheduledGong.volume = aGongRecord.volume ? aGongRecord.volume : 100;
+  newScheduledGong.repeat = aGongRecord.repeat ? aGongRecord.repeat : 1;
   aGongsArray.push(newScheduledGong);
 };
 
