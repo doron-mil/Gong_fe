@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {NgRedux} from '@angular-redux/store';
 
-import {filter, first, takeUntil} from 'rxjs/operators';
+import {filter, first} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'lodash';
@@ -19,6 +19,7 @@ import {Gong} from '../model/gong';
 import {DateFormat} from '../model/dateFormat';
 import {BasicServerData} from '../model/basicServerData';
 import {IObjectMap} from '../model/store-model';
+import {ETopic, ITopicData} from '../model/topics-model';
 
 @Injectable({
   providedIn: 'root'
@@ -243,15 +244,46 @@ export class StoreService implements OnInit, OnDestroy {
 
   }
 
-  getCoursesNames(a4Role: String): string[] {
-    let coursesNamesArray = [];
-    if (a4Role === 'dev') {
-      coursesNamesArray = Array.from(this.coursesMap.keys());
-    } else {
-      const coursesArray = Array.from(this.coursesMap.values());
-      const coursesArrayFiltered = coursesArray.filter((course) => !course.isTest && !course.name.toLowerCase().includes('test'));
-      coursesNamesArray = coursesArrayFiltered.map((course) => course.name);
+  getTopicsData(aTopic: ETopic, aRole: string, aCheckIfUsed: boolean): ITopicData[] {
+    let rawDataArray: any[] = [];
+    let retTopicsDataArray: ITopicData[] = [];
+    switch (aTopic) {
+      case ETopic.COURSE:
+        rawDataArray = this.getCourses(aRole);
+        retTopicsDataArray = rawDataArray.map((course: Course) => ({
+          id: course.name,
+          name: course.name,
+          inUse: aCheckIfUsed && this.courseScheduleArray.some(courseSchedule => courseSchedule.name === course.name)
+        }));
+        break;
+      case ETopic.GONG:
+        rawDataArray = this.getGongs();
+        retTopicsDataArray = rawDataArray.map(gong => ({
+          id: gong.id.toString(10),
+          name: gong.name,
+          inUse: aCheckIfUsed && Array.from(this.coursesMap.values()).some(course => course.isGongTypeInCourse(gong))
+        }));
+        break;
     }
+    return retTopicsDataArray;
+  }
+
+  getGongs(): GongType[] {
+    const gongsArray = Array.from(Object.values(this.gongTypesMap));
+    return gongsArray;
+  }
+
+  getCourses(a4Role: String): Course[] {
+    let coursesArray = Array.from(this.coursesMap.values());
+    if (a4Role !== 'dev') {
+      coursesArray = coursesArray.filter((course) => !course.isTest && !course.name.toLowerCase().includes('test'));
+    }
+    return coursesArray;
+  }
+
+  getCoursesNames(a4Role: String): string[] {
+    const coursesArray = this.getCourses(a4Role);
+    const coursesNamesArray = coursesArray.map((course) => course.name);
     return coursesNamesArray;
   }
 
@@ -272,4 +304,22 @@ export class StoreService implements OnInit, OnDestroy {
 
   }
 
+  deleteCourse(aCourseName: string) {
+
+  }
+
+  getLastGongTopicData(): ITopicData {
+    const gongTypesArray = Object.values(this.gongTypesMap);
+    if (gongTypesArray.length > 0) {
+      const lastGong = gongTypesArray[gongTypesArray.length - 1];
+      const inUse = Array.from(this.coursesMap.values()).some(course => course.isGongTypeInCourse(lastGong));
+      return {id: lastGong.id.toString(10), name: lastGong.name, inUse};
+    } else {
+      return undefined;
+    }
+  }
+
+  deleteGong(aGongTopicData: ITopicData) {
+
+  }
 }

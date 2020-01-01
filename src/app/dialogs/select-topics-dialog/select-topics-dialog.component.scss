@@ -5,7 +5,7 @@
   flex-direction: row;
   justify-content: flex-end;
 
-  .courses-container {
+  .topics-container {
     width: 95%;
     height: 90%;
     overflow-y: auto;
@@ -15,9 +15,17 @@
       justify-content: flex-start;
       align-items: flex-end;
 
-      .course-name{
+      .topic-name{
         padding-left: 1vw;
+
+        &.disabled{
+          color: lightgray;
+        }
       }
     }
   }
+}
+
+.submit-button {
+  margin-left: 2vw;
 }

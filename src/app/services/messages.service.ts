@@ -15,6 +15,8 @@ enum MessagesTranslationEnum {
   COURSES_UPLOAD_FAILED = 'coursesUploadFailed',
   GONGS_UPLOADED_SUCCESSFULLY = 'gongUploadedSuccessfully',
   GONGS_UPLOAD_FAILED = 'gongUploadFailed',
+  LAST_GONGS_IS_IN_USE = 'lastGongIsInUse',
+  LAST_GONGS_NOT_FOUND = 'lastGongNotFound',
 }
 
 @Injectable({
@@ -98,6 +100,16 @@ export class MessagesService {
       MessagesTranslationEnum.GONGS_UPLOAD_FAILED;
     const addedMessage = aFailedInfo ? `\nAdditionalInfo : ${aFailedInfo}` : '';
     const messageTrans = `${this.getTranlation(transKey)} ${addedMessage}`;
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
+  }
+
+  lastGongIsBeingUsed(aGongName: string) {
+    const transKey = aGongName ? MessagesTranslationEnum.LAST_GONGS_IS_IN_USE :
+      MessagesTranslationEnum.LAST_GONGS_NOT_FOUND;
+    const messageTrans = `${aGongName} ${this.getTranlation(transKey)}`;
     this.snackBar.open(messageTrans, null, {
       duration: 5000,
       panelClass: 'snackBarClass',

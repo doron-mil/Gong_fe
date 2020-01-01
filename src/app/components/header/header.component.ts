@@ -8,13 +8,27 @@ import {TranslateService} from '@ngx-translate/core';
 import {NgRedux} from '@angular-redux/store';
 
 import moment from 'moment';
+
+import Swal, {SweetAlertResult} from 'sweetalert2';
+
 import {BaseComponent} from '../../shared/baseComponent';
 import {DateFormat} from '../../model/dateFormat';
 import {BasicServerData} from '../../model/basicServerData';
 import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {StoreService} from '../../services/store.service';
 import {AuthService} from '../../services/auth.service';
-import {SelectCoursesDialogComponent} from '../../dialogs/select-courses-dialog/select-courses-dialog.component';
+import {EAction, SelectTopicsDialogComponent} from '../../dialogs/select-topics-dialog/select-topics-dialog.component';
+import {ETopic, ITopicData} from '../../model/topics-model';
+import {EnumUtils} from '../../utils/enumUtils';
+import {MessagesService} from '../../services/messages.service';
+
+enum ETranslation {
+  DELETE_CONFIRM_TITLE = 'main.header.confirm.delete.title',
+  DELETE_GONG_CONFIRM_TEXT = 'main.header.confirm.delete.text.gong',
+  DELETE_COURSE_CONFIRM_TEXT = 'main.header.confirm.delete.text.course',
+  CONFIRM_DELETE_SUBMIT = 'main.header.confirm.delete.buttons.confirm',
+  CONFIRM_DELETE_CANCEL = 'main.header.confirm.delete.buttons.cancel',
+}
 
 @Component({
   selector: 'app-header',
@@ -41,14 +55,21 @@ export class HeaderComponent extends BaseComponent {
   timerSubscription: Subscription;
   nextGongSubscription: Subscription;
 
+  topic = ETopic;
+  topicAction = EAction;
+  deleteConfirmTranslationObjectKey: { [key: string]: ETranslation } = {};
 
   constructor(ngRedux: NgRedux<any>,
               private storeService: StoreService,
               authService: AuthService,
               private router: Router,
               private dialog: MatDialog,
-              private translate: TranslateService) {
-    super(null, ngRedux, authService);
+              translate: TranslateService,
+              private messagesService: MessagesService) {
+    super(translate, ngRedux, authService);
+
+    this.deleteConfirmTranslationObjectKey[ETopic.GONG] = ETranslation.DELETE_GONG_CONFIRM_TEXT;
+    this.deleteConfirmTranslationObjectKey[ETopic.COURSE] = ETranslation.DELETE_COURSE_CONFIRM_TEXT;
   }
 
   protected hookOnInit() {
@@ -56,6 +77,10 @@ export class HeaderComponent extends BaseComponent {
     this.getSupportedLanguages();
     this.initDateFormatOptions();
 
+  }
+
+  protected getKeysArray4Translations(): string[] {
+    return EnumUtils.getEnumValues(ETranslation);
   }
 
   protected listenForUpdates() {
@@ -107,7 +132,7 @@ export class HeaderComponent extends BaseComponent {
         }
       });
 
-    this.translate.onLangChange.pipe(
+    this.translateService.onLangChange.pipe(
       filter(res => !!res && (res.lang.trim() !== '')),
       takeUntil(this.onDestroy$))
       .subscribe((newSetLang) => {
@@ -131,7 +156,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   private getSupportedLanguages() {
-    this.supportedLanguagesArray = this.translate.getLangs().filter(lang => lang.trim() !== '');
+    this.supportedLanguagesArray = this.translateService.getLangs().filter(lang => lang.trim() !== '');
   }
 
   logout() {
@@ -145,7 +170,7 @@ export class HeaderComponent extends BaseComponent {
 
   setLanguage(lang: string) {
     this.currentLanguage = lang;
-    this.translate.use(lang);
+    this.translateService.use(lang);
   }
 
   setDateFormat(aDateFormat: DateFormat) {
@@ -162,25 +187,6 @@ export class HeaderComponent extends BaseComponent {
     if (this.dateFormatOptions) {
       this.dateFormatOptions.forEach(dateFormat => dateFormat.changeDelimited(this.currentDateFormat.delimiter));
     }
-  }
-
-  downloadFile() {
-    const coursesNames = this.storeService.getCoursesNames(this.currentRole);
-
-    const dialogRef = this.dialog.open(SelectCoursesDialogComponent, {
-      height: '70vh',
-      width: '70vw',
-      position: {top: '15vh'},
-      data: {availableCourses: coursesNames, forAction: 'download'}
-    });
-
-    dialogRef.afterClosed()
-      .pipe(first())
-      .subscribe((selectedCourses: string[]) => {
-        if (selectedCourses) {
-          this.storeService.downloadCourses(selectedCourses);
-        }
-      });
   }
 
   uploadCoursesFile() {
@@ -206,4 +212,61 @@ export class HeaderComponent extends BaseComponent {
     }
   }
 
+  openUpdateDeleteDialog(aTopic: ETopic, aAction: EAction) {
+    const checkIfUsed = aAction !== EAction.DOWNLOAD;
+    const isMany = aAction === EAction.DOWNLOAD;
+    const availableTopics: ITopicData[] = this.storeService.getTopicsData(aTopic, this.currentRole, checkIfUsed);
+
+    const dialogRef = this.dialog.open(SelectTopicsDialogComponent, {
+      height: '600px',
+      width: '800px',
+      position: {top: '15vh'},
+      data: {topic: aTopic, availableTopics, forAction: aAction, many: isMany}
+    });
+
+    dialogRef.afterClosed()
+      .pipe(first())
+      .subscribe((selectedTopics: ITopicData[]) => {
+        switch (aAction) {
+          case EAction.DOWNLOAD:
+            const selectedCourses = selectedTopics.map(topicData => topicData.id);
+            this.storeService.downloadCourses(selectedCourses);
+            break;
+          case EAction.UPDATE:
+            this.gongFile.nativeElement.click();
+            break;
+          case EAction.DELETE:
+            this.displayDeleteConfirmAlert(ETopic.COURSE, selectedTopics[0]).then(
+              () => this.storeService.deleteCourse(selectedTopics[0].id)).catch(() => false);
+            break;
+        }
+      });
+  }
+
+  deleteLastGong() {
+    const lastGongTopicData: ITopicData = this.storeService.getLastGongTopicData();
+    if (lastGongTopicData && !lastGongTopicData.inUse) {
+      this.displayDeleteConfirmAlert(ETopic.GONG, lastGongTopicData).then(() => this.storeService.deleteGong(lastGongTopicData))
+        .catch(() => false);
+    } else {
+      this.messagesService.lastGongIsBeingUsed(lastGongTopicData && lastGongTopicData.name);
+    }
+  }
+
+
+  private async displayDeleteConfirmAlert(aTopic: ETopic, aTopicData: ITopicData): Promise<void> {
+    const mainText = this.translationMap.get(this.deleteConfirmTranslationObjectKey[aTopic]);
+    const result: SweetAlertResult = await Swal.fire({
+      title: this.translationMap.get(ETranslation.DELETE_CONFIRM_TITLE),
+      text: `${mainText} : ${aTopicData.name}?`,
+      imageUrl: '/assets/icons/alerts/icons8-error-48.png',
+      customClass: 'confirmClass',
+      confirmButtonText: this.translationMap.get(ETranslation.CONFIRM_DELETE_SUBMIT),
+      showCancelButton: true,
+      cancelButtonText: this.translationMap.get(ETranslation.CONFIRM_DELETE_CANCEL),
+    });
+
+
+    return (result.value === true) ? Promise.resolve() : Promise.reject();
+  }
 }

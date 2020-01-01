@@ -1,7 +1,7 @@
 import {OnDestroy, OnInit} from '@angular/core';
 
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {first, takeUntil} from 'rxjs/operators';
 
 import {NgRedux} from '@angular-redux/store';
 import {TranslateService} from '@ngx-translate/core';
@@ -45,9 +45,8 @@ export class BaseComponent implements OnInit, OnDestroy {
         });
     }
 
-    this.translateNeededText();
     this.listenForUpdates();
-    this.hookOnInit();
+    this.translateNeededText().then(() => this.hookOnInit());
   }
 
   ngOnDestroy() {
@@ -70,15 +69,18 @@ export class BaseComponent implements OnInit, OnDestroy {
     return this.translationMap.get(aKey);
   }
 
-  private translateNeededText() {
+  private translateNeededText(): Promise<void> {
     this.translationMap.clear();
     const keysArray = this.getKeysArray4Translations();
     if (!this.translateService || keysArray.length <= 0) {
-      return;
+      return Promise.resolve();
     }
 
-    this.translateService.get(keysArray).subscribe(transResult => {
-      keysArray.forEach((key) => this.translationMap.set(key, transResult[key]));
+    return new Promise<void>(resolve => {
+      this.translateService.get(keysArray).pipe(first()).subscribe(transResult => {
+        keysArray.forEach((key) => this.translationMap.set(key, transResult[key]));
+        resolve();
+      });
     });
   }
 

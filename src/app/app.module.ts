@@ -58,7 +58,7 @@ import {SelectedAreasComponent} from './components/selected-areas/selected-areas
 import {GongsTimeTableComponent} from './components/gongs-time-table/gongs-time-table.component';
 
 import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/schedule-course-dialog.component';
-import {SelectCoursesDialogComponent} from './dialogs/select-courses-dialog/select-courses-dialog.component';
+import {SelectTopicsDialogComponent} from './dialogs/select-topics-dialog/select-topics-dialog.component';
 import { LanguagesComponent } from './pages/configuration/languages/languages.component';
 
 export function tokenGetter() {
@@ -101,7 +101,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     MinDirective,
     MaxDirective,
     HeaderComponent,
-    SelectCoursesDialogComponent,
+    SelectTopicsDialogComponent,
     ConfigurationComponent,
     DeviceSetupComponent,
     I18nEditingComponent,
@@ -131,7 +131,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
   ],
   entryComponents: [
     ScheduleCourseDialogComponent,
-    SelectCoursesDialogComponent,
+    SelectTopicsDialogComponent,
     DeviceSetupComponent,
     I18nEditingComponent,
     LanguagesComponent,

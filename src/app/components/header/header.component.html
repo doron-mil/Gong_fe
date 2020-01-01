@@ -93,6 +93,20 @@
         </span>
       </button>
 
+      <button mat-menu-item [matMenuTriggerFor]="updateMenu">
+        <mat-icon svgIcon="refresh"></mat-icon>
+        <span>
+          {{'main.menu.exportImport.subMenu.update.main' | translate}}
+        </span>
+      </button>
+
+      <button mat-menu-item [matMenuTriggerFor]="deletetMenu">
+        <mat-icon svgIcon="delete"></mat-icon>
+        <span>
+          {{'main.menu.exportImport.subMenu.delete.main' | translate}}
+        </span>
+      </button>
+
     </mat-menu>
 
     <mat-menu #importMenu="matMenu">
@@ -113,12 +127,38 @@
     </mat-menu>
 
     <mat-menu #exportMenu="matMenu">
-      <button mat-menu-item (click)="downloadFile()">
+      <button mat-menu-item (click)="openUpdateDeleteDialog(topic.COURSE,topicAction.DOWNLOAD)">
         <mat-icon svgIcon="calendar-text-outline"></mat-icon>
         <span>
           {{'main.menu.exportImport.subMenu.export.course' | translate}}
         </span>
       </button>
+    </mat-menu>
+
+    <mat-menu #updateMenu="matMenu">
+      <button mat-menu-item (click)="openUpdateDeleteDialog(topic.GONG,topicAction.UPDATE)">
+        <mat-icon svgIcon="music-note"></mat-icon>
+        <span>
+          {{'main.menu.exportImport.subMenu.update.gong' | translate}}
+        </span>
+      </button>
+    </mat-menu>
+
+    <mat-menu #deletetMenu="matMenu">
+      <button mat-menu-item (click)="openUpdateDeleteDialog(topic.COURSE, topicAction.DELETE)">
+        <mat-icon svgIcon="calendar-text-outline"></mat-icon>
+        <span>
+          {{'main.menu.exportImport.subMenu.delete.course' | translate}}
+        </span>
+      </button>
+
+      <button mat-menu-item (click)="deleteLastGong()">
+        <mat-icon svgIcon="music-note"></mat-icon>
+        <span>
+          {{'main.menu.exportImport.subMenu.delete.lastGong' | translate}}
+        </span>
+      </button>
+
     </mat-menu>
 
   </section>
@@ -148,7 +188,7 @@
 
 </mat-toolbar>
 
-<form >
+<form>
   <input type="file" #courseFile style="display: none" (change)="onCoursesFileChange()" accept=".json"/>
   <input type="file" #gongFile style="display: none" (change)="onGongFileChange()" accept="audio/*"/>
 </form>
