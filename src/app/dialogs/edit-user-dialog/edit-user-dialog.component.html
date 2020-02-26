@@ -1,0 +1,71 @@
+<div class="dialog-container">
+  <div class="message-title">
+    <div class="header">
+      {{ 'dialogs.editUser.header.' + data.action | translate}}
+    </div>
+    <mat-icon (click)="closeDialog()" svgIcon="window-close" class="close-dialog"></mat-icon>
+  </div>
+  <hr class="line">
+
+  <div class="body-content">
+
+    <!-- ID-->
+    <div class="field-container">
+      <h4>
+        {{ 'dialogs.editUser.labels.id' | translate}}
+      </h4>
+      <mat-form-field>
+        <input #idInput="ngModel" matInput type="text" required [(ngModel)]="data.user.id"
+               (ngModelChange)="onInputChanged(idInput.dirty,passInput.dirty)"
+               placeholder="{{ 'dialogs.editUser.placeholders.id' | translate}}">
+      </mat-form-field>
+      <div *ngIf="errorMessages['id']">
+        {{ 'dialogs.editUser.errorMessages.' + errorMessages['id'] | translate}}
+      </div>
+    </div>
+
+    <!-- ROLE -->
+    <div class="field-container">
+      <h4>
+        {{ 'dialogs.editUser.labels.role' | translate}}
+      </h4>
+      <mat-form-field>
+        <mat-select [(value)]="data.user.role"
+                    (selectionChange)="onInputChanged(idInput.dirty,passInput.dirty)"
+                    placeholder="{{ 'dialogs.editUser.placeholders.role' | translate}}">
+          <mat-option *ngFor="let role of data.rolesArray" [value]="role">
+            {{ role }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Password-->
+    <div class="field-container">
+      <h4>
+        {{ 'dialogs.editUser.labels.pass' | translate}}
+      </h4>
+      <mat-form-field>
+        <input #passInput="ngModel" matInput type="text" required [(ngModel)]="data.user.password"
+               (ngModelChange)="onInputChanged(idInput.dirty,passInput.dirty)"
+               placeholder="{{ 'dialogs.editUser.placeholders.pass' | translate}}">
+      </mat-form-field>
+      <div *ngIf="errorMessages['pass']">
+        {{ 'dialogs.editUser.errorMessages.' + errorMessages['pass'] | translate}}
+      </div>
+    </div>
+
+  </div> <!--body-content-->
+
+  <div class="buttons-container">
+    <button mat-raised-button color="basic" (click)="closeDialog()">
+      {{ 'dialogs.editUser.buttons.cancel' | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="submitContent()"
+            [disabled]="!isFormValid"
+            class="edit-user-submit-button">
+      {{ 'dialogs.editUser.buttons.' + data.action + 'Submit' | translate }}
+    </button>
+  </div>
+
+</div>
