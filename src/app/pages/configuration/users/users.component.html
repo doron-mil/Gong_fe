@@ -1,20 +1,20 @@
 <div class="users-container">
   <div class="btn-group top-controls-container">
-      <button mat-raised-button color="primary" (click)="addUser()">
-        {{ 'config.users.buttons.addUser' | translate }}
-      </button>
-      <button mat-raised-button color="primary" (click)="updateUser()"
-              [disabled]="!selectedUser">
-        {{ 'config.users.buttons.updateUser' | translate }}
-      </button>
-      <button mat-raised-button color="primary" (click)="deleteUser()"
-              [disabled]="!selectedUser">
-        {{ 'config.users.buttons.deleteUser' | translate }}
-      </button>
-      <button mat-raised-button color="primary" (click)="changeUserPass()"
-              [disabled]="!selectedUser">
-        {{ 'config.users.buttons.changeUserPass' | translate }}
-      </button>
+    <button mat-raised-button color="primary" (click)="addUser()">
+      {{ 'config.users.buttons.addUser' | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="updateUser()"
+            [disabled]="!areEditButtonsEnabled">
+      {{ 'config.users.buttons.updateUser' | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="deleteUser()"
+            [disabled]="!areEditButtonsEnabled">
+      {{ 'config.users.buttons.deleteUser' | translate }}
+    </button>
+    <button mat-raised-button color="primary" (click)="changeUserPass()"
+            [disabled]="!areEditButtonsEnabled">
+      {{ 'config.users.buttons.changeUserPass' | translate }}
+    </button>
   </div>
 
 
@@ -72,7 +72,7 @@
         <mat-header-row *matHeaderRowDef="usersDisplayedColumns; sticky: true"></mat-header-row>
         <mat-row *matRowDef="let row; columns: usersDisplayedColumns;"
                  [ngClass]="{'highlight': selectedUser && selectedUser.id == row.id}"
-                 (click)="selectedUser = row">
+                 (click)="selectUser( row )">
         </mat-row>
       </mat-table>
     </div>

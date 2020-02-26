@@ -11,6 +11,7 @@ import {StoreService} from './store.service';
 export class AuthService {
 
   jwtHelper = new JwtHelperService();
+  private user: string;
   private role: string;
 
   constructor(private http: HttpClient, private storeService: StoreService) {
@@ -50,7 +51,7 @@ export class AuthService {
     return (isLoggedIn);
   }
 
-  getRole() {
+  getRole(): string {
     let role = null;
     if (this.role || this.loggedIn) {
       role = this.role;
@@ -58,11 +59,21 @@ export class AuthService {
     return role;
   }
 
+  getUser(): string {
+    let user = null;
+    if (this.user || this.loggedIn) {
+      user = this.user;
+    }
+    return user;
+  }
+
   private setRole(aToken: string) {
     if (aToken) {
-      const {role} = this.jwtHelper.decodeToken(aToken);
+      const {sub, role} = this.jwtHelper.decodeToken(aToken);
+      this.user = sub;
       this.role = role;
     } else {
+      this.user = null;
       this.role = null;
     }
   }

@@ -30,6 +30,7 @@ export enum ActionFeaturesEnum {
   UPDATE_LANGUAGES_FEATURE = '[UPDATE_LANGUAGES]',
   GET_USERS_FEATURE = '[GET_USERS]',
   ADD_USER_FEATURE = '[ADD_USER]',
+  DELETE_USER_FEATURE = '[DELETE_USER]',
 }
 
 export enum ActionTypesEnum {
@@ -63,6 +64,7 @@ export enum ActionTypesEnum {
   GET_USERS_ARRAY = 'GET_USERS_ARRAY',
   SET_USERS_ARRAY = 'SET_USERS_ARRAY',
   ADD_USER = 'ADD_USER',
+  DELETE_USER = 'DELETE_USER',
 }
 
 export interface AppAction extends Action {
@@ -230,6 +232,11 @@ export class ActionGenerator {
   static addUser = (aUser: User) => ({
     type: ActionTypesEnum.ADD_USER,
     payload: aUser,
+  });
+
+  static deleteUser = (aSelectedUser4Delete: User) => ({
+    type: ActionTypesEnum.DELETE_USER,
+    payload: aSelectedUser4Delete,
   });
 
 }

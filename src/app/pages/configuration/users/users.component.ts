@@ -1,14 +1,20 @@
 import {Component} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
+import {MatDialog} from '@angular/material/dialog';
+
+import {first, takeUntil} from 'rxjs/operators';
+import {NgRedux} from '@angular-redux/store';
+import Swal from 'sweetalert2';
+
 import {User} from '../../../model/user';
 import {StoreService} from '../../../services/store.service';
 import {DateFormat} from '../../../model/dateFormat';
 import {BaseComponent} from '../../../shared/baseComponent';
-import {first, takeUntil} from 'rxjs/operators';
-import {NgRedux} from '@angular-redux/store';
 import {StoreDataTypeEnum} from '../../../store/storeDataTypeEnum';
-import {MatDialog} from '@angular/material/dialog';
 import {EditUserActionEnum, EditUserDialogComponent} from '../../../dialogs/edit-user-dialog/edit-user-dialog.component';
+import {AuthService} from '../../../services/auth.service';
+import {IObjectMap} from '../../../model/store-model';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-users',
@@ -22,11 +28,20 @@ export class UsersComponent extends BaseComponent {
   usersData: User[] = [];
 
   dateFormat: DateFormat;
+  areEditButtonsEnabled: boolean = false;
+  currentUser: string;
+  currentRole: string;
+
+  confirmDeleteUserTransMap: IObjectMap<string> = {};
 
   constructor(private ngRedux: NgRedux<any>,
+              private translate: TranslateService,
+              private authService: AuthService,
               private dialog: MatDialog,
               private storeService: StoreService) {
-    super();
+    super(translate);
+    this.currentUser = this.authService.getUser();
+    this.currentRole = this.authService.getRole();
   }
 
   protected listenForUpdates() {
@@ -43,6 +58,15 @@ export class UsersComponent extends BaseComponent {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
 
+  }
+
+  protected getKeysArray4Translations(): string[] {
+    const translationKeyBase = 'config.users.alerts.confirmRemoveUser.';
+    this.confirmDeleteUserTransMap['title'] = `${translationKeyBase}title`;
+    this.confirmDeleteUserTransMap['text'] = `${translationKeyBase}text`;
+    this.confirmDeleteUserTransMap['cancel'] = `${translationKeyBase}buttons.cancel`;
+    this.confirmDeleteUserTransMap['confirm'] = `${translationKeyBase}buttons.confirm`;
+    return Array.from(Object.values(this.confirmDeleteUserTransMap));
   }
 
   addUser() {
@@ -70,10 +94,31 @@ export class UsersComponent extends BaseComponent {
   }
 
   deleteUser() {
-
+    Swal.fire({
+      title: this.getTranslation(this.confirmDeleteUserTransMap['title']),
+      html: `${this.getTranslation(this.confirmDeleteUserTransMap['text'])} <BR> ${this.selectedUser.id}`,
+      icon: 'warning',
+      confirmButtonText: this.getTranslation(this.confirmDeleteUserTransMap['confirm']),
+      showCancelButton: true,
+      cancelButtonText: this.getTranslation(this.confirmDeleteUserTransMap['cancel']),
+    })
+      .then(result => {
+        if (result.value) {
+          this.storeService.deleteUser(this.selectedUser);
+        }
+      });
   }
 
   changeUserPass() {
 
+  }
+
+  selectUser(aUser: User) {
+    this.selectedUser = aUser;
+
+    this.areEditButtonsEnabled = this.selectedUser &&
+      (('dev' === this.currentUser) ||
+        ('admin' === this.currentRole && !['dev', 'admin'].includes(this.selectedUser.id))
+      );
   }
 }

@@ -43,6 +43,7 @@ const UPLOAD_GONG_URL = `${BASIC_URL}data/uploadGong`;
 const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
 const GET_USERS_URL = `${BASIC_URL}data/users/list`;
 const ADD_USER_URL = `${BASIC_URL}data/user/add`;
+const DELETE_USER_URL = `${BASIC_URL}data/user/remove`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -391,6 +392,17 @@ export class GeneralMiddlewareService {
         );
         break;
       case `${ActionFeaturesEnum.ADD_USER_FEATURE} ${API_SUCCESS}`:
+        dispatch(
+          ActionGenerator.getUsersArray()
+        );
+        break;
+      case ActionTypesEnum.DELETE_USER:
+        next(
+          apiRequest(JSON.stringify({userId: action.payload.id}), 'POST',
+            DELETE_USER_URL, ActionFeaturesEnum.DELETE_USER_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.DELETE_USER_FEATURE} ${API_SUCCESS}`:
         dispatch(
           ActionGenerator.getUsersArray()
         );

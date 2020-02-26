@@ -341,4 +341,8 @@ export class StoreService implements OnInit, OnDestroy {
   addUser(aUser: User) {
     this.ngRedux.dispatch(ActionGenerator.addUser(aUser));
   }
+
+  deleteUser(aSelectedUser4Delete: User) {
+    this.ngRedux.dispatch(ActionGenerator.deleteUser(aSelectedUser4Delete));
+  }
 }
