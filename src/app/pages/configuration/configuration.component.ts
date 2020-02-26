@@ -8,6 +8,8 @@ import {BaseComponent} from '../../shared/baseComponent';
 import {DeviceSetupComponent} from './device-setup/device-setup.component';
 import {I18nEditingComponent} from './i18n-editing/i18n-editing.component';
 import {LanguagesComponent} from './languages/languages.component';
+import {PermissionsComponent} from './permissions/permissions.component';
+import {UsersComponent} from './users/users.component';
 
 interface IComponentRecord {
   name: string;
@@ -41,6 +43,8 @@ export class ConfigurationComponent extends BaseComponent {
 
   private constructComponentsArray() {
     this.componentsArray.push({name: 'i18n', component: I18nEditingComponent});
+    this.componentsArray.push({name: 'permissions', component: PermissionsComponent});
+    this.componentsArray.push({name: 'users', component: UsersComponent});
     if (this.currentRole === 'dev') {
       this.componentsArray.push({name: 'languages', component: LanguagesComponent});
       this.componentsArray.push({name: 'deviceSetup', component: DeviceSetupComponent});

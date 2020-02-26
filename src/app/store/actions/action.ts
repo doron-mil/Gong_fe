@@ -8,6 +8,7 @@ import {BasicServerData} from '../../model/basicServerData';
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {Gong} from '../../model/gong';
 import {DateFormat} from '../../model/dateFormat';
+import {User} from '../../model/user';
 
 export enum ActionFeaturesEnum {
   BASIC_DATA_FEATURE = '[BASIC_DATA]',
@@ -27,6 +28,7 @@ export enum ActionFeaturesEnum {
   UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE]',
   UPLOAD_GONG_FILE_FEATURE = '[UPLOAD_GONG_FILE]',
   UPDATE_LANGUAGES_FEATURE = '[UPDATE_LANGUAGES]',
+  GET_USERS_FEATURE = '[GET_USERS_FEATURE]',
 }
 
 export enum ActionTypesEnum {
@@ -57,6 +59,8 @@ export enum ActionTypesEnum {
   UPLOAD_COURSES_FILE_WAS_COMPLETED = 'UPLOAD_COURSES_FILE_WAS_COMPLETED',
   UPLOAD_GONG_FILE_WAS_COMPLETED = 'UPLOAD_GONG_FILE_WAS_COMPLETED',
   UPDATE_LANGUAGES = 'UPDATE_LANGUAGES',
+  GET_USERS_ARRAY = 'GET_USERS_ARRAY',
+  SET_USERS_ARRAY = 'SET_USERS_ARRAY',
 }
 
 export interface AppAction extends Action {
@@ -209,6 +213,16 @@ export class ActionGenerator {
   static updateLanguages = (aLanguagesMap: any) => ({
     type: ActionTypesEnum.UPDATE_LANGUAGES,
     payload: aLanguagesMap,
+  });
+
+
+  static getUsersArray = () => ({
+    type: ActionTypesEnum.GET_USERS_ARRAY,
+  });
+
+  static setUsersArray = (usersArray: User[]) => ({
+    type: ActionTypesEnum.SET_USERS_ARRAY,
+    payload: usersArray,
   });
 
 }

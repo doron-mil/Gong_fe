@@ -1,0 +1,81 @@
+<div class="users-container">
+  <div class="btn-group top-controls-container">
+      <button mat-raised-button color="primary" (click)="addUser()">
+        {{ 'config.users.buttons.addUser' | translate }}
+      </button>
+      <button mat-raised-button color="primary" (click)="updateUser()"
+              [disabled]="!selectedUser">
+        {{ 'config.users.buttons.updateUser' | translate }}
+      </button>
+      <button mat-raised-button color="primary" (click)="deleteUser()"
+              [disabled]="!selectedUser">
+        {{ 'config.users.buttons.deleteUser' | translate }}
+      </button>
+      <button mat-raised-button color="primary" (click)="changeUserPass()"
+              [disabled]="!selectedUser">
+        {{ 'config.users.buttons.changeUserPass' | translate }}
+      </button>
+  </div>
+
+
+  <div class="users-display-container">
+
+
+    <div class="users-table-container mat-elevation-z8">
+      <mat-table [dataSource]="usersDataSource" class="users-table">
+
+        <!-- User Id -->
+        <ng-container matColumnDef="user_id">
+          <mat-header-cell *matHeaderCellDef>
+            {{ 'config.users.usersTable.headers.id' | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{ element.id }}
+          </mat-cell>
+        </ng-container>
+
+
+        <!-- Role -->
+        <ng-container matColumnDef="role">
+          <mat-header-cell *matHeaderCellDef class="td-center-content">
+            {{ 'config.users.usersTable.headers.role' | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="td-center-content">
+            {{ element.role }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- creation date -->
+        <ng-container matColumnDef="creation_date">
+          <mat-header-cell *matHeaderCellDef class="td-center-content">
+            {{ 'config.users.usersTable.headers.creationDate' | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="td-center-content">
+            <div class="date-cell-container">
+              {{element.creationDate | date: dateFormat.delimited }}
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <!-- update date -->
+        <ng-container matColumnDef="update_date">
+          <mat-header-cell *matHeaderCellDef class="td-center-content">
+            {{ 'config.users.usersTable.headers.updateDate' | translate }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="td-center-content">
+            <div class="date-cell-container">
+              {{element.updateDate | date: dateFormat.delimited }}
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="usersDisplayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: usersDisplayedColumns;"
+                 [ngClass]="{'highlight': selectedUser && selectedUser.id == row.id}"
+                 (click)="selectedUser = row">
+        </mat-row>
+      </mat-table>
+    </div>
+
+  </div>
+</div>

@@ -1,6 +1,7 @@
 import {Area} from '../../model/area';
 import {Course} from '../../model/course';
 import {GongType} from '../../model/gongType';
+import {User} from '../../model/user';
 
 
 export interface StaticDataState {
@@ -8,6 +9,7 @@ export interface StaticDataState {
   areas: Area[];
   courses: Course[];
   coursesRawData: string;
+  users: User[];
 }
 
 export const INITIAL_STATIC_DATA_STATE: StaticDataState = {
@@ -15,4 +17,5 @@ export const INITIAL_STATIC_DATA_STATE: StaticDataState = {
   areas: [],
   courses: [],
   coursesRawData: '',
+  users: [],
 };

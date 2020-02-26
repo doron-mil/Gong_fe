@@ -1,0 +1,19 @@
+.btn-group button {
+  margin-right: 10px;
+}
+
+.users-table {
+  .highlight {
+    color: white;
+    background: #e3f2fd;
+  }
+
+  .mat-row:not(.highlight) {
+    cursor: pointer;
+
+
+    &:hover {
+      border: 1px solid blue;
+    }
+  }
+}

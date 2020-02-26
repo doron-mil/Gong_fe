@@ -21,6 +21,7 @@ import {DateFormat} from '../../../model/dateFormat';
 import {AuthService} from '../../../services/auth.service';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
 import {StoreService} from '../../../services/store.service';
+import {User} from '../../../model/user';
 
 
 const BASIC_URL = 'api/';
@@ -40,6 +41,7 @@ const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
 const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
 const UPLOAD_GONG_URL = `${BASIC_URL}data/uploadGong`;
 const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
+const GET_USERS_URL = `${BASIC_URL}data/users/list`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -367,6 +369,18 @@ export class GeneralMiddlewareService {
         this.messagesService.gongsUploaded(additionalErrorInfo);
         next(
           ActionGenerator.uploadGongFileHasComplete()
+        );
+        break;
+      case ActionTypesEnum.GET_USERS_ARRAY:
+        next(
+          apiRequest(null, 'GET', GET_USERS_URL, ActionFeaturesEnum.GET_USERS_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.GET_USERS_FEATURE} ${API_SUCCESS}`:
+        const usersArray = this.jsonConverterService.convert<User>(
+          action.payload.data, 'User');
+        next(
+          ActionGenerator.setUsersArray(usersArray)
         );
         break;
     }

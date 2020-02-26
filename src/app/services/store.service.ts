@@ -322,4 +322,8 @@ export class StoreService implements OnInit, OnDestroy {
   deleteGong(aGongTopicData: ITopicData) {
 
   }
+
+  getUsersArray() {
+    this.ngRedux.dispatch(ActionGenerator.getUsersArray());
+  }
 }

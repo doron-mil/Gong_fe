@@ -60,6 +60,8 @@ import {GongsTimeTableComponent} from './components/gongs-time-table/gongs-time-
 import {ScheduleCourseDialogComponent} from './dialogs/schedule-course-dialog/schedule-course-dialog.component';
 import {SelectTopicsDialogComponent} from './dialogs/select-topics-dialog/select-topics-dialog.component';
 import { LanguagesComponent } from './pages/configuration/languages/languages.component';
+import { PermissionsComponent } from './pages/configuration/permissions/permissions.component';
+import { UsersComponent } from './pages/configuration/users/users.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -107,6 +109,8 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     I18nEditingComponent,
     ConfigPageHostDirective,
     LanguagesComponent,
+    PermissionsComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,
@@ -135,6 +139,8 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     DeviceSetupComponent,
     I18nEditingComponent,
     LanguagesComponent,
+    PermissionsComponent,
+    UsersComponent,
   ],
   providers: [ApiMiddlewareService, GeneralMiddlewareService],
   bootstrap: [AppComponent]

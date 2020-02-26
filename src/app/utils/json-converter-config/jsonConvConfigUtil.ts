@@ -9,6 +9,7 @@ import {CourseSchedule} from '../../model/courseSchedule';
 import {Gong} from '../../model/gong';
 import {DateFormat} from '../../model/dateFormat';
 import {ClassMapEntry, MethodMapEntry} from 'angular-json-class-converter';
+import {User} from '../../model/user';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -103,5 +104,6 @@ export default {
     {className: 'ScheduledGong', clazz: ScheduledGong},
     {className: 'Gong', clazz: Gong},
     {className: 'DateFormat', clazz: DateFormat},
+    {className: 'User', clazz: User},
     ] as ClassMapEntry[]
 };

@@ -161,5 +161,26 @@
         "propertyName": "repeat"
       }
     ]
+  },
+  {
+    "className": "User",
+    "propertyConversionArray": [
+      {
+        "propertyName": "id"
+      },
+      {
+        "propertyName": "role"
+      },
+      {
+        "propertyName": "creationDate",
+        "propertyNameInJson": "creation-date",
+        "conversionFunctionName": "timeToDateConversion"
+      },
+      {
+        "propertyName": "updateDate",
+        "propertyNameInJson": "update-date",
+        "conversionFunctionName": "timeToDateConversion"
+      }
+    ]
   }
 ]
