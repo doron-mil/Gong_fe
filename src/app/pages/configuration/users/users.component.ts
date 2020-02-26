@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {User} from '../../../model/user';
 import {StoreService} from '../../../services/store.service';
 import {DateFormat} from '../../../model/dateFormat';
 import {BaseComponent} from '../../../shared/baseComponent';
-import {takeUntil} from 'rxjs/operators';
+import {first, takeUntil} from 'rxjs/operators';
 import {NgRedux} from '@angular-redux/store';
 import {StoreDataTypeEnum} from '../../../store/storeDataTypeEnum';
-import {CourseSchedule} from '../../../model/courseSchedule';
+import {MatDialog} from '@angular/material/dialog';
+import {EditUserActionEnum, EditUserDialogComponent} from '../../../dialogs/edit-user-dialog/edit-user-dialog.component';
 
 @Component({
   selector: 'app-users',
@@ -23,6 +24,7 @@ export class UsersComponent extends BaseComponent {
   dateFormat: DateFormat;
 
   constructor(private ngRedux: NgRedux<any>,
+              private dialog: MatDialog,
               private storeService: StoreService) {
     super();
   }
@@ -44,6 +46,22 @@ export class UsersComponent extends BaseComponent {
   }
 
   addUser() {
+    const rolesArray = this.storeService.getRolesArray();
+    const existingUsersIds = this.storeService.getExistingUsersIdsArray();
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      height: '60vh',
+      width: '70vw',
+      panelClass: 'user-edit-dialog',
+      position: {top: '15vh'},
+      data: {user: new User(), action: EditUserActionEnum.NEW, rolesArray, existingUsersIds}
+    });
+
+    dialogRef.afterClosed().pipe(first())
+      .subscribe((aUser: User) => {
+        if (aUser) {
+          this.storeService.addUser(aUser);
+        }
+      });
 
   }
 

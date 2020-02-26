@@ -62,6 +62,7 @@ import {SelectTopicsDialogComponent} from './dialogs/select-topics-dialog/select
 import { LanguagesComponent } from './pages/configuration/languages/languages.component';
 import { PermissionsComponent } from './pages/configuration/permissions/permissions.component';
 import { UsersComponent } from './pages/configuration/users/users.component';
+import { EditUserDialogComponent } from './dialogs/edit-user-dialog/edit-user-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -111,6 +112,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
     LanguagesComponent,
     PermissionsComponent,
     UsersComponent,
+    EditUserDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -136,6 +138,7 @@ const jsonConverterConfig: IJsonConverterConfigFactory = {getConfig};
   entryComponents: [
     ScheduleCourseDialogComponent,
     SelectTopicsDialogComponent,
+    EditUserDialogComponent,
     DeviceSetupComponent,
     I18nEditingComponent,
     LanguagesComponent,

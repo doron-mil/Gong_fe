@@ -172,6 +172,9 @@
         "propertyName": "role"
       },
       {
+        "propertyName": "password"
+      },
+      {
         "propertyName": "creationDate",
         "propertyNameInJson": "creation-date",
         "conversionFunctionName": "timeToDateConversion"

@@ -20,6 +20,7 @@ import {DateFormat} from '../model/dateFormat';
 import {BasicServerData} from '../model/basicServerData';
 import {IObjectMap} from '../model/store-model';
 import {ETopic, ITopicData} from '../model/topics-model';
+import {User} from '../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -325,5 +326,19 @@ export class StoreService implements OnInit, OnDestroy {
 
   getUsersArray() {
     this.ngRedux.dispatch(ActionGenerator.getUsersArray());
+  }
+
+  getRolesArray(): string[] {
+    // TODO ********
+    return ['admin', 'teacher', 'dw'];
+  }
+
+  getExistingUsersIdsArray() {
+    // TODO ********
+    return ['admin', 'dev'];
+  }
+
+  addUser(aUser: User) {
+    this.ngRedux.dispatch(ActionGenerator.addUser(aUser));
   }
 }

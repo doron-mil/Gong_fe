@@ -28,7 +28,8 @@ export enum ActionFeaturesEnum {
   UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE]',
   UPLOAD_GONG_FILE_FEATURE = '[UPLOAD_GONG_FILE]',
   UPDATE_LANGUAGES_FEATURE = '[UPDATE_LANGUAGES]',
-  GET_USERS_FEATURE = '[GET_USERS_FEATURE]',
+  GET_USERS_FEATURE = '[GET_USERS]',
+  ADD_USER_FEATURE = '[ADD_USER]',
 }
 
 export enum ActionTypesEnum {
@@ -61,6 +62,7 @@ export enum ActionTypesEnum {
   UPDATE_LANGUAGES = 'UPDATE_LANGUAGES',
   GET_USERS_ARRAY = 'GET_USERS_ARRAY',
   SET_USERS_ARRAY = 'SET_USERS_ARRAY',
+  ADD_USER = 'ADD_USER',
 }
 
 export interface AppAction extends Action {
@@ -223,6 +225,11 @@ export class ActionGenerator {
   static setUsersArray = (usersArray: User[]) => ({
     type: ActionTypesEnum.SET_USERS_ARRAY,
     payload: usersArray,
+  });
+
+  static addUser = (aUser: User) => ({
+    type: ActionTypesEnum.ADD_USER,
+    payload: aUser,
   });
 
 }

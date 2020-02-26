@@ -1,6 +1,7 @@
 export class User {
-  id: number;
-  roll: string;
+  id: string;
+  role: string;
   creationDate: Date;
   updateDate: Date;
+  password: string;
 }

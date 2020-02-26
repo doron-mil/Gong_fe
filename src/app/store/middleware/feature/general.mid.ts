@@ -42,6 +42,7 @@ const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
 const UPLOAD_GONG_URL = `${BASIC_URL}data/uploadGong`;
 const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
 const GET_USERS_URL = `${BASIC_URL}data/users/list`;
+const ADD_USER_URL = `${BASIC_URL}data/user/add`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -381,6 +382,17 @@ export class GeneralMiddlewareService {
           action.payload.data, 'User');
         next(
           ActionGenerator.setUsersArray(usersArray)
+        );
+        break;
+      case ActionTypesEnum.ADD_USER:
+        const userAsJson = this.jsonConverterService.convertToJson(action.payload);
+        next(
+          apiRequest(userAsJson, 'POST', ADD_USER_URL, ActionFeaturesEnum.ADD_USER_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.ADD_USER_FEATURE} ${API_SUCCESS}`:
+        dispatch(
+          ActionGenerator.getUsersArray()
         );
         break;
     }
