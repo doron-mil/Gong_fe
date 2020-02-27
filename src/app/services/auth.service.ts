@@ -18,7 +18,8 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<{ data: { token: string } }>('/api/login', {username: username, password: password})
+    return this.http.post<{ data: { token: string } }>('/api/login',
+      {username: username.trim().toLowerCase(), password: password})
       .pipe(
         first(),
         map(result => {

@@ -330,13 +330,12 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   getRolesArray(): string[] {
-    // TODO ********
     return ['admin', 'teacher', 'dw'];
   }
 
   getExistingUsersIdsArray() {
-    // TODO ********
-    return ['admin', 'dev'];
+    const usersData : User[] = _.get(this.ngRedux.getState(), [StoreDataTypeEnum.STATIC_DATA, 'users']);
+    return usersData.map(user => user.id.toLowerCase());
   }
 
   addUser(aUser: User) {

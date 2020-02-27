@@ -49,6 +49,7 @@ export class EditUserDialogComponent implements OnInit {
   }
 
   submitContent() {
+    this.data.user.id = this.data.user.id.trim().toLowerCase();
     this.closeDialog(this.data.user);
   }
 
@@ -59,7 +60,7 @@ export class EditUserDialogComponent implements OnInit {
       case EditUserActionEnum.NEW:
         if (aIdDirty) {
           const idIsFilled = this.data.user.id && this.data.user.id.length > 0;
-          if (idIsFilled && this.data.existingUsersIds.includes(this.data.user.id)) {
+          if (idIsFilled && this.data.existingUsersIds.includes(this.data.user.id.trim().toLowerCase())) {
             this.errorMessages['id'] = ErrorMessagesEnum.ID_ALREADY_EXISTS;
           } else if (!idIsFilled) {
             this.errorMessages['id'] = ErrorMessagesEnum.ID_REQUIRED;
