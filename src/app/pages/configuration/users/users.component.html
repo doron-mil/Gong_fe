@@ -52,7 +52,7 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let element" class="td-center-content">
             <div class="date-cell-container">
-              {{element.creationDate | date: dateFormat.delimited }}
+              {{element.creationDate | date: dateFormat.delimited + ' HH:mm'}}
             </div>
           </mat-cell>
         </ng-container>
@@ -64,7 +64,7 @@
           </mat-header-cell>
           <mat-cell *matCellDef="let element" class="td-center-content">
             <div class="date-cell-container">
-              {{element.updateDate | date: dateFormat.delimited }}
+              {{element.updateDate | date: dateFormat.delimited + ' HH:mm'}}
             </div>
           </mat-cell>
         </ng-container>

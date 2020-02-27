@@ -17,6 +17,7 @@ enum MessagesTranslationEnum {
   GONGS_UPLOAD_FAILED = 'gongUploadFailed',
   LAST_GONGS_IS_IN_USE = 'lastGongIsInUse',
   LAST_GONGS_NOT_FOUND = 'lastGongNotFound',
+  RESET_USER_PASSWORD_SUCCESSFUL = 'resetUserPasswordSuccessful',
 }
 
 @Injectable({
@@ -110,6 +111,14 @@ export class MessagesService {
     const transKey = aGongName ? MessagesTranslationEnum.LAST_GONGS_IS_IN_USE :
       MessagesTranslationEnum.LAST_GONGS_NOT_FOUND;
     const messageTrans = `${aGongName} ${this.getTranlation(transKey)}`;
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
+  }
+
+    resetPasswordSuccessful() {
+    const messageTrans = this.getTranlation(MessagesTranslationEnum.RESET_USER_PASSWORD_SUCCESSFUL);
     this.snackBar.open(messageTrans, null, {
       duration: 5000,
       panelClass: 'snackBarClass',

@@ -31,6 +31,8 @@ export enum ActionFeaturesEnum {
   GET_USERS_FEATURE = '[GET_USERS]',
   ADD_USER_FEATURE = '[ADD_USER]',
   DELETE_USER_FEATURE = '[DELETE_USER]',
+  UPDATE_USER_FEATURE = '[UPDATE_USER]',
+  RESET_USER_PASSWORD_FEATURE = '[RESET_USER_PASSWORD]',
 }
 
 export enum ActionTypesEnum {
@@ -65,6 +67,8 @@ export enum ActionTypesEnum {
   SET_USERS_ARRAY = 'SET_USERS_ARRAY',
   ADD_USER = 'ADD_USER',
   DELETE_USER = 'DELETE_USER',
+  UPDATE_USER = 'UPDATE_USER',
+  RESET_USER_PASSWORD = 'RESET_USER_PASSWORD',
 }
 
 export interface AppAction extends Action {
@@ -237,6 +241,16 @@ export class ActionGenerator {
   static deleteUser = (aSelectedUser4Delete: User) => ({
     type: ActionTypesEnum.DELETE_USER,
     payload: aSelectedUser4Delete,
+  });
+
+  static updateUser = (aUser: User) => ({
+    type: ActionTypesEnum.UPDATE_USER,
+    payload: aUser,
+  });
+
+  static resetUserPassword = (aUser: User) => ({
+    type: ActionTypesEnum.RESET_USER_PASSWORD,
+    payload: aUser,
   });
 
 }

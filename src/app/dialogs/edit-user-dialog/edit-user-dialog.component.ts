@@ -1,5 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+
+import * as _ from 'lodash';
+
 import {User} from '../../model/user';
 import {IObjectMap} from '../../model/store-model';
 
@@ -25,6 +28,9 @@ export class EditUserDialogComponent implements OnInit {
 
   errorMessages: IObjectMap<string> = {};
 
+  actionEnum = EditUserActionEnum;
+  originalUser: User;
+
   constructor(public dialogRef: MatDialogRef<any>,
               @Inject(MAT_DIALOG_DATA) public data: {
                 user: User,
@@ -32,6 +38,7 @@ export class EditUserDialogComponent implements OnInit {
                 rolesArray: string[],
                 existingUsersIds: string[]
               }) {
+    this.originalUser = _.cloneDeep(this.data.user);
   }
 
   ngOnInit() {
@@ -47,6 +54,7 @@ export class EditUserDialogComponent implements OnInit {
 
   onInputChanged(aIdDirty: boolean, aPassDirty: boolean) {
     this.errorMessages = {};
+
     switch (this.data.action) {
       case EditUserActionEnum.NEW:
         if (aIdDirty) {
@@ -68,8 +76,16 @@ export class EditUserDialogComponent implements OnInit {
           (!!this.data.user.role && this.data.user.role.length > 0);
         break;
       case EditUserActionEnum.UPDATE:
+        this.isFormValid = this.data.user.role !== this.originalUser.role;
         break;
       case EditUserActionEnum.PASSWORD:
+        if (aPassDirty) {
+          const passIsFilled = this.data.user.password && this.data.user.password.length > 0;
+          if (!passIsFilled) {
+            this.errorMessages['pass'] = ErrorMessagesEnum.PASS_REQUIRED;
+          }
+        }
+        this.isFormValid = aPassDirty && Object.keys(this.errorMessages).length <= 0;
         break;
     }
   }

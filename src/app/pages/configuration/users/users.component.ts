@@ -89,8 +89,24 @@ export class UsersComponent extends BaseComponent {
 
   }
 
-  updateUser() {
+  updateUser(aAction: EditUserActionEnum = EditUserActionEnum.UPDATE) {
+    const rolesArray = this.storeService.getRolesArray();
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      height: '60vh',
+      width: '70vw',
+      panelClass: 'user-edit-dialog',
+      position: {top: '15vh'},
+      data: {user: this.selectedUser, action: aAction, rolesArray}
+    });
 
+    dialogRef.afterClosed().pipe(first())
+      .subscribe((aUser: User) => {
+        if (aUser && aAction === EditUserActionEnum.UPDATE) {
+          this.storeService.updateUser(aUser);
+        } else if (aUser && aAction === EditUserActionEnum.PASSWORD) {
+          this.storeService.resetUserPassword(aUser);
+        }
+      });
   }
 
   deleteUser() {
@@ -110,7 +126,7 @@ export class UsersComponent extends BaseComponent {
   }
 
   changeUserPass() {
-
+    this.updateUser(EditUserActionEnum.PASSWORD);
   }
 
   selectUser(aUser: User) {

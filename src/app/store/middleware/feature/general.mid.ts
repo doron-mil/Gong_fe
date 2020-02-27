@@ -44,6 +44,8 @@ const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
 const GET_USERS_URL = `${BASIC_URL}data/users/list`;
 const ADD_USER_URL = `${BASIC_URL}data/user/add`;
 const DELETE_USER_URL = `${BASIC_URL}data/user/remove`;
+const UPDATE_USER_URL = `${BASIC_URL}data/user/update`;
+const RESET_USER_PASSWORD_URL = `${BASIC_URL}data/user/resetPassword`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -406,6 +408,28 @@ export class GeneralMiddlewareService {
         dispatch(
           ActionGenerator.getUsersArray()
         );
+        break;
+      case ActionTypesEnum.UPDATE_USER:
+        let user: User = action.payload;
+        next(
+          apiRequest(JSON.stringify({userId: user.id, role: user.role}), 'POST',
+            UPDATE_USER_URL, ActionFeaturesEnum.UPDATE_USER_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.UPDATE_USER_FEATURE} ${API_SUCCESS}`:
+        dispatch(
+          ActionGenerator.getUsersArray()
+        );
+        break;
+      case ActionTypesEnum.RESET_USER_PASSWORD:
+        user = action.payload;
+        next(
+          apiRequest(JSON.stringify({userId: user.id, password: user.password}), 'POST',
+            RESET_USER_PASSWORD_URL, ActionFeaturesEnum.RESET_USER_PASSWORD_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.RESET_USER_PASSWORD_FEATURE} ${API_SUCCESS}`:
+        this.messagesService.coursesUploaded(action.payload.error && action.payload.error.additional_message);
         break;
     }
 

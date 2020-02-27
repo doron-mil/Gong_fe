@@ -16,6 +16,7 @@
       </h4>
       <mat-form-field>
         <input #idInput="ngModel" matInput type="text" required [(ngModel)]="data.user.id"
+               [disabled]="data.action !== actionEnum.NEW"
                (ngModelChange)="onInputChanged(idInput.dirty,passInput.dirty)"
                placeholder="{{ 'dialogs.editUser.placeholders.id' | translate}}">
       </mat-form-field>
@@ -31,6 +32,7 @@
       </h4>
       <mat-form-field>
         <mat-select [(value)]="data.user.role"
+                    [disabled]="data.action === actionEnum.PASSWORD"
                     (selectionChange)="onInputChanged(idInput.dirty,passInput.dirty)"
                     placeholder="{{ 'dialogs.editUser.placeholders.role' | translate}}">
           <mat-option *ngFor="let role of data.rolesArray" [value]="role">
@@ -41,7 +43,7 @@
     </div>
 
     <!-- Password-->
-    <div class="field-container">
+    <div class="field-container" [style.visibility]="data.action !== actionEnum.UPDATE?'visible':'hidden'">
       <h4>
         {{ 'dialogs.editUser.labels.pass' | translate}}
       </h4>
