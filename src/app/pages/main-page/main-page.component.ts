@@ -6,6 +6,8 @@ import {StoreService} from '../../services/store.service';
 
 import {AuthService} from '../../services/auth.service';
 import {NotificationTypesEnum} from '../../json-editor/shared/dataModels/lang.model';
+import {BaseComponent} from '../../shared/baseComponent';
+import {takeUntil} from 'rxjs/operators';
 
 interface TransResponseInt {
   data: { translations: Array<{ translatedText: string }> };
@@ -16,26 +18,43 @@ interface TransResponseInt {
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent extends BaseComponent {
 
   loggedInRole: string;
 
   apiKey = '';
   url = 'https://translation.googleapis.com/language/translate/v2/';
 
+  viewManualPermissions: boolean;
+  viewAutomaticPermissions: boolean;
+  viewConfigPermissions: boolean;
+
   constructor(private authService: AuthService,
               private http: HttpClient,
               private router: Router,
               private storeService: StoreService) {
+    super();
   }
 
-  ngOnInit() {
+  protected hookOnInit() {
     if (!this.authService.loggedIn) {
       this.router.navigate(['loginPage']);
     } else {
       this.loggedInRole = this.authService.getRole();
       this.storeService.readToStore();
     }
+  }
+
+  protected listenForUpdates() {
+    this.authService.hasPermission('view_manual')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.viewManualPermissions = isPermitted);
+    this.authService.hasPermission('view_automatic')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.viewAutomaticPermissions = isPermitted);
+    this.authService.hasPermission('view_config')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.viewConfigPermissions = isPermitted);
   }
 
   getTranslateMethod() {

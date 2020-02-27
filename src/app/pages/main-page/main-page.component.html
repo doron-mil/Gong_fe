@@ -1,21 +1,21 @@
 <mat-tab-group mat-align-tabs="center" class="matTabGroupClass" backgroundColor="disabled" color="accent">
 
 
-  <mat-tab>
+  <mat-tab *ngIf="viewManualPermissions">
     <ng-template mat-tab-label>
       {{ 'main.tabs.manual' | translate }}
     </ng-template>
     <app-manual-activation></app-manual-activation>
   </mat-tab>
 
-  <mat-tab>
+  <mat-tab *ngIf="viewAutomaticPermissions">
     <ng-template mat-tab-label>
       {{ 'main.tabs.automatic' | translate }}
     </ng-template>
     <app-automatic-activation></app-automatic-activation>
   </mat-tab>
 
-  <mat-tab *ngIf="isAdmin()">
+  <mat-tab *ngIf="viewConfigPermissions">
     <ng-template mat-tab-label>
       {{ 'main.tabs.config' | translate }}
     </ng-template>

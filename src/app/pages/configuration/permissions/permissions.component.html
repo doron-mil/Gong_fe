@@ -23,7 +23,7 @@
       <!-- dw -->
       <ng-container matColumnDef="dw">
         <mat-header-cell *matHeaderCellDef class="td-center-content">
-          {{ 'config.permissions.permissionsTable.headers.dw' | translate }}
+          {{ 'config.permissions.permissionsTable.headers.user' | translate }}
         </mat-header-cell>
         <mat-cell *matCellDef="let element" class="td-center-content">
           <mat-checkbox [(ngModel)]="element.isDw" (change)="roleChanged(element)">
@@ -34,7 +34,7 @@
       <!-- teacher -->
       <ng-container matColumnDef="teacher">
         <mat-header-cell *matHeaderCellDef class="td-center-content">
-          {{ 'config.permissions.permissionsTable.headers.teacher' | translate }}
+          {{ 'config.permissions.permissionsTable.headers.super-user' | translate }}
         </mat-header-cell>
         <mat-cell *matCellDef="let element" class="td-center-content">
           <mat-checkbox [(ngModel)]="element.isTeacher" (change)="roleChanged(element)">

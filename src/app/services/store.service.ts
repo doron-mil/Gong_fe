@@ -330,11 +330,11 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   getRolesArray(): string[] {
-    return ['admin', 'teacher', 'dw'];
+    return ['admin', 'super-user', 'user'];
   }
 
   getExistingUsersIdsArray() {
-    const usersData : User[] = _.get(this.ngRedux.getState(), [StoreDataTypeEnum.STATIC_DATA, 'users']);
+    const usersData: User[] = _.get(this.ngRedux.getState(), [StoreDataTypeEnum.STATIC_DATA, 'users']);
     return usersData.map(user => user.id.toLowerCase());
   }
 
@@ -356,5 +356,9 @@ export class StoreService implements OnInit, OnDestroy {
 
   updatePermissions(aPermissionsArray: Permission[]) {
     this.ngRedux.dispatch(ActionGenerator.updatePermissions(aPermissionsArray));
+  }
+
+  getPermissions(): Observable<Permission[]> {
+    return this.ngRedux.select<Permission[]>([StoreDataTypeEnum.STATIC_DATA, 'permissions']);
   }
 }

@@ -1,9 +1,15 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {first, map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
+
+import {from, Observable, Subject} from 'rxjs';
+import {first, map} from 'rxjs/operators';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import * as _ from 'lodash';
+
 import {StoreService} from './store.service';
+import {Permission} from '../model/permission';
+import {IObjectMap} from '../model/store-model';
+import {GongType} from '../model/gongType';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +20,17 @@ export class AuthService {
   private user: string;
   private role: string;
 
+  permissionObjectMap: IObjectMap<Subject<Permission>> = {};
+
   constructor(private http: HttpClient, private storeService: StoreService) {
+    this.storeService.getPermissions().subscribe((permissionsArray: Permission[]) => {
+      permissionsArray.forEach((permission: Permission) => {
+        if (!this.permissionObjectMap[permission.action]) {
+          this.permissionObjectMap[permission.action] = new Subject<Permission>();
+        }
+        this.permissionObjectMap[permission.action].next(_.cloneDeep(permission));
+      });
+    });
   }
 
   login(username: string, password: string): Observable<boolean> {
@@ -66,6 +82,22 @@ export class AuthService {
       user = this.user;
     }
     return user;
+  }
+
+  hasPermission(aAction: string): Observable<boolean> {
+    if (this.role || this.loggedIn) {
+      if (this.role === 'dev') {
+        return from([true]);
+      } else {
+        let permissionForActionSubject = this.permissionObjectMap[aAction];
+        if (!permissionForActionSubject) {
+          this.permissionObjectMap[aAction] = permissionForActionSubject = new Subject<Permission>();
+        }
+        return permissionForActionSubject.pipe(
+          map(permissionForAction => !!permissionForAction && permissionForAction.roles.includes(this.role))
+        );
+      }
+    }
   }
 
   private setRole(aToken: string) {

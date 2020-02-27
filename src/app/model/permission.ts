@@ -10,22 +10,26 @@ export class Permission {
   isAll: boolean;
 
   computeBooleans() {
-    this.isDw = this.roles.includes('dw');
-    this.isTeacher = this.roles.includes('teacher');
+    this.isDw = this.roles.includes('user');
+    this.isTeacher = this.roles.includes('super-user');
     this.isAdmin = this.roles.includes('admin');
-    this.isAll = (_.pullAll(['dw', 'teacher', 'admin'], this.roles).length <= 0);
+    this.isAll = (_.pullAll(['user', 'super-user', 'admin'], this.roles).length <= 0);
+
+    return this;
   }
 
   computeRoles() {
     this.roles = [];
     if (this.isDw) {
-      this.roles.push('dw');
+      this.roles.push('user');
     }
     if (this.isTeacher) {
-      this.roles.push('teacher');
+      this.roles.push('super-user');
     }
     if (this.isAdmin) {
       this.roles.push('admin');
     }
+
+    return this;
   }
 }
