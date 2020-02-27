@@ -10,6 +10,7 @@ export enum DbObjectTypeEnum {
   COURSES = 'COURSES',
   AREAS = 'AREAS',
   GONGS = 'GONGS',
+  PERMISSIONS = 'PERMISSIONS',
 }
 
 export interface DbRecordInterface {
@@ -30,6 +31,7 @@ export class IndexedDbService {
     this.dbObjectParametersMap[DbObjectTypeEnum.COURSES] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.COURSES};
     this.dbObjectParametersMap[DbObjectTypeEnum.AREAS] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.AREAS};
     this.dbObjectParametersMap[DbObjectTypeEnum.GONGS] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.GONGS};
+    this.dbObjectParametersMap[DbObjectTypeEnum.PERMISSIONS] = {dbName: 'gong-db', objectStoreName: DbObjectTypeEnum.PERMISSIONS};
   }
 
   saveDataArray2DB(dbObjectType: DbObjectTypeEnum, dataArray: Array<any>,
@@ -133,6 +135,7 @@ export class IndexedDbService {
             db.createObjectStore(DbObjectTypeEnum.AREAS);
             db.createObjectStore(DbObjectTypeEnum.COURSES);
             db.createObjectStore(DbObjectTypeEnum.GONGS);
+            db.createObjectStore(DbObjectTypeEnum.PERMISSIONS);
             break;
           case 1:
             break;

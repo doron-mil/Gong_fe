@@ -9,6 +9,7 @@ import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {Gong} from '../../model/gong';
 import {DateFormat} from '../../model/dateFormat';
 import {User} from '../../model/user';
+import {Permission} from '../../model/permission';
 
 export enum ActionFeaturesEnum {
   BASIC_DATA_FEATURE = '[BASIC_DATA]',
@@ -16,6 +17,7 @@ export enum ActionFeaturesEnum {
   GONG_TYPES_FEATURE = '[GONG_TYPES]',
   AREA_FEATURE = '[AREA]',
   COURSES_FEATURE = '[COURSES]',
+  PERMISSIONS_FEATURE = '[PERMISSIONS]',
   COURSES_SCHEDULE_FEATURE = '[COURSES_SCHEDULE]',
   MANUAL_GONGS_LIST_FEATURE = '[MANUAL_GONGS_LIST]',
   MANUAL_GONG_ADD_FEATURE = '[MANUAL_GONG_ADD]',
@@ -33,6 +35,7 @@ export enum ActionFeaturesEnum {
   DELETE_USER_FEATURE = '[DELETE_USER]',
   UPDATE_USER_FEATURE = '[UPDATE_USER]',
   RESET_USER_PASSWORD_FEATURE = '[RESET_USER_PASSWORD]',
+  UPDATE_PERMISSIONS_FEATURE = '[UPDATE_PERMISSIONS]',
 }
 
 export enum ActionTypesEnum {
@@ -45,6 +48,7 @@ export enum ActionTypesEnum {
   SET_GONG_TYPES = 'SET_GONG_TYPES',
   SET_AREAS = 'SET_AREAS',
   SET_COURSES = 'SET_COURSES',
+  SET_PERMISSIONS = 'SET_PERMISSIONS',
   SET_COURSES_RAW_DATA = 'SET_COURSES_RAW_DATA',
   SET_COURSES_SCHEDULE = 'SET_COURSES_SCHEDULE',
   SET_MANUAL_GONGS_LIST = 'SET_MANUAL_GONGS_LIST',
@@ -69,6 +73,7 @@ export enum ActionTypesEnum {
   DELETE_USER = 'DELETE_USER',
   UPDATE_USER = 'UPDATE_USER',
   RESET_USER_PASSWORD = 'RESET_USER_PASSWORD',
+  UPDATE_PERMISSIONS = 'UPDATE_PERMISSIONS',
 }
 
 export interface AppAction extends Action {
@@ -109,6 +114,12 @@ export class ActionGenerator {
     type: ActionTypesEnum.SET_AREAS,
     payload: areas,
     meta: {feature: ActionFeaturesEnum.AREA_FEATURE}
+  });
+
+  static setPermissions = (aPermissions: Permission[]) => ({
+    type: ActionTypesEnum.SET_PERMISSIONS,
+    payload: aPermissions,
+    meta: {feature: ActionFeaturesEnum.PERMISSIONS_FEATURE}
   });
 
   static setCourses = (courses: Course[]) => ({
@@ -251,6 +262,12 @@ export class ActionGenerator {
   static resetUserPassword = (aUser: User) => ({
     type: ActionTypesEnum.RESET_USER_PASSWORD,
     payload: aUser,
+  });
+
+
+  static updatePermissions = (aPermissionsArray: Permission[]) => ({
+    type: ActionTypesEnum.UPDATE_PERMISSIONS,
+    payload: aPermissionsArray,
   });
 
 }

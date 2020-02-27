@@ -10,6 +10,7 @@ import {Gong} from '../../model/gong';
 import {DateFormat} from '../../model/dateFormat';
 import {ClassMapEntry, MethodMapEntry} from 'angular-json-class-converter';
 import {User} from '../../model/user';
+import {Permission} from '../../model/permission';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -105,5 +106,6 @@ export default {
     {className: 'Gong', clazz: Gong},
     {className: 'DateFormat', clazz: DateFormat},
     {className: 'User', clazz: User},
+    {className: 'Permission', clazz: Permission},
     ] as ClassMapEntry[]
 };

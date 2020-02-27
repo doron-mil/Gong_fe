@@ -185,5 +185,19 @@
         "conversionFunctionName": "timeToDateConversion"
       }
     ]
+  },
+  {
+    "className": "Permission",
+    "propertyConversionArray": [
+      {
+        "propertyName": "action"
+      },
+      {
+        "propertyName": "roles"
+      },
+      {
+        "propertyName": "order"
+      }
+    ]
   }
 ]

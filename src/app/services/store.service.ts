@@ -21,6 +21,7 @@ import {BasicServerData} from '../model/basicServerData';
 import {IObjectMap} from '../model/store-model';
 import {ETopic, ITopicData} from '../model/topics-model';
 import {User} from '../model/user';
+import {Permission} from '../model/permission';
 
 @Injectable({
   providedIn: 'root'
@@ -352,5 +353,9 @@ export class StoreService implements OnInit, OnDestroy {
 
   resetUserPassword(aUser: User) {
     this.ngRedux.dispatch(ActionGenerator.resetUserPassword(aUser));
+  }
+
+  updatePermissions(aPermissionsArray: Permission[]) {
+    this.ngRedux.dispatch(ActionGenerator.updatePermissions(aPermissionsArray));
   }
 }

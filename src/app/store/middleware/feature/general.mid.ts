@@ -22,6 +22,7 @@ import {AuthService} from '../../../services/auth.service';
 import {DbObjectTypeEnum, IndexedDbService} from '../../../shared/indexed-db.service';
 import {StoreService} from '../../../services/store.service';
 import {User} from '../../../model/user';
+import {Permission} from '../../../model/permission';
 
 
 const BASIC_URL = 'api/';
@@ -46,6 +47,7 @@ const ADD_USER_URL = `${BASIC_URL}data/user/add`;
 const DELETE_USER_URL = `${BASIC_URL}data/user/remove`;
 const UPDATE_USER_URL = `${BASIC_URL}data/user/update`;
 const RESET_USER_PASSWORD_URL = `${BASIC_URL}data/user/resetPassword`;
+const UPDATE_PERMISSIONS_URL = `${BASIC_URL}data/permissions/update`;
 
 @Injectable()
 export class GeneralMiddlewareService {
@@ -94,6 +96,11 @@ export class GeneralMiddlewareService {
         });
         promiseArray.push(promise);
 
+        promise = this.indexedDbService.getAllStoredDataRecords(DbObjectTypeEnum.PERMISSIONS).then((pPermissionsJson) => {
+          dispatch(apiMockSuccess(pPermissionsJson, ActionFeaturesEnum.PERMISSIONS_FEATURE, null));
+        });
+        promiseArray.push(promise);
+
         Promise.all(promiseArray)
           .then(() => next(ActionGenerator.storeStaticDataWasUpdated()))
           .catch(error =>
@@ -120,6 +127,12 @@ export class GeneralMiddlewareService {
         );
         next(
           ActionGenerator.setCoursesRawData(JSON.stringify(action.payload.data))
+        );
+        break;
+      case `${ActionFeaturesEnum.PERMISSIONS_FEATURE} ${API_SUCCESS}`:
+        const permissionsArray = this.jsonConverterService.convert<Permission>(action.payload.data, 'Permission');
+        next(
+          ActionGenerator.setPermissions(permissionsArray)
         );
         break;
       case `${ActionFeaturesEnum.COURSES_SCHEDULE_FEATURE} ${API_SUCCESS}`:
@@ -189,6 +202,11 @@ export class GeneralMiddlewareService {
           const coursesJson = _.get(staticData, 'courses');
           promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.COURSES, coursesJson, undefined
             , (val) => val.course_name);
+          promiseArray.push(promise);
+
+          const permissionsJson = _.get(staticData, 'permissions');
+          promise = this.indexedDbService.saveDataArray2DB(DbObjectTypeEnum.PERMISSIONS, permissionsJson, undefined
+            , (val) => val.action);
           promiseArray.push(promise);
 
           Promise.all(promiseArray)
@@ -430,6 +448,18 @@ export class GeneralMiddlewareService {
         break;
       case `${ActionFeaturesEnum.RESET_USER_PASSWORD_FEATURE} ${API_SUCCESS}`:
         this.messagesService.coursesUploaded(action.payload.error && action.payload.error.additional_message);
+        break;
+      case ActionTypesEnum.UPDATE_PERMISSIONS:
+        const permissionsArrayAsJson = this.jsonConverterService.convertToJson(action.payload);
+        next(
+          apiRequest(permissionsArrayAsJson, 'POST',
+            UPDATE_PERMISSIONS_URL, ActionFeaturesEnum.UPDATE_PERMISSIONS_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.UPDATE_PERMISSIONS_FEATURE} ${API_SUCCESS}`:
+        next(
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
+            , {bypassRefreshDateFormat: true}));
         break;
     }
 
