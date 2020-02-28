@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 
-import {from, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, from, Observable, Subject} from 'rxjs';
 import {first, map} from 'rxjs/operators';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import * as _ from 'lodash';
@@ -26,7 +26,7 @@ export class AuthService {
     this.storeService.getPermissions().subscribe((permissionsArray: Permission[]) => {
       permissionsArray.forEach((permission: Permission) => {
         if (!this.permissionObjectMap[permission.action]) {
-          this.permissionObjectMap[permission.action] = new Subject<Permission>();
+          this.permissionObjectMap[permission.action] = new BehaviorSubject<Permission>(_.cloneDeep(permission));
         }
         this.permissionObjectMap[permission.action].next(_.cloneDeep(permission));
       });
@@ -91,10 +91,11 @@ export class AuthService {
       } else {
         let permissionForActionSubject = this.permissionObjectMap[aAction];
         if (!permissionForActionSubject) {
-          this.permissionObjectMap[aAction] = permissionForActionSubject = new Subject<Permission>();
+          this.permissionObjectMap[aAction] = permissionForActionSubject = new BehaviorSubject<Permission>(new Permission());
         }
         return permissionForActionSubject.pipe(
-          map(permissionForAction => !!permissionForAction && permissionForAction.roles.includes(this.role))
+          map(permissionForAction => !!permissionForAction && !!permissionForAction.roles &&
+            permissionForAction.roles.includes(this.role))
         );
       }
     }

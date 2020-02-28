@@ -94,6 +94,7 @@
     <td mat-cell *matCellDef="let element" [ngClass]="{'nextGong' : element.isTheNextGong}" class="delete-cell">
       <ng-container *ngIf="isDeleteButton">
         <button mat-icon-button (click)="gongRemove(element.exactMoment.valueOf())" color="accent"
+                [disabled]="isDisableToggle"
                 class="delete-button ">
           <mat-icon svgIcon="close-box"></mat-icon>
         </button>

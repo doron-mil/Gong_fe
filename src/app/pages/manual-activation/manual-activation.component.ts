@@ -1,9 +1,11 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {MatListOption, MatSelectionList, MatSelectionListChange} from '@angular/material/list';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {TranslateService} from '@ngx-translate/core';
-import {NgRedux} from '@angular-redux/store';
+
 import {BehaviorSubject, Subscription, timer} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {NgRedux} from '@angular-redux/store';
+import {TranslateService} from '@ngx-translate/core';
 import moment from 'moment';
 
 import {GongType} from '../../model/gongType';
@@ -15,13 +17,15 @@ import {StoreDataTypeEnum} from '../../store/storeDataTypeEnum';
 import {MessagesService} from '../../services/messages.service';
 import {Gong} from '../../model/gong';
 import {IObjectMap} from '../../model/store-model';
+import {AuthService} from '../../services/auth.service';
+import {BaseComponent} from '../../shared/baseComponent';
 
 @Component({
   selector: 'app-manual-activation',
   templateUrl: './manual-activation.component.html',
   styleUrls: ['./manual-activation.component.scss']
 })
-export class ManualActivationComponent implements OnInit, OnDestroy {
+export class ManualActivationComponent extends BaseComponent {
 
   @ViewChild('allAreasSelectionCtrl', {static: false}) allSelectedOptionCtrl: MatListOption;
   @ViewChild('areasSelectionCtrl', {static: true}) areasSelectionCtrl: MatSelectionList;
@@ -35,7 +39,6 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   chosenTime: Date;
   scheduleGongStartDate: Date;
 
-  subscription: Subscription;
   scheduledGongsArray: ScheduledGong[];
 
   timerSubscription: Subscription;
@@ -44,85 +47,111 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
 
   private isGongTypesArrayReady: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  playGongPermissions: boolean;
+  scheduleGongPermissions: boolean;
+  deleteGongPermissions: boolean;
+
   constructor(private ngRedux: NgRedux<any>,
               private changeDetectorRef: ChangeDetectorRef,
+              private authService: AuthService,
               private storeService: StoreService,
               private snackBar: MatSnackBar,
               private messagesService: MessagesService,
-              private translateService: TranslateService) {
+              translateService: TranslateService) {
+    super(translateService);
   }
 
-  ngOnInit() {
-    this.setOnScheduledGongsArrayChange();
-
-    this.setOnAreasSelectionChange();
-
-    this.setOnPlayGongEnabledChange();
-
-    this.constructGongTypesArray();
-    this.constructAreasArray();
-
+  protected hookOnInit() {
     this.gongToPlay.areas = [];
     this.gongToPlay.volume = 100;
     this.gongToPlay.repeat = 1;
     this.gongToPlay.isActive = true;
     this.gongToPlay.updateStatus = UpdateStatusEnum.PENDING;
+
+    this.constructGongTypesArray();
+    this.constructAreasArray();
+  }
+
+  protected getKeysArray4Translations(): string[] {
+    return ['manualActivation.messages.areaIsEmpty'];
+  }
+
+  protected listenForUpdates() {
+    this.setOnScheduledGongsArrayChange();
+    this.setOnAreasSelectionChange();
+    this.setOnPlayGongEnabledChange();
+
+    // Permissions
+    this.authService.hasPermission('play_manual')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.playGongPermissions = isPermitted);
+
+    this.authService.hasPermission('schedule_manual')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.scheduleGongPermissions = isPermitted);
+
+    this.authService.hasPermission('delete_manual')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.deleteGongPermissions = isPermitted);
+
   }
 
   private setOnAreasSelectionChange() {
-    this.areasSelectionCtrl.selectionChange.subscribe((s: MatSelectionListChange) => {
-        if (s.option.value === 0) {
-          if (this.gongToPlay.areas.includes(0)) {
-            this.areasSelectionCtrl.selectAll();
-          } else {
-            this.areasSelectionCtrl.deselectAll();
-          }
-        } else {
-          if (this.gongToPlay.areas.includes(s.option.value)) {
-            if (this.gongToPlay.areas.filter(value => value > 0).length >= this.areas.length) {
+    this.areasSelectionCtrl.selectionChange
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((s: MatSelectionListChange) => {
+          if (s.option.value === 0) {
+            if (this.gongToPlay.areas.includes(0)) {
               this.areasSelectionCtrl.selectAll();
+            } else {
+              this.areasSelectionCtrl.deselectAll();
             }
-          } else if (this.gongToPlay.areas.includes(0)) {
-            this.allSelectedOptionCtrl.toggle();
+          } else {
+            if (this.gongToPlay.areas.includes(s.option.value)) {
+              if (this.gongToPlay.areas.filter(value => value > 0).length >= this.areas.length) {
+                this.areasSelectionCtrl.selectAll();
+              }
+            } else if (this.gongToPlay.areas.includes(0)) {
+              this.allSelectedOptionCtrl.toggle();
+            }
           }
         }
-      }
-    );
+      );
   }
 
   private setOnPlayGongEnabledChange() {
-    this.storeService.getPlayGongEnabled().subscribe((aIsEnabled) => this.playGongEnabled = aIsEnabled);
+    this.storeService.getPlayGongEnabled()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((aIsEnabled) => this.playGongEnabled = aIsEnabled);
   }
 
   private constructGongTypesArray() {
     this.gongTypes = [];
 
-    this.storeService.getGongTypesMap().subscribe((gongTypesMap: IObjectMap<GongType>) => {
-      this.gongTypes = Array.from(Object.values(gongTypesMap));
-      this.isGongTypesArrayReady.next(true);
-      if (this.gongTypes && this.gongTypes[0]) {
-        this.gongToPlay.gongTypeId = this.gongTypes[0].id;
-      }
-    });
+    this.storeService.getGongTypesMap()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((gongTypesMap: IObjectMap<GongType>) => {
+        this.gongTypes = Array.from(Object.values(gongTypesMap));
+        this.isGongTypesArrayReady.next(true);
+        if (this.gongTypes && this.gongTypes[0]) {
+          this.gongToPlay.gongTypeId = this.gongTypes[0].id;
+        }
+      });
   }
 
   private constructAreasArray() {
-    this.storeService.getAreasMap().subscribe(areasMap => {
-      if (areasMap && areasMap.length > 0) {
-        this.areas = areasMap.filter((value: Area) => value.id !== 0);
-        this.areas.forEach((area: Area) => {
-          this.areasMap[area.id] = area;
-        });
-        try {
-          if (!this.changeDetectorRef['destroyed']) {
-            this.changeDetectorRef.detectChanges();
-          }
-          this.areasSelectionCtrl.selectAll();
-        } catch (e) {
-
+    this.storeService.getAreasMap()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(areasMap => {
+        if (areasMap && areasMap.length > 0) {
+          this.areas = areasMap.filter((value: Area) => value.id !== 0);
+          this.gongToPlay.areas.push(0);
+          this.areas.forEach((area: Area) => {
+            this.areasMap[area.id] = area;
+            this.gongToPlay.areas.push(area.id);
+          });
         }
-      }
-    });
+      });
   }
 
   playGong() {
@@ -132,11 +161,10 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
 
   scheduleGong() {
     if (this.gongToPlay.areas.length <= 0) {
-      this.translateService.get('manualActivation.messages.areaIsEmpty').subscribe(messageTrans => {
-        this.snackBar.open(messageTrans, null, {
-          duration: 5000,
-          panelClass: 'snackBarClass',
-        });
+      const messageTrans = this.getTranslation('manualActivation.messages.areaIsEmpty');
+      this.snackBar.open(messageTrans, null, {
+        duration: 5000,
+        panelClass: 'snackBarClass',
       });
       return;
     }
@@ -149,7 +177,7 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
     this.scheduleGongStartDate = moment().add(1, 'm').toDate();
   }
 
-  repeatIncrement( aIncrementValue = 1){
+  repeatIncrement(aIncrementValue = 1) {
     this.gongToPlay.repeat += aIncrementValue;
   }
 
@@ -164,7 +192,9 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   scheduledDateOnClose() {
     if (this.chosenTime) {
       if (moment().isAfter(this.chosenTime)) {
-        this.timerSubscription = timer(100).subscribe(() => this.reopen());
+        this.timerSubscription = timer(100)
+          .pipe(takeUntil(this.onDestroy$))
+          .subscribe(() => this.reopen());
         this.isScheduledDatePickerOpen = false;
         this.messagesService.scheduleGongToFutureTime();
         return;
@@ -177,8 +207,8 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
   }
 
   private setOnScheduledGongsArrayChange() {
-
-    this.subscription = this.ngRedux.select<ScheduledGong[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'manualGongs'])
+    this.ngRedux.select<ScheduledGong[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'manualGongs'])
+      .pipe(takeUntil(this.onDestroy$))
       .subscribe((scheduledGongs: ScheduledGong[]) => {
         if (scheduledGongs) {
           this.scheduledGongsArray = [];
@@ -193,12 +223,5 @@ export class ManualActivationComponent implements OnInit, OnDestroy {
 
   onGongRemove(aRemovedScheduledGong: ScheduledGong) {
     this.storeService.removeScheduledGong(aRemovedScheduledGong);
-  }
-
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 }
