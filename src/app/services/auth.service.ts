@@ -86,7 +86,7 @@ export class AuthService {
 
   hasPermission(aAction: string): Observable<boolean> {
     if (this.role || this.loggedIn) {
-      if (this.role === 'dev') {
+      if (this.role === 'dev' || this.user === 'admin') {
         return from([true]);
       } else {
         let permissionForActionSubject = this.permissionObjectMap[aAction];

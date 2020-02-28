@@ -3,12 +3,13 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 
 import {Subscription} from 'rxjs';
-import {first} from 'rxjs/operators';
+import {first, takeUntil} from 'rxjs/operators';
 import {NgRedux} from '@angular-redux/store';
 import {TranslateService} from '@ngx-translate/core';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
+import {BaseComponent} from '../../shared/baseComponent';
 import {CourseSchedule} from '../../model/courseSchedule';
 import {Course} from '../../model/course';
 import {ScheduledGong} from '../../model/ScheduledGong';
@@ -24,7 +25,7 @@ import {AuthService} from '../../services/auth.service';
   templateUrl: './automatic-activation.component.html',
   styleUrls: ['./automatic-activation.component.scss']
 })
-export class AutomaticActivationComponent implements OnInit, OnDestroy {
+export class AutomaticActivationComponent extends BaseComponent {
 
   coursesDisplayedColumns = ['course_name', 'daysCount', 'date'];
   coursesDataSource: MatTableDataSource<CourseSchedule>;
@@ -35,8 +36,6 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
 
   selectedCourseRoutineArray: ScheduledGong[] = [];
 
-  subscription: Subscription;
-
   displayDate: boolean = false;
 
   waitToScroll: boolean = false;
@@ -44,44 +43,71 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
   dateFormat: DateFormat;
 
   loggedInRole: string;
+  scheduleCoursePermissions: boolean;
+  toggleGongPermissions: boolean;
+  removeScheduledCoursePermissions: boolean;
+
 
   constructor(private ngRedux: NgRedux<any>,
               private authService: AuthService,
               private dialog: MatDialog,
               private translate: TranslateService,
               private storeService: StoreService) {
+    super();
   }
 
-  async ngOnInit() {
+  protected listenForUpdates() {
+
+    // Permissions
     this.loggedInRole = this.authService.getRole();
 
-    this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
+    this.authService.hasPermission('schedule_course')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.scheduleCoursePermissions = isPermitted);
 
-    this.coursesMap = await this.storeService.getCoursesMapPromise();
+    this.authService.hasPermission('control_active_gong_on_scheduled_course')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.toggleGongPermissions = isPermitted);
 
-    this.subscription = this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule'])
-      .subscribe((coursesSchedule: CourseSchedule[]) => {
-        if (coursesSchedule && this.coursesMap) {
-          coursesSchedule.sort(((a, b) => a.date.getTime() - b.date.getTime()));
-          this.coursesData = [];
-          coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
-            const course = this.coursesMap.get(courseSchedule.name);
-            if (course) {
-              const clonedCourseSchedule = courseSchedule.clone();
-              clonedCourseSchedule.daysCount = course.days;
-              this.coursesData.push(clonedCourseSchedule);
-            }
-          });
-          this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
-          if (this.selectedCourseScheduled) {
-            this.selectedCourseScheduled = this.coursesData.find(
-              (courseSchedule: CourseSchedule) => courseSchedule.id === this.selectedCourseScheduled.id);
+    this.authService.hasPermission('remove_scheduled_course')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.removeScheduledCoursePermissions = isPermitted);
+
+    // Date format
+    this.storeService.getDateFormat()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
+
+    // Courses
+    this.storeService.getCoursesMapPromise().then(coursesMap => {
+      this.coursesMap = coursesMap;
+
+      this.ngRedux.select<CourseSchedule[]>([StoreDataTypeEnum.DYNAMIC_DATA, 'coursesSchedule'])
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe((coursesSchedule: CourseSchedule[]) => {
+          if (coursesSchedule && this.coursesMap) {
+            coursesSchedule.sort(((a, b) => a.date.getTime() - b.date.getTime()));
+            this.coursesData = [];
+            coursesSchedule.forEach((courseSchedule: CourseSchedule) => {
+              const course = this.coursesMap.get(courseSchedule.name);
+              if (course) {
+                const clonedCourseSchedule = courseSchedule.clone();
+                clonedCourseSchedule.daysCount = course.days;
+                this.coursesData.push(clonedCourseSchedule);
+              }
+            });
+            this.coursesDataSource = new MatTableDataSource<CourseSchedule>(this.coursesData);
             if (this.selectedCourseScheduled) {
-              this.getCourseRoutine(this.selectedCourseScheduled);
+              this.selectedCourseScheduled = this.coursesData.find(
+                (courseSchedule: CourseSchedule) => courseSchedule.id === this.selectedCourseScheduled.id);
+              if (this.selectedCourseScheduled) {
+                this.getCourseRoutine(this.selectedCourseScheduled);
+              }
             }
           }
-        }
-      });
+        });
+    });
+
   }
 
   onRowClick(row): void {
@@ -226,17 +252,6 @@ export class AutomaticActivationComponent implements OnInit, OnDestroy {
         el.parentElement.scrollIntoView({behavior: 'auto', block: 'center', inline: 'start'});
       }
     }
-  }
-
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
-  isRoleForEdit() {
-    return ['admin', 'dev', 'super-user'].includes(this.loggedInRole);
   }
 
   private debugLogForRoutineArray(aRoutineArray: ScheduledGong[]) {
