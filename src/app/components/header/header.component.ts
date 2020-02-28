@@ -59,6 +59,8 @@ export class HeaderComponent extends BaseComponent {
   topicAction = EAction;
   deleteConfirmTranslationObjectKey: { [key: string]: ETranslation } = {};
 
+  viewExportImportPermissions: boolean;
+
   constructor(ngRedux: NgRedux<any>,
               private storeService: StoreService,
               authService: AuthService,
@@ -84,6 +86,11 @@ export class HeaderComponent extends BaseComponent {
   }
 
   protected listenForUpdates() {
+    // Permissions
+    this.authServiceObj.hasPermission('view_export_import')
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((isPermitted) => this.viewExportImportPermissions = isPermitted);
+
     this.ngReduxObj.select<BasicServerData>([StoreDataTypeEnum.DYNAMIC_DATA, 'basicServerData'])
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((basicServerData: BasicServerData) => {

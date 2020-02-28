@@ -21,7 +21,7 @@
 
       <mat-divider *ngIf="getIsLoggedIn()"></mat-divider>
 
-      <button mat-menu-item [matMenuTriggerFor]="exportImportMenu" *ngIf="getIsLoggedIn() && isAdminRole()">
+      <button mat-menu-item [matMenuTriggerFor]="exportImportMenu" *ngIf="viewExportImportPermissions">
         <mat-icon svgIcon="swap-vertical-bold"></mat-icon>
         <span>
           {{'main.menu.exportImport.main' | translate}}

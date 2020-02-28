@@ -87,10 +87,4 @@ export class BaseComponent implements OnInit, OnDestroy {
   public getIsLoggedIn() {
     return this.isLoggedIn;
   }
-
-  public isAdminRole() {
-    return ['admin', 'dev'].includes(this.currentRole);
-  }
-
-
 }
