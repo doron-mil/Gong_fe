@@ -18,7 +18,7 @@ import {StoreService} from '../../../services/store.service';
 })
 export class PermissionsComponent extends BaseComponent {
 
-  permissionsDisplayedColumns = ['action', 'dw', 'teacher', 'admin', 'all'];
+  permissionsDisplayedColumns = ['action', 'user', 'super-user', 'admin', 'all'];
   permissionsDataSource: MatTableDataSource<Permission>;
   permissionsData: Permission[] = [];
   originalPermissionsData: Permission[] = [];

@@ -3,15 +3,15 @@
     <button mat-raised-button color="primary" (click)="addUser()">
       {{ 'config.users.buttons.addUser' | translate }}
     </button>
-    <button mat-raised-button color="primary" (click)="updateUser()"
+    <button mat-raised-button color="basic" (click)="updateUser()"
             [disabled]="!areEditButtonsEnabled">
       {{ 'config.users.buttons.updateUser' | translate }}
     </button>
-    <button mat-raised-button color="primary" (click)="deleteUser()"
+    <button mat-raised-button color="accent" (click)="deleteUser()"
             [disabled]="!areEditButtonsEnabled">
       {{ 'config.users.buttons.deleteUser' | translate }}
     </button>
-    <button mat-raised-button color="primary" (click)="changeUserPass()"
+    <button mat-stroked-button color="warn" (click)="changeUserPass()"
             [disabled]="!areEditButtonsEnabled">
       {{ 'config.users.buttons.changeUserPass' | translate }}
     </button>
@@ -19,7 +19,6 @@
 
 
   <div class="users-display-container">
-
 
     <div class="users-table-container mat-elevation-z8">
       <mat-table [dataSource]="usersDataSource" class="users-table">
