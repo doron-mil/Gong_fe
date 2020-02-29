@@ -234,6 +234,9 @@ export class HeaderComponent extends BaseComponent {
     dialogRef.afterClosed()
       .pipe(first())
       .subscribe((selectedTopics: ITopicData[]) => {
+        if (!selectedTopics){
+          return;
+        }
         switch (aAction) {
           case EAction.DOWNLOAD:
             const selectedCourses = selectedTopics.map(topicData => topicData.id);

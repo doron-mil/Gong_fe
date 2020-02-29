@@ -11,7 +11,8 @@
     <div class="topics-container">
 
       <div class="row-container" *ngFor="let topic of data.availableTopics"
-        [matTooltip]="topic.inUse ? disabledTopicToolTip : ''">
+        [matTooltip]="topic.inUse ? disabledTopicToolTip : ''"
+           matTooltipPosition="right" matTooltipClass="disabledTopicTooltipClass">
 
         <mat-checkbox (click)="!topic.inUse && toggleSelection(topic)" [disabled]="topic.inUse" *ngIf="data.many">
         </mat-checkbox>

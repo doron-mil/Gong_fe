@@ -314,7 +314,7 @@ export class StoreService implements OnInit, OnDestroy {
     const gongTypesArray = Object.values(this.gongTypesMap);
     if (gongTypesArray.length > 0) {
       const lastGong = gongTypesArray[gongTypesArray.length - 1];
-      const inUse = Array.from(this.coursesMap.values()).some(course => course.isGongTypeInCourse(lastGong));
+      const inUse = Array.from(this.coursesMap.values()).some(course => !course.isTest && course.isGongTypeInCourse(lastGong));
       return {id: lastGong.id.toString(10), name: lastGong.name, inUse};
     } else {
       return undefined;
@@ -322,7 +322,7 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   deleteGong(aGongTopicData: ITopicData) {
-
+    this.ngRedux.dispatch(ActionGenerator.deleteGong(aGongTopicData.id));
   }
 
   getUsersArray() {

@@ -14,16 +14,24 @@
       display: flex;
       justify-content: flex-start;
       align-items: flex-end;
+      width: min-content;
 
-      .topic-name{
+      .topic-name {
         padding-left: 1vw;
 
-        &.disabled{
+        &.disabled {
           color: lightgray;
         }
       }
     }
   }
+}
+
+::ng-deep  .disabledTopicTooltipClass {
+  font-size: medium;
+  color: white;
+  background: #ff4081;
+  width: 50vw;
 }
 
 .submit-button {

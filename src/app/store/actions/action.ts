@@ -30,6 +30,7 @@ export enum ActionFeaturesEnum {
   UPLOAD_COURSES_FILE_FEATURE = '[UPLOAD_COURSES_FILE]',
   UPLOAD_GONG_FILE_FEATURE = '[UPLOAD_GONG_FILE]',
   UPDATE_LANGUAGES_FEATURE = '[UPDATE_LANGUAGES]',
+  DELETE_GONG_FEATURE = '[DELETE_GONG]',
   GET_USERS_FEATURE = '[GET_USERS]',
   ADD_USER_FEATURE = '[ADD_USER]',
   DELETE_USER_FEATURE = '[DELETE_USER]',
@@ -66,6 +67,7 @@ export enum ActionTypesEnum {
   UPLOAD_GONG_FILE = 'UPLOAD_GONG_FILE',
   UPLOAD_COURSES_FILE_WAS_COMPLETED = 'UPLOAD_COURSES_FILE_WAS_COMPLETED',
   UPLOAD_GONG_FILE_WAS_COMPLETED = 'UPLOAD_GONG_FILE_WAS_COMPLETED',
+  DELETE_GONG = 'DELETE_GONG',
   UPDATE_LANGUAGES = 'UPDATE_LANGUAGES',
   GET_USERS_ARRAY = 'GET_USERS_ARRAY',
   SET_USERS_ARRAY = 'SET_USERS_ARRAY',
@@ -222,6 +224,13 @@ export class ActionGenerator {
   static uploadGongFileHasComplete = () => ({
     type: ActionTypesEnum.UPLOAD_GONG_FILE_WAS_COMPLETED,
   });
+
+
+  static deleteGong = (aGongId: String) => ({
+    type: ActionTypesEnum.DELETE_GONG,
+    payload: aGongId,
+  });
+
 
   static setLoggedIn = (aIsLoggedIn: boolean) => ({
     type: ActionTypesEnum.SET_LOGGED_IN,

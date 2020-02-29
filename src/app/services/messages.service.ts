@@ -18,6 +18,7 @@ enum MessagesTranslationEnum {
   LAST_GONGS_IS_IN_USE = 'lastGongIsInUse',
   LAST_GONGS_NOT_FOUND = 'lastGongNotFound',
   RESET_USER_PASSWORD_SUCCESSFUL = 'resetUserPasswordSuccessful',
+  GONG_DELETED_SUCCESSFUL = 'gongDeletedSuccessful',
 }
 
 @Injectable({
@@ -117,7 +118,7 @@ export class MessagesService {
     });
   }
 
-    resetPasswordSuccessful() {
+  resetPasswordSuccessful() {
     const messageTrans = this.getTranlation(MessagesTranslationEnum.RESET_USER_PASSWORD_SUCCESSFUL);
     this.snackBar.open(messageTrans, null, {
       duration: 5000,
@@ -125,4 +126,12 @@ export class MessagesService {
     });
   }
 
+  gongDeletedSuccessfully() {
+    const messageTrans = this.getTranlation(MessagesTranslationEnum.GONG_DELETED_SUCCESSFUL);
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
+
+  }
 }
