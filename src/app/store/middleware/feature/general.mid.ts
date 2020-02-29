@@ -39,9 +39,10 @@ const TOGGLE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/toggle`;
 const REMOVE_SCHEDULED_GONG_URL = `${BASIC_URL}data/gong/remove`;
 const GET_BASIC_DATA_URL = `${BASIC_URL}nextgong`;
 const PLAY_GONG_URL = `${BASIC_URL}relay/playGong`;
-const UPLOAD_COURSES_URL = `${BASIC_URL}data/uploadCourses`;
+const UPLOAD_COURSES_URL = `${BASIC_URL}data/course/uploadCourses`;
 const UPLOAD_GONG_URL = `${BASIC_URL}data/gong/upload`;
 const DELETE_GONG_URL = `${BASIC_URL}data/gong/deleteFile`;
+const DELETE_COURSE_URL = `${BASIC_URL}data/course/remove`;
 const UPDATE_LANGUAGES_URL = `${BASIC_URL}data/languagesUpdate`;
 const GET_USERS_URL = `${BASIC_URL}data/users/list`;
 const ADD_USER_URL = `${BASIC_URL}data/user/add`;
@@ -393,6 +394,19 @@ export class GeneralMiddlewareService {
         next(
           ActionGenerator.uploadGongFileHasComplete()
         );
+        break;
+      case ActionTypesEnum.DELETE_COURSE:
+        next(
+          apiRequest(JSON.stringify({courseName: action.payload}),
+            'POST', DELETE_COURSE_URL, ActionFeaturesEnum.DELETE_COURSE_FEATURE, null)
+        );
+        break;
+      case `${ActionFeaturesEnum.DELETE_COURSE_FEATURE} ${API_SUCCESS}`:
+        this.messagesService.courseDeletedSuccessfully();
+        next(
+          apiRequest(null, 'GET', GET_BASIC_DATA_URL, ActionFeaturesEnum.BASIC_DATA_FEATURE
+            , {bypassRefreshDateFormat: true}));
+
         break;
       case ActionTypesEnum.DELETE_GONG:
         next(

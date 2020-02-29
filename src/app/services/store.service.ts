@@ -307,13 +307,14 @@ export class StoreService implements OnInit, OnDestroy {
   }
 
   deleteCourse(aCourseName: string) {
-
+    this.ngRedux.dispatch(ActionGenerator.deleteCourse(aCourseName));
   }
 
   getLastGongTopicData(): ITopicData {
     const gongTypesArray = Object.values(this.gongTypesMap);
     if (gongTypesArray.length > 0) {
-      const lastGong = gongTypesArray[gongTypesArray.length - 1];
+      const lastGong = _.sortBy(gongTypesArray, ['id'])[gongTypesArray.length - 1]; // Assuming that the gongs created
+                                                                                            // by order and id respectively
       const inUse = Array.from(this.coursesMap.values()).some(course => !course.isTest && course.isGongTypeInCourse(lastGong));
       return {id: lastGong.id.toString(10), name: lastGong.name, inUse};
     } else {

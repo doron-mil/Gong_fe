@@ -19,6 +19,7 @@ enum MessagesTranslationEnum {
   LAST_GONGS_NOT_FOUND = 'lastGongNotFound',
   RESET_USER_PASSWORD_SUCCESSFUL = 'resetUserPasswordSuccessful',
   GONG_DELETED_SUCCESSFUL = 'gongDeletedSuccessful',
+  COURSE_DELETED_SUCCESSFUL = 'courseDeletedSuccessful',
 }
 
 @Injectable({
@@ -132,6 +133,13 @@ export class MessagesService {
       duration: 5000,
       panelClass: 'snackBarClass',
     });
+  }
 
+  courseDeletedSuccessfully() {
+    const messageTrans = this.getTranlation(MessagesTranslationEnum.COURSE_DELETED_SUCCESSFUL);
+    this.snackBar.open(messageTrans, null, {
+      duration: 5000,
+      panelClass: 'snackBarClass',
+    });
   }
 }
