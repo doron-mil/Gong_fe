@@ -3,12 +3,12 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {MatIconRegistry} from '@angular/material/icon';
 import {TranslateService} from '@ngx-translate/core';
 
+import {NgRedux} from '@angular-redux/store';
+import {filter, takeUntil} from 'rxjs/operators';
+
 import {BaseComponent} from './shared/baseComponent';
 import {DbObjectTypeEnum, IndexedDbService} from './shared/indexed-db.service';
-import {BasicServerData} from './model/basicServerData';
 import {StoreDataTypeEnum} from './store/storeDataTypeEnum';
-import {filter, takeUntil} from 'rxjs/operators';
-import {NgRedux} from '@angular-redux/store';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class AppComponent extends BaseComponent {
 
   protected listenForUpdates() {
     this.translate.onLangChange.pipe(
-      filter(res => !!res && ( res.lang.trim() !== '')),
+      filter(res => !!res && (res.lang.trim() !== '')),
       takeUntil(this.onDestroy$))
       .subscribe((newSetLang) => {
         this.currentLanguage = newSetLang.lang;

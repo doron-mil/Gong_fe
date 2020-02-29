@@ -85,20 +85,17 @@ export class AuthService {
   }
 
   hasPermission(aAction: string): Observable<boolean> {
-    if (this.role || this.loggedIn) {
-      if (this.role === 'dev' || this.user === 'admin') {
-        return from([true]);
-      } else {
-        let permissionForActionSubject = this.permissionObjectMap[aAction];
-        if (!permissionForActionSubject) {
-          this.permissionObjectMap[aAction] = permissionForActionSubject = new BehaviorSubject<Permission>(new Permission());
-        }
-        return permissionForActionSubject.pipe(
-          map(permissionForAction => !!permissionForAction && !!permissionForAction.roles &&
-            permissionForAction.roles.includes(this.role))
-        );
-      }
+    if ((this.role || this.loggedIn) && (this.role === 'dev' || this.user === 'admin')) {
+      return from([true]);
     }
+    let permissionForActionSubject = this.permissionObjectMap[aAction];
+    if (!permissionForActionSubject) {
+      this.permissionObjectMap[aAction] = permissionForActionSubject = new BehaviorSubject<Permission>(new Permission());
+    }
+    return permissionForActionSubject.pipe(
+      map(permissionForAction => !!permissionForAction && !!permissionForAction.roles &&
+        permissionForAction.roles.includes(this.role))
+    );
   }
 
   private setRole(aToken: string) {
