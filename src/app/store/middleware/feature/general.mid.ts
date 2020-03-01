@@ -368,9 +368,11 @@ export class GeneralMiddlewareService {
         );
         break;
       case ActionTypesEnum.UPLOAD_GONG_FILE:
-        file = action.payload as File;
+        file = action.payload.file as File;
+        const gongId = action.payload.gongId as string;
         formData = new FormData();
         formData.append('file', file, file.name);
+        formData.append('gongId', gongId);
         next(
           apiRequest(formData, 'POST', UPLOAD_GONG_URL,
             ActionFeaturesEnum.UPLOAD_GONG_FILE_FEATURE, action.payload)

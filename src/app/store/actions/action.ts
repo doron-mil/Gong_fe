@@ -218,9 +218,9 @@ export class ActionGenerator {
     type: ActionTypesEnum.UPLOAD_COURSES_FILE_WAS_COMPLETED,
   });
 
-  static uploadGongFile = (aGongFile: File) => ({
+  static uploadGongFile = (aGongFile: File, aGongId4Update: string) => ({
     type: ActionTypesEnum.UPLOAD_GONG_FILE,
-    payload: aGongFile,
+    payload: {file: aGongFile, gongId: aGongId4Update},
   });
 
   static uploadGongFileHasComplete = () => ({
@@ -228,7 +228,7 @@ export class ActionGenerator {
   });
 
 
-  static deleteCourse = (aCourseName : String) => ({
+  static deleteCourse = (aCourseName: String) => ({
     type: ActionTypesEnum.DELETE_COURSE,
     payload: aCourseName,
   });

@@ -2,8 +2,8 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 
-import {Subscription, timer} from 'rxjs';
-import {filter, first, takeUntil} from 'rxjs/operators';
+import {fromEvent, Subscription, timer} from 'rxjs';
+import {filter, first, takeUntil, tap} from 'rxjs/operators';
 import {TranslateService} from '@ngx-translate/core';
 import {NgRedux} from '@angular-redux/store';
 
@@ -60,6 +60,7 @@ export class HeaderComponent extends BaseComponent {
   deleteConfirmTranslationObjectKey: { [key: string]: ETranslation } = {};
 
   viewExportImportPermissions: boolean;
+  private gongId4Update: string;
 
   constructor(ngRedux: NgRedux<any>,
               private storeService: StoreService,
@@ -215,12 +216,12 @@ export class HeaderComponent extends BaseComponent {
   onGongFileChange() {
     const files = this.gongFile.nativeElement.files;
     if (files && files.length === 1) {
-      this.storeService.uploadGongFile(files[0]);
+      this.storeService.uploadGongFile(files[0], this.gongId4Update);
     }
   }
 
   openUpdateDeleteDialog(aTopic: ETopic, aAction: EAction) {
-    const checkIfUsed = aAction !== EAction.DOWNLOAD;
+    const checkIfUsed = aAction === EAction.DELETE;
     const isMany = aAction === EAction.DOWNLOAD;
     const availableTopics: ITopicData[] = this.storeService.getTopicsData(aTopic, this.currentRole, checkIfUsed);
 
@@ -234,7 +235,7 @@ export class HeaderComponent extends BaseComponent {
     dialogRef.afterClosed()
       .pipe(first())
       .subscribe((selectedTopics: ITopicData[]) => {
-        if (!selectedTopics){
+        if (!selectedTopics) {
           return;
         }
         switch (aAction) {
@@ -243,6 +244,11 @@ export class HeaderComponent extends BaseComponent {
             this.storeService.downloadCourses(selectedCourses);
             break;
           case EAction.UPDATE:
+            this.gongId4Update = selectedTopics[0].id;
+            fromEvent(window, 'focus').pipe(
+              first(),
+              tap(() => setTimeout(() => delete this.gongId4Update, 700))
+            ).subscribe();
             this.gongFile.nativeElement.click();
             break;
           case EAction.DELETE:

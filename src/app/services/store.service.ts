@@ -220,8 +220,8 @@ export class StoreService implements OnInit, OnDestroy {
     this.ngRedux.dispatch(ActionGenerator.uploadCourseFile(aCourseFile));
   }
 
-  uploadGongFile(aGongFile: File) {
-    this.ngRedux.dispatch(ActionGenerator.uploadGongFile(aGongFile));
+  uploadGongFile(aGongFile: File, aGongId4Update: string) {
+    this.ngRedux.dispatch(ActionGenerator.uploadGongFile(aGongFile, aGongId4Update));
   }
 
   downloadCourses(aCoursesNamesArray: string[]) {
