@@ -87,6 +87,10 @@
   /*width: 0;*/
 }
 
+.postfix-label {
+  padding-left: 10px;
+}
+
 ::ng-deep {
   .search-container .mat-form-field-wrapper {
     padding-bottom: .9em;
@@ -114,7 +118,7 @@
         padding-right: 20px;
         text-overflow: ellipsis;
 
-        .language-code{
+        .language-code {
           width: 50px;
           display: inline-block;
         }

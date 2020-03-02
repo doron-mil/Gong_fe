@@ -52,6 +52,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(JsonTreeComponent, {static: false}) treeComponent: JsonTreeComponent;
   @ViewChild('searchTextInput', {static: false}) searchTextInput: ElementRef;
+  @ViewChild('postfixInput', {static: false}) postfixInputInput: ElementRef;
 
   foundObjectID: string;
 
@@ -265,8 +266,9 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   copyEnTo(aLanguageProperties: LanguageProperties) {
+    const postFix = this.postfixInputInput.nativeElement.value ? this.postfixInputInput.nativeElement.value : '';
     const copyMethod = (sourceStrings: Array<string>, lang: string): Promise<Array<string>> => {
-      const copiedValues = sourceStrings.map(sourceString => sourceString);
+      const copiedValues = sourceStrings.map(sourceString => `${sourceString}${postFix}`);
       return new Promise<Array<string>>((resolve, reject) => {
         resolve(copiedValues);
       });
