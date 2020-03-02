@@ -76,20 +76,14 @@
       </mat-menu>
 
       <mat-menu #langSelectMenu="matMenu" class="my-full-width-menu">
-        <button mat-menu-item>
-          <span>
-            Custom ...
-          </span>
-        </button>
-
         <mat-checkbox #selectLangCheck *ngFor="let lang of langsArray" class="lang-item"
                       [matTooltip]="lang.name + ' ( ' + lang.nativeName + ' )'" matTooltipClass="languageTooltipClass"
-                      [disabled]="lang.isPreLoaded"
+                      [disabled]="readonlyLanguages.includes(lang.lang)"
                       [checked]="lang.isPreLoaded"
                       (change)="selectLangChange(lang, selectLangCheck.checked)"
                       (click)="$event.stopPropagation();handleLangSelectMenuChange(selectLangCheck,langSelectMenuTrigger);">
           <span class="no-disabled-markings">
-            {{lang.lang}}
+            <div class="language-code">{{lang.lang}} -</div>{{lang.name}}
           </span>
         </mat-checkbox>
 
