@@ -296,7 +296,8 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       if (jsonNode.hasChildren) {
         this.getNodesForConversion(jsonNode.children(), aLanguageProperties, aNodesForConversionArray);
       } else {
-        if (_.isNil(jsonNode.value[aLanguageProperties.lang])) {
+        const langValue = jsonNode.value[aLanguageProperties.lang];
+        if (_.isNil(langValue) || langValue.trim().length <= 0) {
           aNodesForConversionArray.push(jsonNode);
         }
       }
