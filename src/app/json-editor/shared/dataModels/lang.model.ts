@@ -10,6 +10,7 @@ export enum NotificationTypesEnum {
 
 export class LanguageProperties {
   name: string;
+  nativeName: string;
   lang: string;
   isRtl: boolean;
   isPreLoaded = false;
@@ -17,9 +18,10 @@ export class LanguageProperties {
   isDisplayed = false;
   isCustomized = false;
 
-  constructor(name: string, abbreviation: string, isRtl: boolean = false) {
+  constructor(name: string, nativeName: string, code: string, isRtl: boolean = false) {
     this.name = name;
-    this.lang = abbreviation;
+    this.nativeName = nativeName;
+    this.lang = code;
     this.isRtl = isRtl;
   }
 }

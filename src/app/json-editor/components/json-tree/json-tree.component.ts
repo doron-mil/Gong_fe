@@ -208,7 +208,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         this.loadAnotherLanguage(this.data, langJson, lang);
         langProperty = this.knownLangsArray.find(languageProperties => languageProperties.lang === lang);
         if (!langProperty) {
-          langProperty = new LanguageProperties('Customized', lang);
+          langProperty = new LanguageProperties('Customized' , 'Customized', lang);
           langProperty.isCustomized = true;
           this.knownLangsArray.push(langProperty);
         }

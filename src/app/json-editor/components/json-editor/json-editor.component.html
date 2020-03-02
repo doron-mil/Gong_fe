@@ -82,12 +82,12 @@
           </span>
         </button>
 
-        <mat-checkbox #selectLangCheck *ngFor="let lang of knownLangsArray" class="lang-item" [matTooltip]="lang.name"
+        <mat-checkbox #selectLangCheck *ngFor="let lang of knownLangsArray" class="lang-item"
+                      [matTooltip]="lang.name + ' ( ' + lang.nativeName + ' )'" matTooltipClass="languageTooltipClass"
                       [disabled]="lang.isPreLoaded"
                       [checked]="lang.isPreLoaded"
                       (change)="selectLangChange(lang, selectLangCheck.checked)"
                       (click)="$event.stopPropagation();handleLangSelectMenuChange(selectLangCheck,langSelectMenuTrigger);">
-          <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
           <span class="no-disabled-markings">
             {{lang.lang}}
           </span>
@@ -98,12 +98,11 @@
       <mat-menu #langDisplayedMenu="matMenu" class="my-full-width-menu">
         <ng-template matMenuContent>
           <mat-checkbox #displayLangCheck *ngFor="let lang of getLanguages4EditingArray()" class="lang-item"
-                        [matTooltip]="lang.name"
+                        [matTooltip]="lang.name + ' ( ' + lang.nativeName + ' )'"
                         [disabled]="lang.lang === 'en'"
                         [checked]="lang.isDisplayed"
                         (change)="lang.isDisplayed = displayLangCheck.checked"
                         (click)="$event.stopPropagation()">
-            <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
             <span>
               {{lang.lang}}
             </span>
@@ -116,9 +115,8 @@
           <ng-container *ngFor="let lang of getLanguages4EditingArray()">
             <button mat-menu-item (click)="langMethod(lang)"
                     *ngIf="lang.lang !== 'en'">
-              <img [src]="'app/json-editor/assets/lang/' + lang.lang + '.svg'" style="width: 30px">
               <span>
-                to {{lang.name}}
+                to {{lang.name}} ( {{lang.nativeName}} )
               </span>
             </button>
           </ng-container>

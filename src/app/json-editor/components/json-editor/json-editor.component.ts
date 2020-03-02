@@ -18,6 +18,12 @@ const KNOWN_LANGS_ABBR_ARRAY = [''];
 
 const ENGLISH_CODE = 'en';
 
+interface IKnowLang {
+  name: string;
+  nativeName: string;
+  code: string;
+  isRtl?: boolean;
+}
 
 @Component({
   selector: 'app-json-editor',
@@ -228,8 +234,9 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private constructKnownLangsArray() {
-    this.knownLangsArray = knownLanguages.sort((a, b) => a.abbreviation.localeCompare(b.abbreviation)).map(jsonItem =>
-      new LanguageProperties(jsonItem.name, jsonItem.abbreviation, jsonItem.isRtl));
+    this.knownLangsArray = (knownLanguages as IKnowLang[])
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(jsonItem => new LanguageProperties(jsonItem.name, jsonItem.nativeName, jsonItem.code, jsonItem.isRtl));
   }
 
   selectLangChange(aLanguageProperties: LanguageProperties, aIsChecked: boolean) {

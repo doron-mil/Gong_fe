@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
-import {MatIconRegistry} from '@angular/material/icon';
+// import {MatIconRegistry} from '@angular/material/icon';
 import {TranslateService} from '@ngx-translate/core';
 
 import {NgRedux} from '@angular-redux/store';
@@ -24,7 +24,7 @@ export class AppComponent extends BaseComponent {
     private ngRedux: NgRedux<any>,
     private translate: TranslateService,
     private indexedDbService: IndexedDbService,
-    private matIconRegistry: MatIconRegistry,
+    // private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer) {
 
     super();
@@ -64,14 +64,14 @@ export class AppComponent extends BaseComponent {
   }
 
   private addSvgIcons() {
-    this.matIconRegistry.addSvgIcon(
-      'lang_he',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lang/he.svg')
-    );
-    this.matIconRegistry.addSvgIcon(
-      'lang_en',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lang/en.svg')
-    );
+    // this.matIconRegistry.addSvgIcon(
+    //   'lang_he',
+    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lang/he.svg')
+    // );
+    // this.matIconRegistry.addSvgIcon(
+    //   'lang_en',
+    //   this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/lang/en.svg')
+    // );
   }
 
 
