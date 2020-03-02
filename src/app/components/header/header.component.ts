@@ -21,6 +21,9 @@ import {EAction, SelectTopicsDialogComponent} from '../../dialogs/select-topics-
 import {ETopic, ITopicData} from '../../model/topics-model';
 import {EnumUtils} from '../../utils/enumUtils';
 import {MessagesService} from '../../services/messages.service';
+import {JsonEditorComponent} from '../../json-editor/components/json-editor/json-editor.component';
+import {LanguageProperties} from '../../json-editor/shared/dataModels/lang.model';
+import {IObjectMap} from '../../model/store-model';
 
 enum ETranslation {
   DELETE_CONFIRM_TITLE = 'main.header.confirm.delete.title',
@@ -40,7 +43,7 @@ export class HeaderComponent extends BaseComponent {
   @ViewChild('courseFile', {static: false}) courseFile: ElementRef;
   @ViewChild('gongFile', {static: false}) gongFile: ElementRef;
 
-
+  knownLangsObjectMap: IObjectMap<LanguageProperties> = {};
   supportedLanguagesArray: string[];
   currentLanguage: string = 'en';
 
@@ -77,9 +80,9 @@ export class HeaderComponent extends BaseComponent {
 
   protected hookOnInit() {
     this.getBasicData();
+    this.getLanguageData();
     this.getSupportedLanguages();
     this.initDateFormatOptions();
-
   }
 
   protected getKeysArray4Translations(): string[] {
@@ -174,6 +177,11 @@ export class HeaderComponent extends BaseComponent {
 
   getBasicData(): void {
     this.storeService.getBasicData();
+  }
+
+  getLanguageData(): void {
+    JsonEditorComponent.knownLangsArray.forEach(
+      (languageProperties) => this.knownLangsObjectMap[languageProperties.lang] = languageProperties);
   }
 
   setLanguage(lang: string) {

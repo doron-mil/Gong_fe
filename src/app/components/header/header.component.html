@@ -42,7 +42,7 @@
       <button mat-menu-item *ngFor="let lang of supportedLanguagesArray"
               (click)="setLanguage(lang)" [ngClass]="{selectedLangClass: lang === currentLanguage}">
         <span>
-          {{'main.menu.language.subMenu.' + lang | translate}}
+          {{ knownLangsObjectMap[lang].name}} ( {{ knownLangsObjectMap[lang].nativeName}} )
         </span>
       </button>
 

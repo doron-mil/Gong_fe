@@ -32,6 +32,8 @@ interface IKnowLang {
 })
 export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  static knownLangsArray: Array<LanguageProperties> = JsonEditorComponent.constructKnownLangsArray();
+
   @Input() languagesMap: Map<string, any>;
 
   @Input() allowNodesMenu: boolean = true;
@@ -57,8 +59,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   maxNoLanguages4Editing = MAX_NO_LANGUAGES_4_EDITING;
-  knownLangsArray: Array<LanguageProperties>;
-
+  langsArray = JsonEditorComponent.knownLangsArray;
 
   searchCounter = -1;
   searchByOptions = SearchByEnum;
@@ -71,7 +72,12 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   // current search
 
   constructor(private dialog: MatDialog, private bottomSheet: MatBottomSheet) {
-    this.constructKnownLangsArray();
+  }
+
+  static constructKnownLangsArray(): Array<LanguageProperties> {
+    return (knownLanguages as IKnowLang[])
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(jsonItem => new LanguageProperties(jsonItem.name, jsonItem.nativeName, jsonItem.code, jsonItem.isRtl));
   }
 
   ngOnInit() {
@@ -233,11 +239,6 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.outputMessages.emit(aNotificationTypesEnum);
   }
 
-  private constructKnownLangsArray() {
-    this.knownLangsArray = (knownLanguages as IKnowLang[])
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map(jsonItem => new LanguageProperties(jsonItem.name, jsonItem.nativeName, jsonItem.code, jsonItem.isRtl));
-  }
 
   selectLangChange(aLanguageProperties: LanguageProperties, aIsChecked: boolean) {
     aLanguageProperties.isAdded = aIsChecked;
