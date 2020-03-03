@@ -14,6 +14,18 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
+export class Node4Change {
+  node: JsonNode;
+  lang: string;
+  value: string;
+
+  constructor(node: JsonNode, lang: string, value: string) {
+    this.node = node;
+    this.lang = lang;
+    this.value = value;
+  }
+}
+
 interface ICtrlNode {
   ctrl: FormControl;
   node: JsonNode;
@@ -86,7 +98,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         .map(entry => ({key: entry[0] as string, value: entry[1] as string}))
         .filter(mappedEntry => {  // Filtering only ctrls that are changed compared with the original data
           const value = mappedEntry.value;
-          let isOnFiltered = !!value;
+          let isOnFiltered = _.isString(value);
           if (isOnFiltered) {
             const key = mappedEntry.key;
             const node = this.formControlObjectMap[key].node;
@@ -146,6 +158,18 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
       this.treeForm.addControl(key, newCtrl);
     }
     return ctrlStruct.ctrl;
+  }
+
+  updateControls(aJsonNodes4updateArray: Node4Change[]) {
+    aJsonNodes4updateArray.forEach((node4Change) => {
+      const key = node4Change.node.id + '-' + node4Change.lang;
+      const ctrlStruct = this.formControlObjectMap[key];
+      if (ctrlStruct) {
+        ctrlStruct.ctrl.setValue( node4Change.value);
+      } else {
+        console.error(`JsonTreeComponent::updateControls Error. Couldn't find ctrl for ${JSON.stringify(aJsonNodes4updateArray)}`);
+      }
+    });
   }
 
   private clearUpdateMonitorData() {
@@ -208,7 +232,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         this.loadAnotherLanguage(this.data, langJson, lang);
         langProperty = this.knownLangsArray.find(languageProperties => languageProperties.lang === lang);
         if (!langProperty) {
-          langProperty = new LanguageProperties('Customized' , 'Customized', lang);
+          langProperty = new LanguageProperties('Customized', 'Customized', lang);
           langProperty.isCustomized = true;
           this.knownLangsArray.push(langProperty);
         }
@@ -227,15 +251,30 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
     const langArray = this.languages4EditingArray.filter(langObj => langObj.lang !== 'en').map(langObj => langObj.lang);
     aData.forEach(jsonNodeObj => {
       if (!jsonNodeObj.hasChildren && jsonNodeObj.problemType === ProblemType.NONE) {
-        const notTrans = langArray.some(lang => !jsonNodeObj.value[lang] || jsonNodeObj.value[lang] === '');
+        const notTrans = langArray.some(lang => !jsonNodeObj.value[lang] ||
+          jsonNodeObj.value[lang].trim().length <= 0);
         jsonNodeObj.problemType = notTrans ? ProblemType.NOT_EXIST_ON_OTHER_LANG : ProblemType.NONE;
       } else if (jsonNodeObj.hasChildren) {
         this.search4AdditionalProblems(jsonNodeObj.children());
       }
     });
-
   }
 
+  recalculateProblems(aData: JsonNode[]) {
+    aData.forEach(jsonNodeObj => {
+      if (!jsonNodeObj.hasChildren) {
+        jsonNodeObj.problemType = ProblemType.NONE;
+        Array.from(Object.entries(jsonNodeObj.value)).some((valueEntry) => {
+          if (!valueEntry[1] || valueEntry[1].trim().length <= 0) {
+            jsonNodeObj.problemType = (valueEntry[0] === 'en') ? ProblemType.NOT_EXIST_ON_EN : ProblemType.NOT_EXIST_ON_OTHER_LANG;
+          }
+          return (jsonNodeObj.problemType !== ProblemType.NONE);
+        });
+      } else if (jsonNodeObj.hasChildren) {
+        this.recalculateProblems(jsonNodeObj.children());
+      }
+    });
+  }
 
   getProblemText(aProblemType: ProblemType): string {
     let retProblemTest = '';

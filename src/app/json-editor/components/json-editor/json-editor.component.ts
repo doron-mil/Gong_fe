@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import {MatBottomSheet, MatCheckbox, MatDialog, MatMenuTrigger} from '@angular/material';
 
 import {JsonNode, ProblemType, SearchByEnum} from '../../shared/dataModels/tree.model';
-import {JsonTreeComponent} from '../json-tree/json-tree.component';
+import {JsonTreeComponent, Node4Change} from '../json-tree/json-tree.component';
 
 import {LanguageProperties, NotificationTypesEnum} from '../../shared/dataModels/lang.model';
 import {langPropsArray as knownLanguages} from './known-languages';
@@ -279,16 +279,16 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private convertEn(aData: JsonNode[], aLanguageProperties: LanguageProperties, aMessagesEnum: NotificationTypesEnum,
                     aConversionMethod: (sourceStrings: Array<string>, targetLang: string) => Promise<Array<string>>) {
     const nodesForConversionArray = [];
-    this.getNodesForConversion(this.treeComponent.data, aLanguageProperties, nodesForConversionArray);
+    this.getNodesForConversion(aData, aLanguageProperties, nodesForConversionArray);
 
     const englishValuesArray = nodesForConversionArray.map(jsonNode => jsonNode.value[ENGLISH_CODE]);
 
     aConversionMethod(englishValuesArray, aLanguageProperties.lang).then(retValuesArray => {
-      let counter = 0;
-      nodesForConversionArray.forEach(jsonNode => {
-        jsonNode.value[aLanguageProperties.lang] = retValuesArray[counter];
-        counter += 1;
+      const jsonNodes4updateArray: Node4Change[] = [];
+      nodesForConversionArray.forEach((jsonNode, index) => {
+        jsonNodes4updateArray.push( new Node4Change(jsonNode, aLanguageProperties.lang, retValuesArray[index]));
       });
+      this.treeComponent.updateControls(jsonNodes4updateArray);
       this.notifyParent(aMessagesEnum);
     });
   }
@@ -307,7 +307,9 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   refreshProblems() {
-    // TO DO
+    this.treeComponent.recalculateProblems(this.treeComponent.data);
+    delete this.searchBufferObjectMap[SearchByEnum.PROBLEM];
+    this.getSearchBufferForProblem();
   }
 
   upload() {
@@ -323,6 +325,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.treeComponent.updateDataFromInputControls();
     this.convertDataToJsonObjects(this.treeComponent.data, languagesUtilsObjectMap);
 
+    this.refreshProblems();
     this.languagesMapOutput.emit(languagesMap);
   }
 

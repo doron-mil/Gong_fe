@@ -83,10 +83,10 @@ export class I18nEditingComponent extends BaseLangComponent {
   }
 
   languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
-    this.languagesMap = aReceivedLangMap;
-    this.saveJsonEditorDataForTopic();
+    // this.languagesMap = aReceivedLangMap;
+    this.saveJsonEditorDataForTopic(aReceivedLangMap);
 
-    super.saveGlobalLanguagesMap();
+    super.saveGlobalLanguagesMap(aReceivedLangMap );
   }
 
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {
@@ -147,10 +147,10 @@ export class I18nEditingComponent extends BaseLangComponent {
     });
   }
 
-  private saveJsonEditorDataForTopic() {
-    const keys = Array.from(this.languagesMap.keys());
+  private saveJsonEditorDataForTopic(aReceivedLangMap: Map<string, any>) {
+    const keys = Array.from(aReceivedLangMap.keys());
     keys.forEach(key => {
-      const updatedTranslation = this.languagesMap.get(key);
+      const updatedTranslation = aReceivedLangMap.get(key);
       const translationOnGlobal = this.globalLanguagesMap.get(key);
       _.set(translationOnGlobal, ['general', 'typesValues', this.selectedTopic], updatedTranslation);
     });

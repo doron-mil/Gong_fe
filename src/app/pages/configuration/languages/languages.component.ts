@@ -55,8 +55,8 @@ export class LanguagesComponent extends BaseLangComponent {
   }
 
   languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
-    this.globalLanguagesMap = aReceivedLangMap;
+    // this.globalLanguagesMap = aReceivedLangMap;
 
-    super.saveGlobalLanguagesMap();
+    super.saveGlobalLanguagesMap(aReceivedLangMap);
   }
 }

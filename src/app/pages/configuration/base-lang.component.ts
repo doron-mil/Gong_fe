@@ -9,6 +9,7 @@ import {ActionGenerator} from '../../store/actions/action';
 
 export class BaseLangComponent extends BaseComponent {
   globalLanguagesMap: Map<string, any>;
+  private storeUpdatedWithLang: boolean = false;
 
   constructor(translateService: TranslateService = null,
               ngRedux: NgRedux<any> = null,
@@ -21,7 +22,11 @@ export class BaseLangComponent extends BaseComponent {
     return new Promise((resolve, reject) => {
       if (this.indexedDbService) {
         this.indexedDbService.getAllStoredDataRecordsAndKeysMap(DbObjectTypeEnum.LANGUAGES).then((languages) => {
-          this.globalLanguagesMap = languages;
+          if (!this.storeUpdatedWithLang) {
+            this.globalLanguagesMap = languages;
+          } else {
+            this.storeUpdatedWithLang = false;
+          }
           resolve();
         });
       } else {
@@ -30,12 +35,13 @@ export class BaseLangComponent extends BaseComponent {
     });
   }
 
-  protected saveGlobalLanguagesMap() {
+  protected saveGlobalLanguagesMap(aReceivedLangMap: Map<string, any>) {
     const langsObjArray = [];
-    Array.from(this.globalLanguagesMap.entries()).forEach((entry) => {
+    Array.from(aReceivedLangMap.entries()).forEach((entry) => {
       langsObjArray.push({language: entry[0], translation: entry[1]});
     });
     if (this.ngReduxObj) {
+      this.storeUpdatedWithLang = true;
       this.ngReduxObj.dispatch(ActionGenerator.updateLanguages(langsObjArray));
     }
   }
