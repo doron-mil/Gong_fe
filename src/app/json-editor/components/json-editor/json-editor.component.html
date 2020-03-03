@@ -49,7 +49,8 @@
                         <span class="postfix-label">
                             Postfix
                         </span>
-                        <input type="text" value="_en" #postfixInput class="search-text" (click)="$event.stopPropagation()">
+                        <input type="text" value="_en" #postfixInput class="search-text"
+                               (click)="$event.stopPropagation()">
                     </div>
                 </ng-template>
 
@@ -100,7 +101,7 @@
 
             </mat-menu>
 
-            <mat-menu #langDisplayedMenu="matMenu" class="my-full-width-menu">
+            <mat-menu #langDisplayedMenu="matMenu" class="my-full-width-menu display-lang-menu">
                 <ng-template matMenuContent>
                     <mat-checkbox #displayLangCheck *ngFor="let lang of getLanguages4EditingArray()" class="lang-item"
                                   [matTooltip]="lang.name + ' ( ' + lang.nativeName + ' )'"
@@ -109,7 +110,8 @@
                                   (change)="lang.isDisplayed = displayLangCheck.checked"
                                   (click)="$event.stopPropagation()">
                         <span>
-                            {{lang.lang}}
+                            <div class="language-code">{{lang.lang}} -</div>
+                            {{lang.name}}
                         </span>
                     </mat-checkbox>
                 </ng-template>

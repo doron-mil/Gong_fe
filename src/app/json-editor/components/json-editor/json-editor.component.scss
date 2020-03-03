@@ -126,6 +126,18 @@
     }
   }
 
+  .display-lang-menu {
+    min-width: 30vw !important;
+    max-width: 30vw !important;
+
+    .mat-menu-content DIV {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+  }
+
   .my-full-width-menu .mat-menu-content {
     display: flex;
     flex-wrap: wrap;
