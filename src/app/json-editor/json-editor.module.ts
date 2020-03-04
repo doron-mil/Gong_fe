@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import {MaterialModule} from '../material/material.module';
 
@@ -24,6 +25,7 @@ import {HeaderComponent} from './components/header/header.component';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
+    DragDropModule,
   ],
   entryComponents: [NameEditDialogComponent, MessagesComponent, NewNodeDialogComponent],
   exports: [JsonEditorComponent]

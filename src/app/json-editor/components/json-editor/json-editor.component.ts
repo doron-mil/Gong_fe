@@ -11,6 +11,7 @@ import {JsonTreeComponent, Node4Change} from '../json-tree/json-tree.component';
 
 import {LanguageProperties, NotificationTypesEnum} from '../../shared/dataModels/lang.model';
 import {langPropsArray as knownLanguages} from './known-languages';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 const MAX_NO_LANGUAGES_4_EDITING = 2;
 
@@ -286,7 +287,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     aConversionMethod(englishValuesArray, aLanguageProperties.lang).then(retValuesArray => {
       const jsonNodes4updateArray: Node4Change[] = [];
       nodesForConversionArray.forEach((jsonNode, index) => {
-        jsonNodes4updateArray.push( new Node4Change(jsonNode, aLanguageProperties.lang, retValuesArray[index]));
+        jsonNodes4updateArray.push(new Node4Change(jsonNode, aLanguageProperties.lang, retValuesArray[index]));
       });
       this.treeComponent.updateControls(jsonNodes4updateArray);
       this.notifyParent(aMessagesEnum);
@@ -362,5 +363,11 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
     }
     this.outputMessages.emit(aNotificationEnum);
+  }
+
+  drop($event: CdkDragDrop<any, any>) {
+    if ($event.currentIndex !== 0) {
+      moveItemInArray(this.getLanguages4EditingArray(), $event.previousIndex, $event.currentIndex);
+    }
   }
 }

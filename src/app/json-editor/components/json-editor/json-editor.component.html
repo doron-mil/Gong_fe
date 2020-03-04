@@ -98,22 +98,28 @@
                         {{lang.name}}
                     </span>
                 </mat-checkbox>
-
             </mat-menu>
 
             <mat-menu #langDisplayedMenu="matMenu" class="my-full-width-menu display-lang-menu">
                 <ng-template matMenuContent>
-                    <mat-checkbox #displayLangCheck *ngFor="let lang of getLanguages4EditingArray()" class="lang-item"
-                                  [matTooltip]="lang.name + ' ( ' + lang.nativeName + ' )'"
-                                  [disabled]="lang.lang === 'en'"
-                                  [checked]="lang.isDisplayed"
-                                  (change)="lang.isDisplayed = displayLangCheck.checked"
-                                  (click)="$event.stopPropagation()">
-                        <span>
-                            <div class="language-code">{{lang.lang}} -</div>
-                            {{lang.name}}
-                        </span>
-                    </mat-checkbox>
+                    <div cdkDropList (cdkDropListDropped)="drop($event)" >
+                    <div class="display-lang-element" *ngFor="let lang of getLanguages4EditingArray()" cdkDrag
+                         [cdkDragDisabled]="lang.lang === 'en'">
+                        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                        <mat-icon  cdkDragHandle [svgIcon]="lang.lang !== 'en' ? 'drag-vertical' : ''"></mat-icon>
+                        <mat-checkbox #displayLangCheck class="lang-item"
+                                      [matTooltip]="lang.name + ' ( ' + lang.nativeName + ' )'"
+                                      [disabled]="lang.lang === 'en'"
+                                      [checked]="lang.isDisplayed"
+                                      (change)="lang.isDisplayed = displayLangCheck.checked"
+                                      (click)="$event.stopPropagation()">
+                            <span>
+                                <div class="language-code">{{lang.lang}} -</div>
+                                {{lang.name}}
+                            </span>
+                        </mat-checkbox>
+                    </div>
+                    </div>
                 </ng-template>
             </mat-menu>
 
