@@ -33,7 +33,7 @@ interface IKnowLang {
 })
 export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  static knownLangsArray: Array<LanguageProperties> = JsonEditorComponent.constructKnownLangsArray();
+  private static knownLangsArray: Array<LanguageProperties> = JsonEditorComponent.constructKnownLangsArray();
 
   @Input() languagesMap: Map<string, any>;
 
@@ -61,7 +61,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   maxNoLanguages4Editing = MAX_NO_LANGUAGES_4_EDITING;
-  langsArray = JsonEditorComponent.knownLangsArray;
+  langsArray = JsonEditorComponent.getKnownLangsArray();
 
   searchCounter = -1;
   searchByOptions = SearchByEnum;
@@ -76,11 +76,13 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private dialog: MatDialog, private bottomSheet: MatBottomSheet) {
   }
 
-  static constructKnownLangsArray(): Array<LanguageProperties> {
+  private static constructKnownLangsArray(): Array<LanguageProperties> {
     return (knownLanguages as IKnowLang[])
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(jsonItem => new LanguageProperties(jsonItem.name, jsonItem.nativeName, jsonItem.code, jsonItem.isRtl));
   }
+
+  static getKnownLangsArray = (): Array<LanguageProperties> => _.cloneDeep(JsonEditorComponent.knownLangsArray);
 
   ngOnInit() {
   }
@@ -128,6 +130,13 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   getLanguages4EditingArray(): Array<LanguageProperties> {
     if (this.treeComponent) {
       return this.treeComponent.languages4EditingArray;
+    }
+    return [];
+  }
+
+  getTreeData(): Array<JsonNode> {
+    if (this.treeComponent) {
+      return this.treeComponent.data;
     }
     return [];
   }
@@ -244,14 +253,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectLangChange(aLanguageProperties: LanguageProperties, aIsChecked: boolean) {
     aLanguageProperties.isAdded = aIsChecked;
-    if (aIsChecked) {
-      aLanguageProperties.isDisplayed = true;
-      this.treeComponent.languages4EditingArray.push(aLanguageProperties);
-
-    } else {
-      aLanguageProperties.isDisplayed = false;
-      _.remove(this.treeComponent.languages4EditingArray, langProperties => langProperties.lang === aLanguageProperties.lang);
-    }
+    this.treeComponent.addOrRemoveLanguage(aLanguageProperties, aIsChecked);
   }
 
   getTranslationMethod() {
@@ -313,18 +315,28 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getSearchBufferForProblem();
   }
 
+  /**
+   * Manipulate the Json tree to update its model - then emitting this model up for uploading/saving
+   */
   upload() {
     const languagesMap = new Map<string, any>();
     const languagesUtilsObjectMap: { [key: string]: any } = {};
 
-    this.treeComponent.languages4EditingArray.forEach((langProperties: LanguageProperties) => {
+    this.getLanguages4EditingArray().forEach((langProperties: LanguageProperties) => {
       const newJson4Lang = {};
       languagesMap.set(langProperties.lang, newJson4Lang);
       languagesUtilsObjectMap[langProperties.lang] = newJson4Lang;
     });
 
     this.treeComponent.updateDataFromInputControls();
-    this.convertDataToJsonObjects(this.treeComponent.data, languagesUtilsObjectMap);
+    this.convertDataToJsonObjects(this.getTreeData(), languagesUtilsObjectMap);
+
+    // In case removed a language
+    const deletedLanguages = _.difference(Array.from(this.languagesMap.keys()), Object.keys(languagesUtilsObjectMap));
+    if (deletedLanguages && deletedLanguages.length > 0) {
+      deletedLanguages.forEach((deletedLanguage) => languagesMap.set(deletedLanguage, {}));
+    }
+    this.treeComponent.resetDirtyState();
 
     this.refreshProblems();
     this.languagesMapOutput.emit(languagesMap);
@@ -336,7 +348,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       if (jsonNode.hasChildren) {
         this.convertDataToJsonObjects(jsonNode.children(), aLangObjectMap);
       } else {
-        this.treeComponent.languages4EditingArray.forEach((langProperties: LanguageProperties) => {
+        this.getLanguages4EditingArray().forEach((langProperties: LanguageProperties) => {
           const lang = langProperties.lang;
           const value = jsonNode.value[lang] ? jsonNode.value[lang] : '';
           _.set(aLangObjectMap[lang], jsonNode.fullPath, value);
@@ -365,9 +377,10 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.outputMessages.emit(aNotificationEnum);
   }
 
-  drop($event: CdkDragDrop<any, any>) {
-    if ($event.currentIndex !== 0) {
-      moveItemInArray(this.getLanguages4EditingArray(), $event.previousIndex, $event.currentIndex);
+  languageChangeOrderOrVisibility(aEvent: CdkDragDrop<any, any>, aLang: LanguageProperties = null) {
+    if (aEvent && aEvent.currentIndex !== 0) {
+      moveItemInArray(this.getLanguages4EditingArray(), aEvent.previousIndex, aEvent.currentIndex);
     }
+    this.treeComponent.saveLanguages4EditingOrderAndVisibility(aLang);
   }
 }

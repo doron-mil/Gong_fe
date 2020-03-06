@@ -180,7 +180,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   getLanguageData(): void {
-    JsonEditorComponent.knownLangsArray.forEach(
+    JsonEditorComponent.getKnownLangsArray().forEach(
       (languageProperties) => this.knownLangsObjectMap[languageProperties.lang] = languageProperties);
   }
 

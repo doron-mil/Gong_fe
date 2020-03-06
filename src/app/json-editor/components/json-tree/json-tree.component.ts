@@ -14,6 +14,8 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
+const LANGUAGES_4_EDITING_ORDER_KEY = 'languagesOrder';
+
 export class Node4Change {
   node: JsonNode;
   lang: string;
@@ -128,6 +130,10 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Takes the data in the changed controls to modify the model.
+   * Then erases the changes markings (i.e changedControls and wasStructureUpdated
+   */
   updateDataFromInputControls() {
     if (!this.changedControls || this.changedControls.length <= 0) {
       return;
@@ -165,7 +171,7 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
       const key = node4Change.node.id + '-' + node4Change.lang;
       const ctrlStruct = this.formControlObjectMap[key];
       if (ctrlStruct) {
-        ctrlStruct.ctrl.setValue( node4Change.value);
+        ctrlStruct.ctrl.setValue(node4Change.value);
       } else {
         console.error(`JsonTreeComponent::updateControls Error. Couldn't find ctrl for ${JSON.stringify(aJsonNodes4updateArray)}`);
       }
@@ -241,6 +247,8 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         this.languages4EditingArray.push(langProperty);
       }
     });
+
+    this.orderLanguages4EditingArray();
 
     this.search4AdditionalProblems(this.data);
 
@@ -490,5 +498,48 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
         aBaseDataModelArray.push(newJsonNode);
       }
     });
+  }
+
+  addOrRemoveLanguage(aLanguageProperties: LanguageProperties, aIsAdded: boolean) {
+    if (aIsAdded) {
+      const clonedLanguageProperties = _.cloneDeep(aLanguageProperties);
+      clonedLanguageProperties.isDisplayed = true;
+      this.languages4EditingArray.push(clonedLanguageProperties);
+    } else {
+      _.remove(this.languages4EditingArray, langProperties => langProperties.lang === aLanguageProperties.lang);
+    }
+    this.handleChangeInData(null, Boolean(true));
+  }
+
+  saveLanguages4EditingOrderAndVisibility(aLang: LanguageProperties = null) {
+    const langOrder = this.languages4EditingArray.map(
+      (languageProperties) => {
+        const isDisplayed = (aLang && aLang.lang === languageProperties.lang) ? aLang.isDisplayed : languageProperties.isDisplayed;
+        return [languageProperties.lang, isDisplayed];
+      });
+    localStorage.setItem(LANGUAGES_4_EDITING_ORDER_KEY, JSON.stringify(langOrder));
+  }
+
+  private orderLanguages4EditingArray() {
+    const langOrderStr = localStorage.getItem(LANGUAGES_4_EDITING_ORDER_KEY);
+    if (langOrderStr) {
+      const newLanguages4EditingArray: Array<LanguageProperties> = [];
+      const langOrder = JSON.parse(langOrderStr) as [string, boolean][];
+      langOrder.forEach((langStruct) => {
+        const foundLang = this.languages4EditingArray.find(languageProperties => languageProperties.lang === langStruct[0]);
+        if (foundLang) {
+          foundLang.isDisplayed = langStruct[1];
+          newLanguages4EditingArray.push(foundLang);
+        }
+      });
+      this.languages4EditingArray = newLanguages4EditingArray;
+    }
+  }
+
+  resetDirtyState() {
+    this.saveLanguages4EditingOrderAndVisibility();
+    this.wasStructureUpdated = false;
+    this.changedControls = [];
+    this.outputMessages.emit(NotificationTypesEnum.TREE_IS_CLEAN);
   }
 }
