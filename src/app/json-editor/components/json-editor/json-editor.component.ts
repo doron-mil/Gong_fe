@@ -310,7 +310,7 @@ export class JsonEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   refreshProblems() {
-    this.treeComponent.recalculateProblems(this.treeComponent.data);
+    this.treeComponent.recalculateProblems(this.getTreeData());
     delete this.searchBufferObjectMap[SearchByEnum.PROBLEM];
     this.getSearchBufferForProblem();
   }

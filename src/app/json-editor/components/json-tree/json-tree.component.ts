@@ -269,11 +269,12 @@ export class JsonTreeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   recalculateProblems(aData: JsonNode[]) {
+    const supportedLangArray = this.languages4EditingArray.map(languageProperties => languageProperties.lang);
     aData.forEach(jsonNodeObj => {
       if (!jsonNodeObj.hasChildren) {
         jsonNodeObj.problemType = ProblemType.NONE;
         Array.from(Object.entries(jsonNodeObj.value)).some((valueEntry) => {
-          if (!valueEntry[1] || valueEntry[1].trim().length <= 0) {
+          if ((!valueEntry[1] || valueEntry[1].trim().length <= 0) && (supportedLangArray.includes(valueEntry[0]))) {
             jsonNodeObj.problemType = (valueEntry[0] === 'en') ? ProblemType.NOT_EXIST_ON_EN : ProblemType.NOT_EXIST_ON_OTHER_LANG;
           }
           return (jsonNodeObj.problemType !== ProblemType.NONE);
