@@ -100,12 +100,16 @@ export class HeaderComponent extends BaseComponent {
       .subscribe((basicServerData: BasicServerData) => {
         if (basicServerData) {
           this.now = moment(basicServerData.currentServerTime);
+          const lastSavedTime = this.now.clone();
           const timeToNextMin = this.now.clone().endOf('minute').diff(this.now) + 1;
           this.timerSubscription = timer(timeToNextMin, 60 * 1000).subscribe((tik) => {
             if (tik === 0) {
               this.now = this.now.clone().add(timeToNextMin, 'ms');
             } else {
               this.now = this.now.clone().add(1, 'm');
+            }
+            if (this.now.diff(lastSavedTime) / (1000 * 60) > 21) {
+              location.reload();  // If not logged-in the application will display the login page
             }
           });
           this.isManual = basicServerData.isManual;
