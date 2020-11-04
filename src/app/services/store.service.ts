@@ -56,17 +56,20 @@ export class StoreService implements OnInit, OnDestroy {
 
   private populateAreasMap() {
     const areaSubscription =
-      this.ngRedux.select<Area[]>([StoreDataTypeEnum.STATIC_DATA, 'areas']).subscribe((areaArry: Area[]) => {
-        if (areaArry && areaArry.length > 0) {
+      this.ngRedux.select<Area[]>([StoreDataTypeEnum.STATIC_DATA, 'areas']).subscribe((areaArray: Area[]) => {
+        if (areaArray && areaArray.length > 0) {
+          const transKeyObjMap = {};
           this.areasMap = [];
-          areaArry.forEach((area: Area) => {
-            this.translateService.get('general.typesValues.areas.' + area.name).subscribe(areaTrans => {
-              area.translation = areaTrans;
-            });
+          areaArray.forEach((area: Area) => {
+            transKeyObjMap[`general.typesValues.areas.${area.name}`] = area.id;
             this.areasMap[area.id] = area;
           });
+          this.translateService.get(Object.keys(transKeyObjMap)).pipe(first()).subscribe(transResult => {
+            Object.keys(transResult).forEach((key) => this.areasMap[transKeyObjMap[key]].translation = transResult[key]);
+
+            this.areasMapObservable.next(this.areasMap);
+          });
         }
-        this.areasMapObservable.next(this.areasMap);
       });
 
     this.subscriptionsArray.push(areaSubscription);
@@ -314,7 +317,7 @@ export class StoreService implements OnInit, OnDestroy {
     const gongTypesArray = Object.values(this.gongTypesMap);
     if (gongTypesArray.length > 0) {
       const lastGong = _.sortBy(gongTypesArray, ['id'])[gongTypesArray.length - 1]; // Assuming that the gongs created
-                                                                                            // by order and id respectively
+      // by order and id respectively
       const inUse = Array.from(this.coursesMap.values()).some(course => !course.isTest && course.isGongTypeInCourse(lastGong));
       return {id: lastGong.id.toString(10), name: lastGong.name, inUse};
     } else {

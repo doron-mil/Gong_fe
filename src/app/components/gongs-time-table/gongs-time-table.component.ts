@@ -212,8 +212,10 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
 
     if (this._scheduledGongsArray && this._scheduledGongsArray.length > 0) {
       let nextGongIndex = -1;
-
       this.gongTypesSubscription = this.storeService.getGongTypesMap().subscribe(gongTypesMap => {
+        if (!gongTypesMap || !Object.keys(gongTypesMap).length) {
+          return;
+        }
         let lastScheduledGongReord: ScheduledGong = new ScheduledGong();
         const currentMoment = moment();
         this._scheduledGongsArray.forEach((scheduledGong: ScheduledGong, index) => {
