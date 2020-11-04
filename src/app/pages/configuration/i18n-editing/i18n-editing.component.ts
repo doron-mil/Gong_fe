@@ -83,10 +83,8 @@ export class I18nEditingComponent extends BaseLangComponent {
   }
 
   languagesMapUpdateReceived(aReceivedLangMap: Map<string, any>) {
-    // this.languagesMap = aReceivedLangMap;
     this.saveJsonEditorDataForTopic(aReceivedLangMap);
-
-    super.saveGlobalLanguagesMap(aReceivedLangMap );
+    super.saveGlobalLanguagesMap(this.globalLanguagesMap );
   }
 
   jsonEditorMessageReceived(aMessagesEnum: NotificationTypesEnum) {

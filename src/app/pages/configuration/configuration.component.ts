@@ -45,8 +45,8 @@ export class ConfigurationComponent extends BaseComponent {
     this.componentsArray.push({name: 'i18n', component: I18nEditingComponent});
     this.componentsArray.push({name: 'permissions', component: PermissionsComponent});
     this.componentsArray.push({name: 'users', component: UsersComponent});
+    this.componentsArray.push({name: 'languages', component: LanguagesComponent});
     if (this.currentRole === 'dev') {
-      this.componentsArray.push({name: 'languages', component: LanguagesComponent});
       this.componentsArray.push({name: 'deviceSetup', component: DeviceSetupComponent});
     }
     this.selectedComponent = this.componentsArray[0];
