@@ -75,7 +75,7 @@
     </div>
 
     <div class="selected-course-display-container mat-elevation-z8">
-      <app-gongs-time-table [scheduledGongs]="selectedCourseRoutineArray" [displayDate]="displayDate"
+      <app-gongs-time-table #timeTable [scheduledGongs]="selectedCourseRoutineArray" [displayDate]="displayDate"
                             (gongActiveToggleEvent)="onGongActiveToggle($event)"
                             [isDisableToggle]="!toggleGongPermissions"
                             [computeNextGong]="true"

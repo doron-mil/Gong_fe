@@ -68,6 +68,11 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
       const foundRecord = aNewValue.find(
         (scheduledGong) => `${scheduledGong.exactMoment.valueOf()}` === this.lastToggledCB.id);
       if (foundRecord) {
+        const foundRecordOnMemberArray = this._scheduledGongsArray.find(
+          (scheduledGong) => `${scheduledGong.exactMoment.valueOf()}` === this.lastToggledCB.id);
+        if (foundRecordOnMemberArray) {
+          foundRecordOnMemberArray.isActive = foundRecord.isActive;
+        }
         this.lastToggledCB.checked = foundRecord.isActive;
         this.lastToggledCB.disabled = false;
         if (this.nextGongIndex >= 0) {
@@ -79,14 +84,14 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
     }
   }
 
-  @Input('computeNextGong')
+  @Input()
   private computeNextGong: boolean = false;
 
   @Output() gongActiveToggleEvent = new EventEmitter<ScheduledGong>();
 
   @Output() gongsTableDataChangedEvent = new EventEmitter<void>();
 
-  @Output() onScheduledGongEnded = new EventEmitter<boolean>();
+  @Output() scheduledGongEndedEvent = new EventEmitter<boolean>();
 
   @ViewChildren('cmd') customComponentChildren: QueryList<MatCheckbox>;
 
@@ -98,7 +103,7 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
 
   gongTypesSubscription: Subscription;
   nextGongSubscription: Subscription;
-  nextGongIndex: Number = -1;
+  nextGongIndex: number = -1;
 
   dataSourceWasChanged: boolean;
 
@@ -118,6 +123,19 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
     this.translate.onLangChange.subscribe(() => this.translateNeededText());
 
     this.storeService.getDateFormat().subscribe(dateFormat => this.dateFormat = dateFormat.convertToDateFormatter());
+  }
+
+  public scrollToNextGong() {
+    if (this.nextGongIndex >= 0) {
+      const nextGong = this._scheduledGongsArray[this.nextGongIndex];
+      if (nextGong) {
+        const gongId = nextGong.exactMoment.valueOf();
+        const foundCheckbox = this.customComponentChildren.find((item: MatCheckbox) => +item.id === gongId);
+        if (foundCheckbox) {
+          foundCheckbox.focus();
+        }
+      }
+    }
   }
 
   private resetDisplayedColumns() {
@@ -264,9 +282,9 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
     let nextGongIndex = -1;
     const currentMoment = moment();
     this._scheduledGongsArray.forEach((scheduledGong: ScheduledGong, index) => {
-      if (nextGongIndex < 0 && scheduledGong.isActive && this.isFindNext) {
+      if (nextGongIndex < 0 && this.isFindNext) {
         scheduledGong.isAfterNextGong = scheduledGong.exactMoment.isSameOrAfter(currentMoment);
-        if (scheduledGong.isAfterNextGong) {
+        if (scheduledGong.isAfterNextGong && scheduledGong.isActive) {
           scheduledGong.isTheNextGong = true;
           nextGongIndex = index;
         } else {
@@ -285,13 +303,13 @@ export class GongsTimeTableComponent implements OnInit, OnChanges, OnDestroy, Af
       return;
     }
     if (aNextGongIndex >= this._scheduledGongsArray.length) {
-      this.onScheduledGongEnded.emit(true);
+      this.scheduledGongEndedEvent.emit(true);
       return;
     }
     this.nextGongIndex = aNextGongIndex;
     const timeOfNextGong = this._scheduledGongsArray[aNextGongIndex].exactMoment.clone().add(1, 'm');
     this.nextGongSubscription = timer(timeOfNextGong.toDate()).subscribe(() => {
-      this.onScheduledGongEnded.emit(false);
+      this.scheduledGongEndedEvent.emit(false);
       this._scheduledGongsArray[aNextGongIndex].isTheNextGong = false;
       this._scheduledGongsArray[aNextGongIndex].isAfterNextGong = false;
       const newNextGongIndex = this.findNextActiveGongIndex(aNextGongIndex);

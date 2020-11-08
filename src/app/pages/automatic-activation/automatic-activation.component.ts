@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -19,6 +19,7 @@ import {ScheduleCourseDialogComponent} from '../../dialogs/schedule-course-dialo
 import {ScheduledCourseGong} from '../../model/ScheduledCourseGong';
 import {DateFormat} from '../../model/dateFormat';
 import {AuthService} from '../../services/auth.service';
+import {GongsTimeTableComponent} from '../../components/gongs-time-table/gongs-time-table.component';
 
 @Component({
   selector: 'app-automatic-activation',
@@ -26,6 +27,8 @@ import {AuthService} from '../../services/auth.service';
   styleUrls: ['./automatic-activation.component.scss']
 })
 export class AutomaticActivationComponent extends BaseComponent {
+
+  @ViewChild('timeTable', {static: false}) timeTable: GongsTimeTableComponent;
 
   coursesDisplayedColumns = ['course_name', 'daysCount', 'date'];
   coursesDataSource: MatTableDataSource<CourseSchedule>;
@@ -229,10 +232,8 @@ export class AutomaticActivationComponent extends BaseComponent {
     if (!firstCourseSchedule) {
       return;
     }
-
     if (this.selectedCourseScheduled === firstCourseSchedule) {
-      this.waitToScroll = true;
-      this.onGongsTableDataChangedEvent();
+      this.timeTable.scrollToNextGong();
     } else {
       this.onRowClick(firstCourseSchedule);
       this.waitToScroll = true;
@@ -241,11 +242,8 @@ export class AutomaticActivationComponent extends BaseComponent {
 
   onGongsTableDataChangedEvent() {
     if (this.waitToScroll) {
-      const el = document.getElementById('NEXT_GONG');
-      if (el) {
-        el.parentElement.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
-        this.waitToScroll = false;
-      }
+      this.timeTable.scrollToNextGong();
+      this.waitToScroll = false;
     } else {
       const el = document.getElementById('FIRST_GONG');
       if (el) {
